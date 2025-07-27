@@ -1,0 +1,121 @@
+[
+  {
+    "id": 1,
+    "image": "/images/product-image-test.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 2,
+    "image": "/images/product-image-test2.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 3,
+    "image": "/images/product-image.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 4,
+    "image": "/images/product-image2.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 5,
+    "image": "/images/product-image3.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 6,
+    "image": "/images/product-image-test.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 7,
+    "image": "/images/product-image3.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  },
+
+  {
+    "id": 8,
+    "image": "/images/product-image.png",
+    "name": "Product Name",
+    "ratings": {
+      "image": "/images/Star.svg",
+      "number": 4,
+      "reviews": "120"
+    },
+    "vendors": "Vendor",
+    "price": 100,
+    "delivery": "10",
+    "cta": "Add to Cart"
+  }
+]

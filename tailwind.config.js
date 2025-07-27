@@ -2,10 +2,11 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}", // Adjust if using other file types
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {}, // Add customizations here later
+    extend: {},
   },
-  plugins: [], // Add plugins like `@tailwindcss/forms` if needed
+  plugins: [],
 };

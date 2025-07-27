@@ -1,5 +1,5 @@
 import Newsletter from "../newsletter/Newsletter";
-import ProductsDisplay from "../productsPage/ProductsDisplay";
+import ProductsDisplay from "../AllProducts/ProductsDisplay";
 import Footer from "../Utils/footer/Footer";
 import Header from "../Utils/Header";
 import SearchQuery from "../Utils/SearchQuery";

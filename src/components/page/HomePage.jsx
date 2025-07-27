@@ -7,11 +7,8 @@ import SearchQuery from "../Utils/SearchQuery";
 export default function HomePage() {
   return (
     <>
-      <Header />
-      <SearchQuery />
       <ProductsDisplay />
       <Newsletter />
-      <Footer />
     </>
   );
 }

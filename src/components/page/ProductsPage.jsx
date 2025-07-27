@@ -9,18 +9,13 @@ import SearchQuery from "../Utils/SearchQuery";
 export default function ProductsPage() {
   return (
     <>
-      <Header />
-      <SearchQuery />
       <div className="flex flex-col md:flex-row gap-20 items-start my-12 px-12">
         <Products />
         <DeliveryOptions />
       </div>
 
       <OverviewHeader />
-      {}
       <ProductsDisplay limit={4} />
-
-      <Footer />
     </>
   );
 }

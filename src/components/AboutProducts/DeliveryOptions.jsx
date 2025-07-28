@@ -1,9 +1,11 @@
 export default function DeliveryOptions() {
   return (
-    <div className="bg-[#E5E5E5] w-[45%] p-8">
+    <div className="bg-[#E5E5E5] w-full md:w-[35%] p-[1.25rem]">
       <div className="mb-4">
-        <h2 className="text-[1.25rem] font-semibold mb-2">Delivery</h2>
-        <p>Delivery will be ready in 3 days, thank you for your patience!</p>
+        <h3 className="text-[1.25rem] font-semibold mb-2">Delivery</h3>
+        <p className="text-[#565454]">
+          Delivery will be ready in 3 days, thank you for your patience!
+        </p>
       </div>
 
       <div className="space-x-2 mb-2">
@@ -18,7 +20,7 @@ export default function DeliveryOptions() {
 
       <div className="my-8">
         <h3 className="text-[1.25rem] font-semibold">Sales Information</h3>
-        <div className="flex gap-8">
+        <div className="flex gap-8 mt-4">
           <div>
             Al resins
             <div className="flex items-center text-[1rem] mt-3">
@@ -37,37 +39,43 @@ export default function DeliveryOptions() {
       </div>
 
       <div>
-        <h4 className="text-[1.25rem] font-semibold">Seller's Performance</h4>
-
-        <div className="space-y-4 mt-8">
-          <div className="w-[80%] flex items-center justify-between">
-            <p>Sales Rate</p>
-            <p>70%</p>
-          </div>
-
-          <div className="w-[80%] flex items-center justify-between">
-            <p>Number of Sales</p>
-            <p>302</p>
-          </div>
-
-          <div className="w-[80%] flex items-center justify-between">
-            <p>Delivery Rate</p>
-            <p>80%</p>
-          </div>
-
-          <div className="w-[80%] flex items-center justify-between">
-            <p>Top Ratings</p>
-            <div className="flex gap-2">
+        <h3 className="text-[1.25rem] font-semibold mb-3">
+          Seller's Performance
+        </h3>
+        <ul className="space-y-4 mt-6">
+          <li className="flex justify-between">
+            <span className="text-[1rem] text-[#000] basis-1/2 text-left">
+              Sales Rate
+            </span>
+            <span className="text-gray-600 flex-1 text-left">70%</span>
+          </li>
+          <li className="flex justify-between">
+            <span className="text-[1rem] text-[#000] basis-1/2 text-left">
+              Number of Sales
+            </span>
+            <span className="text-gray-600 flex-1 text-left">302</span>
+          </li>
+          <li className="flex justify-between">
+            <span className="text-[1rem] text-[#000] basis-1/2 text-left">
+              Delivery Rate
+            </span>
+            <span className="text-gray-600 flex-1 text-left">80%</span>
+          </li>
+          <li className="flex justify-between">
+            <span className="text-[1rem] text-[#000] basis-1/2 text-left">
+              Top Ratings
+            </span>
+            <div className="flex flex-1 text-left text-[1rem] text-gray-600">
               4.5
-              <div className="flex gap-1">
+              <span className="text-gray-600 flex ml-1">
                 <img src="/images/Star.svg" alt="rating" />
                 <img src="/images/Star.svg" alt="rating" />
                 <img src="/images/Star.svg" alt="rating" />
                 <img src="/images/Star.svg" alt="rating" />
-              </div>
+              </span>
             </div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   );

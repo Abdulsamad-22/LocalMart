@@ -1,11 +1,11 @@
 export default function Products() {
   return (
-    <div className="w-[60%] flex gap-4 items-end">
-      <div className="w-[445px] h-[406px]">
+    <div className="w-full md:w-[65%] flex gap-4 items-end">
+      <div className="w-full md:w-[445px] h-[406px]">
         <img className="w-full h-full" src="/images/product-image.png" alt="" />
       </div>
 
-      <div className="w-[40%] space-y-4">
+      <div className="w-full md:w-[40%] space-y-4">
         <div className="space-y-2">
           <h2 className="text-[1.5rem]">Product Name</h2>
 

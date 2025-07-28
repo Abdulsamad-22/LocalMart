@@ -8,7 +8,7 @@ export default function Layout({ children }) {
     <div className="min-h-screen flex flex-col">
       <Header />
       <SearchQuery />
-      <main className="flex-grow">
+      <main className="flex-grow my-12 px-12">
         <Outlet />
       </main>
       <Footer />

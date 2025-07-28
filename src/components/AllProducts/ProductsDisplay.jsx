@@ -2,12 +2,12 @@ import products from "../../../data/Products.json";
 const productListings = products;
 export default function ProductsDisplay({ limit }) {
   return (
-    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-12 mt-8">
+    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-0 mt-8">
       {productListings
         .slice(0, limit || productListings.length)
         .map((products, id) => (
           <div key={id} className="bg-[#fff] space-y-4 p-4 rounded-[16px]">
-            <div className="w-[220px] md:w-[271px] h-[195px] md:h-[218px] relative transition-transform duration-300 hover:scale-95 cursor-pointer">
+            <div className="w-[280px] md:w-[271px] h-[205px] md:h-[218px] relative transition-transform duration-300 hover:scale-95 cursor-pointer">
               <img
                 className="w-full h-full rounded-[8px]"
                 src={products.image}

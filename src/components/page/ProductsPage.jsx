@@ -9,7 +9,7 @@ import SearchQuery from "../Utils/SearchQuery";
 export default function ProductsPage() {
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-20 items-start my-12 px-12">
+      <div className="flex flex-col md:flex-row gap-20 items-start mb-12">
         <Products />
         <DeliveryOptions />
       </div>

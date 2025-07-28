@@ -1,13 +1,13 @@
 export default function Newsletter() {
   return (
-    <section className="bg-[#000] p-12 mx-12 rounded-3xl mt-12">
+    <section className="bg-[#000] p-12 rounded-3xl mt-12">
       <div className="w-full md:w-[50%] lg:w-[40%] text-center md:text-left">
         <h4 className="text-[#fff] text-[1.5rem] mb-8">
           Ready to get update on rising products amd best sellers around you?
         </h4>
-        <div className="flex bg-[#fff] py-2 pr-3 rounded-full">
+        <div className="flex bg-[#fff] py-2 px-3 rounded-full">
           <input
-            className="w-full  py-2 px-6 border-none outline-none rounded-full"
+            className="w-full  py-2 pr-3 border-none outline-none rounded-full"
             placeholder="Enter Email"
             type="text"
           />

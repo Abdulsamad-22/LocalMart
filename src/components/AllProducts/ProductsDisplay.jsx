@@ -2,7 +2,7 @@ import products from "../../../data/Products.json";
 const productListings = products;
 export default function ProductsDisplay({ limit }) {
   return (
-    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-0 mt-8">
+    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-0">
       {productListings
         .slice(0, limit || productListings.length)
         .map((products, id) => (

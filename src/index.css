@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.input {
+  @apply w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#009688];
+}
 /* :root { */
 /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

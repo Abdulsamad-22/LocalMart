@@ -1,6 +1,6 @@
 export default function DeliveryOptions() {
   return (
-    <div className="bg-[#E5E5E5] w-full md:w-[35%] p-[1.25rem]">
+    <div className="bg-[#EEEEEE] w-full md:w-[35%] p-[1.25rem] rounded-md">
       <div className="mb-4">
         <h3 className="text-[1.25rem] font-semibold mb-2">Delivery</h3>
         <p className="text-[#565454]">

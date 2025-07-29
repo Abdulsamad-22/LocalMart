@@ -4,6 +4,7 @@ import HomePage from "./components/page/HomePage";
 import ProductsPage from "./components/page/ProductsPage";
 import Layout from "./components/Layout";
 import CartPage from "./components/page/CartPage";
+import VendorRegistrationForm from "./components/verifyVendors/VendorRegistrationForm";
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/carts" element={<CartPage />} />
         </Route>
+
+        <Route path="/registration" element={<VendorRegistrationForm />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,5 +1,7 @@
 import products from "../../../data/Products.json";
 const productListings = products;
+import { ShoppingCart, Truck } from "@phosphor-icons/react";
+
 export default function ProductsDisplay({ limit }) {
   return (
     <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-0">
@@ -10,7 +12,7 @@ export default function ProductsDisplay({ limit }) {
             key={id}
             className="bg-[#fff] shadow-lg shadow-gray-400/50 rounded-[10px]"
           >
-            <div className="w-[280px] md:w-full h-[205px] md:h-[218px] relative transition-transform duration-300 hover:scale-95 cursor-pointer">
+            <div className="w-full md:w-full h-auto md:h-[218px] relative transition-transform duration-300 hover:scale-95 cursor-pointer">
               <img
                 className="w-full h-full rounded-[10px]"
                 src={products.image}
@@ -49,13 +51,17 @@ export default function ProductsDisplay({ limit }) {
                   <p className="font-semibold text-[0.875rem] md:text-[1.25rem]">
                     ${products.price}
                   </p>
-                  <p className="text-[0.75rem] md:text-[0.975rem]">
-                    {products.delivery} mins away
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <Truck size={24} />
+                    <p className="text-[0.75rem] md:text-[0.975rem]">
+                      {products.delivery} mins away
+                    </p>
+                  </div>
                 </div>
               </div>
               <div>
-                <button className="w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-4">
+                <button className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-4">
+                  <ShoppingCart size={24} color="#fff" />
                   {products.cta}
                 </button>
               </div>

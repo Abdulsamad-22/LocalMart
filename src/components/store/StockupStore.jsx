@@ -1,6 +1,6 @@
 export default function StockupStore() {
   return (
-    <form className="w-[50%] p-6 bg-white shadow rounded-lg space-y-6">
+    <form className="w-full md:w-[50%] p-6 bg-white shadow rounded-lg space-y-6">
       <div>
         <h3 className="text-[1.25rem] mb-8">New Product</h3>
 

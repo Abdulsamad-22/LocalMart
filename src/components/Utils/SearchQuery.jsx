@@ -1,6 +1,6 @@
 export default function SearchQuery() {
   return (
-    <div className="bg-[#009688] sticky top-20 grid grid-cols-[49.36%_49.36%] gap-4 p-8 px-12 w-full mt-[6rem] z-20">
+    <div className="bg-[#009688] sticky top-20 grid grid-cols-[49.36%_49.36%] gap-4 p-6 px-12 w-full mt-[6rem] z-20">
       <div className="rounded-2xl">
         <input
           className="w-full bg-[#fff] py-2 px-6 border-none outline-none rounded-lg"

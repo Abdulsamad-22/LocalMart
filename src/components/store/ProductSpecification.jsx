@@ -3,7 +3,7 @@ export default function ProductSpecification() {
   const [preview, setPreview] = useState(null);
 
   return (
-    <div className="w-[50%] bg-white p-4 flex flex-col ">
+    <div className="w-full md:w-[50%] bg-white p-4 flex flex-col ">
       <div className="w-full text-end">
         <button className="w-[20%] bg-gradient-to-r from-[#009688] to-[#00695C] text-white px-6 py-2 rounded ">
           Save

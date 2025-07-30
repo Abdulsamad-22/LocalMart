@@ -1,8 +1,14 @@
+import { Plus, ShoppingCart, Minus, Truck } from "@phosphor-icons/react";
+
 export default function Products() {
   return (
-    <div className="w-full md:w-[65%] flex gap-4 items-end">
-      <div className="w-full md:w-[445px] h-[406px]">
-        <img className="w-full h-full" src="/images/product-image.png" alt="" />
+    <div className="w-full md:w-[65%] bg-[#fff] rounded-[10px] p-4 flex gap-4 items-end">
+      <div className="w-full md:w-[345px] h-[306px]">
+        <img
+          className="w-full h-full rounded-[10px]"
+          src="/images/product-image6.png"
+          alt=""
+        />
       </div>
 
       <div className="w-full md:w-[40%] space-y-4">
@@ -32,16 +38,28 @@ export default function Products() {
             <p className="font-semibold text-[0.875rem] md:text-[1.25rem]">
               $100.00
             </p>
-            <p className="text-[1rem]">10 mins away</p>
+            <div className="flex items-center gap-2">
+              <Truck size={24} />
+              <p className="text-[1rem]">10 mins away</p>
+            </div>
           </div>
         </div>
 
-        <div className="w-40 space-x-4 text-center border-2 border-[#000]">
-          <span className="text-2xl">-</span>
-          <span>Quantity</span>
-          <span className="text-2xl">+</span>
+        <div className="flex items-center justify-between w-40 px-0 py-1 space-x-0 text-center rounded-md">
+          <div className="p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-2 border-[#c4c4c4] rounded-full cursor-pointer">
+            {/* <img src="/images/icon-minus.svg" alt="" /> */}
+            <Minus
+              size={20}
+              className="text-[#000] font-semibold  [&>svg]:hover:text-[#fff]"
+            />
+          </div>
+          <span className="text-[1.125rem] font-semibold">3</span>
+          <div className="bg-[#000] transition-transform duration-300 hover:bg-[#009688] p-2 rounded-full cursor-pointer">
+            <Plus size={20} className="text-[#fff] font-semibold  " />
+          </div>
         </div>
-        <button className="w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg">
+        <button className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg">
+          <ShoppingCart size={24} color="#fff" />
           Add to Cart
         </button>
       </div>

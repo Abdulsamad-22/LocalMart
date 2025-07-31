@@ -47,7 +47,6 @@ export default function Products() {
 
         <div className="flex items-center justify-between w-40 px-0 py-1 space-x-0 text-center rounded-md">
           <div className="p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-2 border-[#c4c4c4] rounded-full cursor-pointer">
-            {/* <img src="/images/icon-minus.svg" alt="" /> */}
             <Minus
               size={20}
               className="text-[#000] font-semibold  [&>svg]:hover:text-[#fff]"

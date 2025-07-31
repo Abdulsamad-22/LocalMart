@@ -1,4 +1,5 @@
 import products from "../../../data/Products.json";
+import { Plus, Minus, X } from "@phosphor-icons/react";
 
 const cartItem = products;
 export default function CartItemSection() {
@@ -28,14 +29,21 @@ export default function CartItemSection() {
               </div>
 
               <div className="flex flex-col items-end gap-8">
-                <div className="w-[120px] space-x-4 text-center border-2 border-[#c4c4c4]">
-                  <span className="text-2xl">-</span>
-                  <span>3</span>
-                  <span className="text-2xl">+</span>
+                <div className="flex items-center justify-between gap-6 text-center rounded-md">
+                  <div className="p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-2 border-[#c4c4c4] rounded-full cursor-pointer">
+                    <Minus
+                      size={20}
+                      className="text-[#000] font-semibold  [&>svg]:hover:text-[#fff]"
+                    />
+                  </div>
+                  <span className="text-[1.125rem] font-semibold">3</span>
+                  <div className="bg-[#000] transition-transform duration-300 hover:bg-[#009688] p-2 rounded-full cursor-pointer">
+                    <Plus size={20} className="text-[#fff] font-semibold  " />
+                  </div>
                 </div>
 
-                <button className="py-1 px-6 border-2 border-[#c4c4c4]">
-                  x Remove
+                <button className="flex items-center gap-1 py-2 px-3 transition-transform duration-300 hover:bg-yellow-600 hover:border-transparent hover:text-[#fff] border-2 border-[#c4c4c4]">
+                  <X size={20} /> Remove
                 </button>
               </div>
             </div>

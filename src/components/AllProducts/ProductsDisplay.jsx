@@ -1,6 +1,6 @@
 import products from "../../../data/Products.json";
 const productListings = products;
-import { ShoppingCart, Truck } from "@phosphor-icons/react";
+import { ShoppingCart, Truck, Heart } from "@phosphor-icons/react";
 
 export default function ProductsDisplay({ limit }) {
   return (
@@ -19,11 +19,16 @@ export default function ProductsDisplay({ limit }) {
                 alt="products image"
               />
 
-              <img
-                className="absolute right-2 top-2"
+              <Heart
+                size={24}
+                className="absolute right-2 top-2 text-[#009688] hover:text-[#fff]"
+              />
+
+              {/* <img
+                
                 src="/images/Heart.svg"
                 alt=""
-              />
+              /> */}
             </div>
 
             <div className="bg-[#fff] px-3 py-4 space-y-3 rounded-b-[10px]">

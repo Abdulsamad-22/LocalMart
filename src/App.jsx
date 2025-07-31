@@ -6,6 +6,7 @@ import Layout, { MinimalLayout } from "./components/Layout";
 import CartPage from "./components/page/CartPage";
 import VendorRegistrationForm from "./components/verifyVendors/VendorRegistrationForm";
 import VendorStore from "./components/page/VendorStore";
+import Signup from "./components/forms/SIgnup";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         </Route>
 
         <Route path="/registration" element={<VendorRegistrationForm />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </BrowserRouter>
   );

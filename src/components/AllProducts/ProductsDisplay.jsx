@@ -23,12 +23,6 @@ export default function ProductsDisplay({ limit }) {
                 size={24}
                 className="absolute right-2 top-2 text-[#009688] hover:text-[#fff]"
               />
-
-              {/* <img
-                
-                src="/images/Heart.svg"
-                alt=""
-              /> */}
             </div>
 
             <div className="bg-[#fff] px-3 py-4 space-y-3 rounded-b-[10px]">

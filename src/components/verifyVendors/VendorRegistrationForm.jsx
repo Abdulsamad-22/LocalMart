@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { db, storage } from "../../firebase/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const schema = yup.object({
   fullName: yup.string().required("Full name is required"),
@@ -23,28 +26,63 @@ export default function VendorRegistrationForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Validated Vendor Data:", data);
-    console.log(errors);
-  };
+  async function onSubmit(data) {
+    try {
+      let idFileUrl = null;
+      if (data.idFile && data.idFile[0]) {
+        const file = data.idFile[0];
+        const storageRef = ref(
+          storage,
+          `vendor-ids/${Date.now()}-${file.name}`
+        );
+        await uploadBytes(storageRef, file);
+        idFileUrl = await getDownloadURL(storageRef);
+      }
+
+      const vendorData = {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        businessName: data.businessName,
+        businessType: data.businessType,
+        businessAddress: data.businessAddress,
+        productCategory: data.productCategory,
+        socials: data.socials,
+        bankName: data.bankName,
+        accountNumber: data.accountNumber,
+        idFileUrl,
+        createdAt: serverTimestamp(),
+      };
+
+      const docRef = await addDoc(collection(db, "vendors"), vendorData);
+
+      console.log("Vendor registered with ID:", docRef.id);
+      alert("Registration successful!");
+      reset();
+    } catch (error) {
+      console.error("Error saving data:", error);
+      alert("Registration failed: " + error.message);
+    }
+  }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-4xl mx-auto p-6 bg-white shadow rounded-lg space-y-6 my-12"
+      className="max-w-4xl mx-auto p-6 bg-white shadow rounded-lg my-12"
     >
-      <h2 className="text-2xl font-semibold text-[#1f2937]">
+      <h2 className="text-2xl font-semibold text-[#1f2937] mb-6">
         Vendor Registration
       </h2>
 
       {/* Personal Details */}
-      <h2 className="text-[1.25rem]">Personal Details</h2>
-      <div className="grid md:grid-cols-2 gap-4">
+      <h3 className="text-[1.25rem] mb-2">Personal Details</h3>
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
         <div>
           <input
             {...register("fullName")}
@@ -74,8 +112,8 @@ export default function VendorRegistrationForm() {
       </div>
 
       {/* Business Info */}
-      <h2 className="text-[1.25rem]">Business Details *</h2>
-      <div className="grid md:grid-cols-2 gap-4">
+      <h2 className="text-[1.25rem] mb-2">Business Details</h2>
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
         <div>
           <input
             {...register("businessName")}
@@ -118,12 +156,12 @@ export default function VendorRegistrationForm() {
       <input
         {...register("productCategory")}
         placeholder="What will you sell?"
-        className="input"
+        className="input mb-6"
       />
       <p className="text-red-500 text-sm">{errors.productCategory?.message}</p>
 
       {/* Bank Details */}
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
         <div>
           <input
             {...register("bankName")}
@@ -145,8 +183,8 @@ export default function VendorRegistrationForm() {
       </div>
 
       {/* Uploads */}
-      <h2 className="text-[1.25rem]">Verification</h2>
-      <div className="grid md:grid-cols-2 gap-4">
+      {/* <h2 className="text-[1.25rem] mb-2">Verification</h2>
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block mb-1">Upload Valid ID</label>
           <input type="file" {...register("idFile")} className="input" />
@@ -156,14 +194,19 @@ export default function VendorRegistrationForm() {
           <label className="block mb-1">CAC Document (Optional)</label>
           <input type="file" {...register("cacFile")} className="input" />
         </div>
-      </div>
+      </div> */}
 
       {/* Submit */}
       <button
         type="submit"
-        className="bg-gradient-to-r from-[#009688] to-[#00695C] text-white px-6 py-3 rounded font-semibold"
+        disabled={isSubmitting}
+        className={`bg-gradient-to-r from-[#009688] to-[#00695C] text-white px-6 py-3 rounded font-semibold ${
+          isSubmitting
+            ? "opacity-70 cursor-not-allowed"
+            : "hover:from-[#00897B] hover:to-[#005B4F]"
+        }`}
       >
-        Submit Application
+        {isSubmitting ? "Processing..." : "Submit Application"}
       </button>
     </form>
   );

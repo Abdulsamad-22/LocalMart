@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { Plus } from "@phosphor-icons/react";
+import ProductSizes from "./ProductSizes";
+import ProductColors from "./ProductsColors";
 export default function ProductSpecification() {
   const [preview, setPreview] = useState(null);
+  const [selectedSizes, setSelectedSizes] = useState([]);
 
   return (
     <div className="w-full md:w-[50%] bg-white p-4 flex flex-col ">
@@ -10,7 +14,7 @@ export default function ProductSpecification() {
         </button>
       </div>
 
-      <div className="space-y-2 mx-auto text-gray-800 mb-6">
+      <div className="space-y-2 mx-auto text-gray-800 mb-12">
         <label className="block mb-1">Upload product image</label>
         <div className="relative">
           {/* Hidden file input */}
@@ -25,32 +29,38 @@ export default function ProductSpecification() {
           />
 
           {/* Styled upload area */}
-          <div className="input w-[301.75px] h-[218px] py-4 border-2 border-dashed border-[#009688]rounded-lg flex flex-col items-center justify-center hover:border-blue-500 transition-colors">
-            {/* Plus sign icon */}
-            {preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="text-5xl">+</div>
-            )}
-
-            <p className="text-gray-500">Click to upload</p>
+          <div className="w-[301.75px] h-[218px]">
+            <div
+              className="w-full h-full py-4 border-2 border-dashed border-[#009688] rounded-lg 
+               flex flex-col items-center justify-center cursor-pointer 
+               hover:border-blue-500 transition-colors overflow-hidden"
+            >
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="h-full w-full object-cover rounded-lg"
+                />
+              ) : (
+                <>
+                  <div className="text-5xl text-[#009688] mb-2">
+                    <Plus size={32} />
+                  </div>
+                  <p className="text-gray-500 text-sm font-medium">
+                    Click to upload or drag and drop
+                  </p>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="space-y-2 text-gray-800 mb-6">
-        <label htmlFor="size">Sizes</label>
-        <input className="input" type="text" />
-      </div>
-
-      <div className="space-y-2 text-gray-800">
-        <label htmlFor="colour">Colours</label>
-        <input className="input" type="text" />
-      </div>
+      <h3 className="text-[1.125rem] mb-2">Variant</h3>
+      <ProductSizes
+        selectedSizes={selectedSizes}
+        setSelectedSizes={setSelectedSizes}
+      />
+      <ProductColors />
     </div>
   );
 }

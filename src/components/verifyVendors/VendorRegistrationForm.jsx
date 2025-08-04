@@ -58,6 +58,7 @@ export default function VendorRegistrationForm() {
         accountNumber: data.accountNumber,
         idFileUrl,
         createdAt: serverTimestamp(),
+        uid: user?.uid,
       };
 
       const docRef = await addDoc(collection(db, "vendors"), vendorData);

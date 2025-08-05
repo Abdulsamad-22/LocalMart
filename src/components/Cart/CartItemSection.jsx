@@ -11,7 +11,11 @@ export default function CartItemSection() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex gap-4 items-center">
                 <div className="w-[145px] h-[119px]">
-                  <img className="w-full h-full" src={cart.image} alt="" />
+                  <img
+                    className="w-full h-full rounded-[10px]"
+                    src={cart.image}
+                    alt=""
+                  />
                 </div>
 
                 <div className="space-y-2">

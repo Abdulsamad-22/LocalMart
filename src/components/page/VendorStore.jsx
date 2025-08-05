@@ -27,6 +27,12 @@ export default function VendorStore() {
   async function onSubmit(data) {
     setIsUploading(true);
     try {
+      if (!preview) {
+        alert("Please select an image before submitting.");
+        setIsUploading(false);
+        return;
+      }
+
       const storageRef = ref(storage, `products/${Date.now()}-${preview.name}`);
       await uploadBytes(storageRef, preview);
       const imageUrl = await getDownloadURL(storageRef);
@@ -47,6 +53,8 @@ export default function VendorStore() {
       const docRef = await addDoc(collection(db, "products"), productDoc);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsUploading(false);
     }
   }
   return (

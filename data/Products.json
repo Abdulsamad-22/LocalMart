@@ -9,6 +9,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -24,6 +25,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -39,6 +41,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -54,6 +57,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -69,6 +73,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -84,6 +89,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -99,6 +105,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"
@@ -114,6 +121,7 @@
       "reviews": "120"
     },
     "vendors": "Vendor",
+    "unitPrice": 100,
     "price": 100,
     "delivery": "10",
     "cta": "Add to Cart"

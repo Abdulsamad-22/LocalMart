@@ -1,19 +1,19 @@
 import { Plus, ShoppingCart, Minus, Truck } from "@phosphor-icons/react";
+import { useLocation } from "react-router-dom";
 
 export default function Products() {
+  const location = useLocation();
+  const { image, name, price, description, ratings, delivery, vendor } =
+    location.state || {};
   return (
     <div className="w-full md:w-[65%] bg-[#fff] rounded-[10px] p-4 flex gap-4 items-end">
       <div className="w-full md:w-[345px] h-[306px]">
-        <img
-          className="w-full h-full rounded-[10px]"
-          src="/images/product-image6.png"
-          alt=""
-        />
+        <img className="w-full h-full rounded-[10px]" src={image} alt="" />
       </div>
 
       <div className="w-full md:w-[40%] space-y-4">
         <div className="space-y-2">
-          <h2 className="text-[1.5rem]">Product Name</h2>
+          <h2 className="text-[1.5rem]">{name}</h2>
 
           {/* <div className="flex items-center text-[1.25rem]">
             <div className="h-4 md:h-8  w-4 md:w-8 bg-[#B7FDF6] text-[0.875rem] md:text-[1.125rem] rounded-full flex items-center justify-center mr-2">
@@ -23,11 +23,11 @@ export default function Products() {
           </div> */}
 
           <div className="flex items-center">
-            <img src="/images/Star.svg" alt="" />
+            <img src={ratings.image} alt="" />
             <div className="text-[0.875rem] md:text-[1.25rem] font-semibold">
-              4.5
+              {ratings.number}
               <span className="text-[0.75rem] md:text-[0.875rem] font-[400] pl-1">
-                (120 reviews)
+                {`(${ratings.reviews} reviews)`}
               </span>
             </div>
           </div>
@@ -36,11 +36,11 @@ export default function Products() {
 
           <div className="flex items-center justify-between">
             <p className="font-semibold text-[0.875rem] md:text-[1.25rem]">
-              $100.00
+              ${price}
             </p>
             <div className="flex items-center gap-2">
               <Truck size={24} />
-              <p className="text-[1rem]">10 mins away</p>
+              <p className="text-[1rem]">{delivery} mins away</p>
             </div>
           </div>
         </div>

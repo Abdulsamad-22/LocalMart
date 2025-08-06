@@ -1,9 +1,13 @@
 import products from "../../../data/Products.json";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Truck, Heart } from "@phosphor-icons/react";
+import { useState } from "react";
+import { useCart } from "../Context/CartProvider";
 const productListings = products;
 
 export default function ProductsDisplay({ limit }) {
+  const { handleAddToCart } = useCart();
+
   return (
     <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-0">
       {productListings
@@ -14,7 +18,18 @@ export default function ProductsDisplay({ limit }) {
             className="bg-[#fff] shadow-lg shadow-gray-400/50 rounded-[10px]"
           >
             <div className="w-full md:w-full h-auto md:h-[218px] relative transition-transform duration-300 hover:scale-95 cursor-pointer">
-              <Link to="/products">
+              <Link
+                to="/products"
+                state={{
+                  image: products.image,
+                  name: products.name,
+                  price: products.price,
+                  description: products.description,
+                  ratings: products.ratings,
+                  delivery: products.delivery,
+                  vendor: products.vendors,
+                }}
+              >
                 <img
                   className="w-full h-full rounded-[10px]"
                   src={products.image}
@@ -62,7 +77,12 @@ export default function ProductsDisplay({ limit }) {
                 </div>
               </div>
               <div>
-                <button className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-4">
+                <button
+                  onClick={() =>
+                    handleAddToCart({ ...products, id: products.id })
+                  }
+                  className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-4"
+                >
                   <ShoppingCart size={24} color="#fff" />
                   {products.cta}
                 </button>

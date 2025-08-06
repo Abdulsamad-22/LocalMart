@@ -1,12 +1,14 @@
 import products from "../../../data/Products.json";
 import { Plus, Minus, X } from "@phosphor-icons/react";
+import { useCart } from "../Context/CartProvider";
 
 const cartItem = products;
 export default function CartItemSection() {
+  const { cartItems, removeFromCart, increaseCart, decreaseCart } = useCart();
   return (
     <section className="bg-[#E3E3E3] p-8 w-full md:w-[70%] rounded-[10px]">
       <div className="">
-        {cartItem.slice(0, 3).map((cart, id) => (
+        {cartItems.slice(0, 3).map((cart, id) => (
           <div key={id} className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex gap-4 items-center">
@@ -37,16 +39,26 @@ export default function CartItemSection() {
                   <div className="p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-2 border-[#c4c4c4] rounded-full cursor-pointer">
                     <Minus
                       size={20}
+                      onClick={() => decreaseCart(cart.id)}
                       className="text-[#000] font-semibold  [&>svg]:hover:text-[#fff]"
                     />
                   </div>
-                  <span className="text-[1.125rem] font-semibold">3</span>
+                  <span className="text-[1.125rem] font-semibold">
+                    {cart.quantity}
+                  </span>
                   <div className="bg-[#000] transition-transform duration-300 hover:bg-[#009688] p-2 rounded-full cursor-pointer">
-                    <Plus size={20} className="text-[#fff] font-semibold  " />
+                    <Plus
+                      size={20}
+                      onClick={() => increaseCart(cart.id)}
+                      className="text-[#fff] font-semibold  "
+                    />
                   </div>
                 </div>
 
-                <button className="flex items-center gap-1 py-2 px-3 transition-transform duration-300 hover:bg-yellow-600 hover:border-transparent hover:text-[#fff] border-2 border-[#c4c4c4]">
+                <button
+                  onClick={() => removeFromCart(cart.id)}
+                  className="flex items-center gap-1 py-2 px-3 transition-transform duration-300 hover:bg-yellow-600 hover:border-transparent hover:text-[#fff] border-2 border-[#c4c4c4]"
+                >
                   <X size={20} /> Remove
                 </button>
               </div>

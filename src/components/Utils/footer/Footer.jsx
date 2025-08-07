@@ -1,3 +1,4 @@
+import { Phone, EnvelopeSimple, MapPin } from "@phosphor-icons/react";
 const footerLinks = [
   {
     header: "About Clubs",
@@ -10,14 +11,14 @@ const footerLinks = [
   {
     header: "Contact Us",
     links: [
-      { link: "+234 (0) 811-1642-890", icon: "/images/Phone.svg" },
+      { link: "+234 (0) 811-1642-890", icon: <Phone size={24} /> },
       {
         link: "abdulsamadhussaini001@gmail.com",
-        icon: "/images/mail.svg",
+        icon: <EnvelopeSimple size={24} />,
       },
       {
         link: "Ushafa Township Stadium, Ushafa, Bwari, Abuja",
-        icon: "/images/Location.svg",
+        icon: <MapPin size={24} />,
       },
     ],
   },
@@ -67,7 +68,7 @@ export default function Footer() {
                         item
                       ) : (
                         <div className="flex gap-2">
-                          <img src={item.icon} /> {item.link}
+                          <span>{item.icon}</span> {item.link}
                         </div>
                       )}
                     </li>

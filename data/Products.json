@@ -18,7 +18,7 @@
 
   {
     "id": "2",
-    "image": "/images/product-image-test2.png",
+    "image": "/images/product-image8.png",
     "name": "Product Name",
     "ratings": {
       "image": "/images/Star.svg",
@@ -86,7 +86,7 @@
 
   {
     "id": "6",
-    "image": "/images/product-image-test.png",
+    "image": "/images/product-image7.png",
     "name": "Product Name",
     "ratings": {
       "image": "/images/Star.svg",

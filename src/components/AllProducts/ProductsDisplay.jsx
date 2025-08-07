@@ -9,7 +9,7 @@ export default function ProductsDisplay({ limit }) {
   const { handleAddToCart } = useCart();
 
   return (
-    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-4 md:px-0">
+    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-0 md:px-0">
       {productListings
         .slice(0, limit || productListings.length)
         .map((products, id) => (
@@ -36,8 +36,8 @@ export default function ProductsDisplay({ limit }) {
               <h2 className="text-[0.875rem] md:text-[1.25rem]">
                 {products.name}
               </h2>
-              <div className="space-y-4">
-                <div className="flex items-center text-[1.25rem]">
+              <div className="space-y-2 md:space-y-4">
+                <div className="flex items-center text-[1rem] md:text-[1.25rem]">
                   <div className="h-4 md:h-8  w-4 md:w-8 bg-[#B7FDF6] text-[0.875rem] md:text-[1.125rem] rounded-full flex items-center justify-center mr-2">
                     A
                   </div>
@@ -58,7 +58,7 @@ export default function ProductsDisplay({ limit }) {
                     ${products.price}
                   </p>
                   <div className="flex items-center gap-2">
-                    <Truck size={24} />
+                    <Truck size={24} color={"#3A3B3B"} />
                     <p className="text-[0.75rem] md:text-[0.975rem]">
                       {products.delivery} mins away
                     </p>
@@ -70,7 +70,7 @@ export default function ProductsDisplay({ limit }) {
                   onClick={() =>
                     handleAddToCart({ ...products, id: products.id })
                   }
-                  className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-4"
+                  className="flex items-center justify-center gap-2 w-full text-[0.875rem] md:text-[1rem] px-4 md:px-5 py-2 md:py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-2 md:mt-4"
                 >
                   <ShoppingCart size={24} color="#fff" />
                   {products.cta}

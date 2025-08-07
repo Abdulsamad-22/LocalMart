@@ -8,7 +8,7 @@ export default function Layout() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <SearchQuery />
-      <main className="flex-grow my-12 px-12">
+      <main className="flex-grow my-6 md:my-12 px-4 md:px-12">
         <Outlet />
       </main>
       <Footer />
@@ -20,7 +20,7 @@ export function MinimalLayout() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="flex-grow my-12">
+      <main className="flex-grow my-4 md:my-12">
         <Outlet />
       </main>
       <Footer />

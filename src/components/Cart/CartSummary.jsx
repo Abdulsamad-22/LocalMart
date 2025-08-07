@@ -3,7 +3,7 @@ import { useCart } from "../Context/CartProvider";
 export default function CartSummary() {
   const { cartTotal } = useCart();
   return (
-    <div className="bg-[#E3E3E3] w-full md:w-[30%] p-4 rounded-md">
+    <div className="bg-[#fff] w-full md:w-[30%] p-4 rounded-md">
       <h2 className="text-[1rem] md:text-[1.25rem]">Order Summary</h2>
       <div className="flex items-center justify-between mt-6">
         <span className="text-[0.875rem]">Order Total</span>

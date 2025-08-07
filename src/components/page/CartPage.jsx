@@ -8,7 +8,7 @@ export default function CartPage() {
     <>
       <Link
         to="/"
-        className="w-[17%] flex items-center gap-1 px-4 py-2 border-2 border-[#005349] text-[#005349] transition-transform duration-500 hover:border-transparent hover:text-[#fff] hover:bg-[#009688]"
+        className="w-[35%] md:w-[17%] flex items-center gap-1 px-2 md:px-4 py-2 border-2 border-[#005349] text-[0.875rem] md:text-[1rem] text-[#005349] transition-transform duration-500 hover:border-transparent hover:text-[#fff] hover:bg-[#009688]"
       >
         <CaretLeft size={24} />
         Continue Shopping

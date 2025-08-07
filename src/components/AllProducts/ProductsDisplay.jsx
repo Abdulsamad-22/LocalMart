@@ -18,18 +18,7 @@ export default function ProductsDisplay({ limit }) {
             className="bg-[#fff] shadow-lg shadow-gray-400/50 rounded-[10px]"
           >
             <div className="w-full md:w-full h-auto md:h-[218px] relative transition-transform duration-300 hover:scale-95 cursor-pointer">
-              <Link
-                to="/products"
-                state={{
-                  image: products.image,
-                  name: products.name,
-                  price: products.price,
-                  description: products.description,
-                  ratings: products.ratings,
-                  delivery: products.delivery,
-                  vendor: products.vendors,
-                }}
-              >
+              <Link to={`/products/${products.id}`}>
                 <img
                   className="w-full h-full rounded-[10px]"
                   src={products.image}

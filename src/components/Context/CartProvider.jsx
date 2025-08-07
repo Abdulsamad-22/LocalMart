@@ -11,7 +11,11 @@ export default function CartProvider({ children }) {
       if (existingItem) {
         return prev.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? {
+                ...item,
+                price: item.unitPrice * (item.quantity + 1),
+                quantity: item.quantity + 1,
+              }
             : item
         );
       } else {

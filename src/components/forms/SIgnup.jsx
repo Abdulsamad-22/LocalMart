@@ -8,7 +8,6 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { useState } from "react";
-// signInWithGoogle
 
 const errorMessages = {
   "auth/email-already-in-use": "This account already exist, login instead.",

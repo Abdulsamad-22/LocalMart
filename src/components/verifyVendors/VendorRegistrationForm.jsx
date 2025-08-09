@@ -1,9 +1,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { db, storage } from "../../firebase/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { supabase } from "../../supabase-client";
 
 const schema = yup.object({
   fullName: yup.string().required("Full name is required"),
@@ -19,7 +17,7 @@ const schema = yup.object({
     .string()
     .matches(/^[0-9]{10}$/, "Account number must be 10 digits")
     .required("Account number is required"),
-  idFile: yup.mixed().required("A valid ID is required"),
+  // idFile: yup.mixed().required("A valid ID is required"),
 });
 
 export default function VendorRegistrationForm() {
@@ -32,44 +30,37 @@ export default function VendorRegistrationForm() {
     resolver: yupResolver(schema),
   });
 
-  async function onSubmit(data) {
+  async function onSubmit(formData) {
+    console.log("Submitting data:", formData);
     try {
-      let idFileUrl = null;
-      if (data.idFile && data.idFile[0]) {
-        const file = data.idFile[0];
-        const storageRef = ref(
-          storage,
-          `vendor-ids/${Date.now()}-${file.name}`
-        );
-        await uploadBytes(storageRef, file);
-        idFileUrl = await getDownloadURL(storageRef);
-      }
-
       const vendorData = {
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        businessName: data.businessName,
-        businessType: data.businessType,
-        businessAddress: data.businessAddress,
-        productCategory: data.productCategory,
-        socials: data.socials,
-        bankName: data.bankName,
-        accountNumber: data.accountNumber,
-        idFileUrl,
-        createdAt: serverTimestamp(),
-        uid: user?.uid,
+        full_name: formData.fullName,
+        email: formData.email,
+        phone_number: formData.phone,
+        business_name: formData.businessName,
+        businessType: formData.businessType,
+        business_address: formData.businessAddress,
+        product_category: formData.productCategory,
+        socials: formData.socials,
+        bank_name: formData.bankName,
+        account_number: formData.accountNumber,
+        created_at: new Date().toISOString(),
       };
 
-      const docRef = await addDoc(collection(db, "vendors"), vendorData);
+      const { data: insertedData, error } = await supabase
+        .from("vendors")
+        .insert([vendorData])
+        .select();
 
-      console.log("Vendor registered with ID:", docRef.id);
-      alert("Registration successful!");
-      reset();
-    } catch (error) {
-      console.error("Error saving data:", error);
-      alert("Registration failed: " + error.message);
+      if (error) {
+        console.error("Error creating vendor:", error.message);
+      } else {
+        console.log("Inserted vendor:", insertedData);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
     }
+    reset();
   }
 
   return (
@@ -101,7 +92,6 @@ export default function VendorRegistrationForm() {
           />
           <p className="text-red-500 text-sm">{errors.email?.message}</p>
         </div>
-
         <div>
           <input
             {...register("phone")}

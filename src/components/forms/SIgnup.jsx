@@ -1,26 +1,26 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { auth, signInWithGoogle } from "../../firebase/firebase";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { useState } from "react";
+import { signInWithGoogle } from "../../firebase/firebase";
 
-const errorMessages = {
-  "auth/email-already-in-use": "This account already exist, login instead.",
-  "auth/invalid-email": "Please enter a valid email address.",
-  "auth/weak-password": "Password should be at least 6 characters.",
-  "auth/user-not-found": "No account found with this email.",
-  "auth/wrong-password": "Incorrect password. Please try again.",
-  "auth/network-request-failed": "Network error. Please check your connection.",
+import { useEffect, useState } from "react";
+import { supabase } from "../../supabase-client";
+
+const errorMap = {
+  PGRST302: "Invalid credentials. Please check your email or password.",
+  PGRST301: "User already exists. Please sign in instead.",
+  PGRST303: "Your session has expired. Please log in again.",
+  PGRST304: "Permission denied. You do not have access to this resource.",
+  PGRST305: "Too many requests. Please wait and try again later.",
+  PGRST306: "Email not confirmed. Please check your inbox.",
+  PGRST307: "Invalid email format.",
+  PGRST308: "Password is too weak. Please use a stronger password.",
 };
 
 export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState("");
+  const [session, setSession] = useState(null);
   const [user, setUser] = useState({});
   const schema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -31,35 +31,69 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm({ resolver: yupResolver(schema) });
 
-  async function onSubmit(data) {
+  async function fetchSession() {
+    const currentSession = await supabase.auth.getSession();
+    setSession(currentSession.data.session);
+  }
+
+  useEffect(() => {
+    fetchSession();
+
+    const { error, authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+      }
+    );
+  }, []);
+
+  async function onSubmit(formData) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-      reset();
-      console.log("User created:", userCredential.user);
-    } catch (error) {
-      const friendlyMessage =
-        errorMessages[error.code] || "Something went wrong. Please try again.";
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      setFirebaseError(friendlyMessage);
-      console.error("Registration failed:", error.message);
-    } finally {
-      setLoading(false);
+      if (error) {
+        console.error("Error signing up:", error.message);
+        const friendlyMessage =
+          errorMap[error.code] || "Something went wrong. Please try again.";
+
+        setFirebaseError(friendlyMessage);
+        return;
+      }
+
+      console.log("User signed up:", data);
+      reset();
+    } catch (err) {
+      console.error("Registration failed:", err.message);
+      console.error("Unexpected error during signup:", err);
     }
   }
 
-  async function login(data) {
-    signInWithEmailAndPassword(auth, data.email, data.password);
-  }
+  async function signIn(log) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: log.email,
+        password: log.password,
+      });
 
-  onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-  });
+      if (error) {
+        console.error("Error logging in:", error.message);
+        return;
+      }
+
+      console.log("User logged in:", data);
+    } catch (err) {
+      console.error("Unexpected error during login:", err);
+      const friendlyMessage =
+        errorMap[err.code] || "Something went wrong. Please try again.";
+
+      setFirebaseError(friendlyMessage);
+      reset();
+    }
+  }
 
   return (
     <div className="w-full mx-auto my-12 md:w-[40%] p-6 bg-white shadow rounded-lg text-center">
@@ -142,7 +176,7 @@ export default function Signup() {
           <p className=" mb-12">
             Already have an accout?
             <span
-              onClick={handleSubmit(login)}
+              onClick={handleSubmit(signIn)}
               className="ml-1 text-[#009688] font-semibold hover:text-style-underline cursor-pointer"
             >
               Login

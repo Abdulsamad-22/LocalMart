@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import products from "../../../data/Products.json";
 
 const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
@@ -42,6 +43,16 @@ export default function CartProvider({ children }) {
           : item
       )
     );
+
+    products.map((prev) => {
+      prev.id === id
+        ? {
+            ...prev,
+            quantity: prev.quantity + 1,
+            price: prev.unitPrice * (prev.quantity + 1),
+          }
+        : prev;
+    });
   }
 
   function decreaseCart(id) {

@@ -4,15 +4,20 @@ import { useFormContext } from "react-hook-form";
 import ProductSizes from "./ProductSizes";
 import ProductColors from "./ProductsColors";
 
-export default function ProductSpecification({ preview, setPreview }) {
+export default function ProductSpecification({
+  preview,
+  setPreview,
+  setImageFile,
+}) {
   const [selectedSizes, setSelectedSizes] = useState([]);
 
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useFormContext();
 
   function handleImageUpload(e) {
     const file = e.target.files[0];
+    setImageFile(file);
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);
@@ -62,6 +67,7 @@ export default function ProductSpecification({ preview, setPreview }) {
                 </>
               )}
             </div>
+            <p className="text-red-500 text-sm">{errors.imageUrl?.message}</p>
           </div>
         </div>
       </div>

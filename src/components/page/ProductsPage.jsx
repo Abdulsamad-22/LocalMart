@@ -17,7 +17,12 @@ export default function ProductsPage() {
       </div>
 
       <OverviewHeader />
-      <ProductsDisplay limit={4} />
+      <div>
+        <h3 className="text-[1.25rem] md:text-[1.75rem] text-[#212121] font-medium mb-4">
+          Similar items you may like
+        </h3>
+        <ProductsDisplay limit={4} />
+      </div>
     </>
   );
 }

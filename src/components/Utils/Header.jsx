@@ -1,4 +1,4 @@
-import { ShoppingCart, UserCircle, List } from "@phosphor-icons/react";
+import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 export default function Header() {
@@ -26,6 +26,11 @@ export default function Header() {
             <UserCircle size={24} color="#636363" />
             Login / Sign up
           </Link>
+
+          <div className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer">
+            <Heart size={20} />
+            Wishlists
+          </div>
 
           <Link
             to="/carts"
@@ -57,6 +62,10 @@ export default function Header() {
         {isMenuOpen && (
           <div className="absolute top-[96%] left-0 w-full bg-[#fff] p-4 rounded-b-[10px] shadow-lg md:hidden">
             <div className="flex flex-col items-start py-4">
+              <div className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer">
+                <Heart size={20} />
+                Wishlists
+              </div>
               <Link
                 to="/signup"
                 className="flex gap-1 items-center text-[0.875rem] text-[#636363] py-2"

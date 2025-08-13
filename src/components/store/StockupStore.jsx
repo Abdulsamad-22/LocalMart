@@ -5,14 +5,22 @@ export default function StockupStore() {
   const {
     register,
     formState: { errors },
+    reset,
   } = useFormContext();
+
+  const handleNewProduct = () => {
+    reset();
+  };
   return (
     <div className="w-full md:w-[50%] p-6 bg-white shadow rounded-lg space-y-6">
       <div>
         <div className="flex items-center justify-between mb-8">
           <h3 className="text-[1.25rem]">New Product</h3>
 
-          <button className="flex items-center gap-2 text-[1rem] border-[1px] border-gray-600 p-2 rounded-[8px] ">
+          <button
+            onClick={handleNewProduct}
+            className="flex items-center gap-2 text-[1rem] border-[1px] border-gray-600 p-2 rounded-[8px] "
+          >
             <Plus size={24} />
             Add New Product
           </button>
@@ -47,6 +55,12 @@ export default function StockupStore() {
             className="w-full h-[120px] p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#009688]"
           />
           <p className="text-red-500 text-sm">{errors.description?.message}</p>
+        </div>
+
+        <div className="space-y-2 text-gray-800">
+          <label htmlFor="unit">{`Units (No of item available)`}</label>
+          <input {...register("units")} className="input" type="text" />
+          <p className="text-red-500 text-sm">{}</p>
         </div>
 
         <div className="w-[40%] space-y-2 text-gray-800">

@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { supabase } from "../../supabase-client";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const schema = yup.object({
   fullName: yup.string().required("Full name is required"),
@@ -21,6 +23,8 @@ const schema = yup.object({
 });
 
 export default function VendorRegistrationForm() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -56,6 +60,7 @@ export default function VendorRegistrationForm() {
         console.error("Error creating vendor:", error.message);
       } else {
         console.log("Inserted vendor:", insertedData);
+        navigate("/vendorStore");
       }
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -193,11 +198,37 @@ export default function VendorRegistrationForm() {
         disabled={isSubmitting}
         className={`bg-gradient-to-r from-[#009688] to-[#00695C] text-white px-6 py-3 rounded font-semibold ${
           isSubmitting
-            ? "opacity-70 cursor-not-allowed"
+            ? "flex items-center gap-2 opacity-70 cursor-not-allowed"
             : "hover:from-[#00897B] hover:to-[#005B4F]"
         }`}
       >
-        {isSubmitting ? "Processing..." : "Submit Application"}
+        {isSubmitting ? (
+          <>
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+            Processing...
+          </>
+        ) : (
+          "Submit Application"
+        )}
       </button>
     </form>
   );

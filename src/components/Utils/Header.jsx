@@ -1,11 +1,48 @@
 import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, redirect, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "../../supabase-client";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [session, setSession] = useState(null);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  useEffect(() => {
+    // Fetch initial session
+    async function fetchSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setSession(session);
+    }
+    fetchSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleVendorRedirection = () => {
+    if (!session) {
+      navigate("/signup", { state: { redirectTo: "/regustration" } });
+    } else {
+      navigate("/registration");
+    }
+  };
+
+  const handleSignupClick = () => {
+    navigate("/signup", { state: { redirectTo: "/" } });
   };
   return (
     <header className="w-full bg-[#fff] fixed h-20 inset-0 shadow-lg shadow-gray-400/50 py-0 px-4 md:px-12 z-20">
@@ -19,13 +56,13 @@ export default function Header() {
 
         <div className="flex items-center gap-6">
           {/* Desktop Menu Items */}
-          <Link
-            to="/signup"
+          <button
+            onClick={handleSignupClick}
             className="hidden md:flex gap-1 items-center text-[1rem] text-[#636363]"
           >
             <UserCircle size={24} color="#636363" />
             Login / Sign up
-          </Link>
+          </button>
 
           <div className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer">
             <Heart size={20} />
@@ -50,12 +87,12 @@ export default function Header() {
             size={24}
           />
 
-          <Link
+          <button
+            onClick={handleVendorRedirection}
             className="hidden md:block py-2 px-3 rounded-lg border-[2px] border-[#636363] text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-transparent hover:bg-[#009688] hover:text-[#fff]"
-            to="/registration"
           >
             Sell on LocalMart
-          </Link>
+          </button>
         </div>
 
         {/* Mobile Menu */}

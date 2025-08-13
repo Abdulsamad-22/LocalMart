@@ -5,6 +5,7 @@ import { signInWithGoogle } from "../../firebase/firebase";
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase-client";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const errorMap = {
   PGRST302: "Invalid credentials. Please check your email or password.",
@@ -18,6 +19,9 @@ const errorMap = {
 };
 
 export default function Signup() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.redirectTo || "/";
   const [loading, setLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState("");
   const [session, setSession] = useState(null);
@@ -33,20 +37,20 @@ export default function Signup() {
     reset,
   } = useForm({ resolver: yupResolver(schema) });
 
-  async function fetchSession() {
-    const currentSession = await supabase.auth.getSession();
-    setSession(currentSession.data.session);
-  }
-
   useEffect(() => {
-    fetchSession();
-
-    const { error, authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        navigate(redirectTo);
       }
-    );
-  }, []);
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate, redirectTo]);
 
   async function onSubmit(formData) {
     try {

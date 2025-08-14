@@ -4,12 +4,9 @@ import { useFormContext } from "react-hook-form";
 import ProductSizes from "./ProductSizes";
 import ProductColors from "./ProductsColors";
 
-export default function ProductSpecification({
-  preview,
-  setPreview,
-  setImageFile,
-}) {
+export default function ProductSpecification({ setImageFile }) {
   const [selectedSizes, setSelectedSizes] = useState([]);
+  const [preview, setPreview] = useState(null);
 
   const {
     formState: { isSubmitting, errors },

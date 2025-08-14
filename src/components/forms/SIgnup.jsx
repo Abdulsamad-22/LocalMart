@@ -22,10 +22,10 @@ export default function Signup() {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = location.state?.redirectTo || "/";
+
   const [loading, setLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState("");
-  const [session, setSession] = useState(null);
-  const [user, setUser] = useState({});
+
   const schema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
     password: yup.string().min(8).max(12).required("Password is required"),
@@ -41,7 +41,7 @@ export default function Signup() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (event === "SIGNED_IN" && session) {
+      if (session) {
         navigate(redirectTo);
       }
     });

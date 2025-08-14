@@ -9,7 +9,6 @@ import { supabase } from "../../supabase-client";
 
 export default function VendorStore() {
   const [isUploading, setIsUploading] = useState(false);
-  const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
   const schema = yup.object({
@@ -58,8 +57,12 @@ export default function VendorStore() {
         console.log("Uploaded image URL:", imageUrl);
       }
 
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const productDoc = {
-        vendor_id: user.uid,
+        vendor_id: user.id,
         image_url: imageUrl,
         item_name: productData.productName,
         item_category: productData.category,
@@ -99,11 +102,7 @@ export default function VendorStore() {
         >
           {/* <input type="file" onChange={handleFile} /> */}
           <StockupStore />
-          <ProductSpecification
-            preview={preview}
-            setPreview={setPreview}
-            setImageFile={setImageFile}
-          />
+          <ProductSpecification setImageFile={setImageFile} />
         </form>
       </FormProvider>
     </>

@@ -35,7 +35,7 @@ export default function Header() {
 
   const handleVendorRedirection = () => {
     if (!session) {
-      navigate("/signup", { state: { redirectTo: "/regustration" } });
+      navigate("/signup", { state: { redirectTo: "/registration" } });
     } else {
       navigate("/registration");
     }
@@ -103,21 +103,25 @@ export default function Header() {
                 <Heart size={20} />
                 Wishlists
               </div>
-              <Link
-                to="/signup"
+              <button
                 className="flex gap-1 items-center text-[0.875rem] text-[#636363] py-2"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleSignupClick();
+                }}
               >
                 <UserCircle size={24} color="#636363" />
                 Login / Sign up
-              </Link>
-              <Link
-                to="/registration"
+              </button>
+              <button
                 className="py-2 px-3 text-[0.875rem] text-[#636363]"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleVendorRedirection();
+                }}
               >
                 Sell on LocalMart
-              </Link>
+              </button>
             </div>
           </div>
         )}

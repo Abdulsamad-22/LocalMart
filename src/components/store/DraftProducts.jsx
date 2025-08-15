@@ -6,6 +6,7 @@ export default function DraftProducts({
   setPreview,
   setSelectedColors,
   setSelectedSizes,
+  setEditingDraftId,
 }) {
   const { reset } = useFormContext();
   const handleEdit = (draftId) => {
@@ -26,9 +27,12 @@ export default function DraftProducts({
       setPreview(null);
     }
 
-    // 3. Restore sizes/colors
+    // Restore sizes/colors
     setSelectedSizes(draft.item_sizes || []);
     setSelectedColors(draft.item_colors || []);
+
+    setEditingDraftId(draftId);
+    setDraftProducts((prev) => prev.filter((p) => p.draftId !== draftId));
   };
 
   const handleDelete = (draftId) => {

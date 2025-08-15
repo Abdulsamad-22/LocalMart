@@ -9,12 +9,13 @@ import { supabase } from "../../supabase-client";
 import DraftProducts from "../store/DraftProducts";
 
 export default function VendorStore() {
-  const [isUploading, setIsUploading] = useState(false);
+  // const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [draftProducts, setDraftProducts] = useState([]);
+  const [editingDraftId, setEditingDraftId] = useState(null);
 
   const schema = yup.object({
     productName: yup.string().required("Product name is required"),
@@ -49,59 +50,8 @@ export default function VendorStore() {
     return publicData.publicUrl;
   }
 
-  // const onSubmit = (productData) => {
-  //   if (editingDraftId) {
-  //     setDraftProducts((prev) =>
-  //       prev.map((draft) =>
-  //         draft.draftId === editingDraftId
-  //           ? {
-  //               ...draft,
-  //               item_name: productData.productName,
-  //               image_preview: preview,
-  //               image_url: imageFile,
-  //               item_name: productData.productName,
-  //               item_category: productData.category,
-  //               item_description: productData.description,
-  //               item_sizes: selectedSizes,
-  //               item_colors: selectedColors,
-  //               item_price: productData.price,
-  //             }
-  //           : draft
-  //       )
-  //     );
-  //     setEditingDraftId(null);
-  //   } else {
-  //     const isDuplicate = draftProducts.some(
-  //       (draft) => draft.item_name === productData.productName
-  //     );
-
-  //     if (!isDuplicate) {
-  //       const productDoc = {
-  //         // vendor_id: user.id,
-  //         image_preview: preview,
-  //         image_url: imageFile,
-  //         item_name: productData.productName,
-  //         item_category: productData.category,
-  //         item_description: productData.description,
-  //         item_sizes: selectedSizes,
-  //         item_colors: selectedColors,
-  //         item_price: productData.price,
-  //         draftId: Date.now().toString(),
-  //       };
-  //       setDraftProducts((prev) => [...prev, productDoc]);
-  //     }
-  //   }
-
-  //   methods.reset();
-  //   setImageFile(null);
-  //   setPreview(null);
-  //   setSelectedColors([]);
-  //   setSelectedSizes([]);
-  // };
-
   const onSubmit = (productData) => {
     const productDoc = {
-      // vendor_id: user.id,
       image_preview: preview,
       image_url: imageFile,
       item_name: productData.productName,
@@ -110,16 +60,57 @@ export default function VendorStore() {
       item_sizes: selectedSizes,
       item_colors: selectedColors,
       item_price: productData.price,
-      draftId: Date.now().toString(),
+      draftId: editingDraftId || Date.now().toString(), // Keep ID if editing
     };
-    setDraftProducts((prev) => [...prev, productDoc]);
-    console.log(draftProducts);
+
+    // Editing existing product
+    if (editingDraftId) {
+      setDraftProducts((prev) => [...prev, productDoc]);
+      setEditingDraftId(null); // Exit edit mode
+    }
+    // Adding new product
+    else {
+      const isDuplicate = draftProducts.some(
+        (draft) => draft.item_name === productData.productName
+      );
+
+      if (!isDuplicate) {
+        setDraftProducts((prev) => [...prev, productDoc]);
+      } else {
+        alert("This product already exists in drafts!");
+        return;
+      }
+    }
+
+    // Reset form
     methods.reset();
     setImageFile(null);
     setPreview(null);
     setSelectedColors([]);
     setSelectedSizes([]);
   };
+
+  // const onSubmit = (productData) => {
+  //   const productDoc = {
+  //     // vendor_id: user.id,
+  //     image_preview: preview,
+  //     image_url: imageFile,
+  //     item_name: productData.productName,
+  //     item_category: productData.category,
+  //     item_description: productData.description,
+  //     item_sizes: selectedSizes,
+  //     item_colors: selectedColors,
+  //     item_price: productData.price,
+  //     draftId: Date.now().toString(),
+  //   };
+  //   setDraftProducts((prev) => [...prev, productDoc]);
+  //   console.log(draftProducts);
+  //   methods.reset();
+  //   setImageFile(null);
+  //   setPreview(null);
+  //   setSelectedColors([]);
+  //   setSelectedSizes([]);
+  // };
 
   // async function onSubmit(productData) {
   //   try {
@@ -202,6 +193,8 @@ export default function VendorStore() {
             setPreview={setPreview}
             setSelectedSizes={setSelectedSizes}
             setSelectedColors={setSelectedColors}
+            editingDraftId={editingDraftId}
+            setEditingDraftId={setEditingDraftId}
           />
         </div>
       </FormProvider>

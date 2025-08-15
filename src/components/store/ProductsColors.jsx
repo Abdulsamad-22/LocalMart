@@ -1,7 +1,5 @@
 import { useState } from "react";
-export default function ProductColors() {
-  const [selectedColors, setSelectedColors] = useState([]);
-
+export default function ProductColors({ selectedColors, setSelectedColors }) {
   const commonColors = [
     { name: "Red", code: "#FF0000" },
     { name: "Blue", code: "#0000FF" },

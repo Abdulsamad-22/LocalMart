@@ -6,10 +6,15 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { supabase } from "../../supabase-client";
+import DraftProducts from "../store/DraftProducts";
 
 export default function VendorStore() {
   const [isUploading, setIsUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [draftProducts, setDraftProducts] = useState([]);
 
   const schema = yup.object({
     productName: yup.string().required("Product name is required"),
@@ -44,50 +49,126 @@ export default function VendorStore() {
     return publicData.publicUrl;
   }
 
-  async function onSubmit(productData) {
-    try {
-      let imageUrl = null;
-      if (!imageFile) {
-        console.log("no file was selected");
-        return;
-      }
+  // const onSubmit = (productData) => {
+  //   if (editingDraftId) {
+  //     setDraftProducts((prev) =>
+  //       prev.map((draft) =>
+  //         draft.draftId === editingDraftId
+  //           ? {
+  //               ...draft,
+  //               item_name: productData.productName,
+  //               image_preview: preview,
+  //               image_url: imageFile,
+  //               item_name: productData.productName,
+  //               item_category: productData.category,
+  //               item_description: productData.description,
+  //               item_sizes: selectedSizes,
+  //               item_colors: selectedColors,
+  //               item_price: productData.price,
+  //             }
+  //           : draft
+  //       )
+  //     );
+  //     setEditingDraftId(null);
+  //   } else {
+  //     const isDuplicate = draftProducts.some(
+  //       (draft) => draft.item_name === productData.productName
+  //     );
 
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
-        console.log("Uploaded image URL:", imageUrl);
-      }
+  //     if (!isDuplicate) {
+  //       const productDoc = {
+  //         // vendor_id: user.id,
+  //         image_preview: preview,
+  //         image_url: imageFile,
+  //         item_name: productData.productName,
+  //         item_category: productData.category,
+  //         item_description: productData.description,
+  //         item_sizes: selectedSizes,
+  //         item_colors: selectedColors,
+  //         item_price: productData.price,
+  //         draftId: Date.now().toString(),
+  //       };
+  //       setDraftProducts((prev) => [...prev, productDoc]);
+  //     }
+  //   }
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  //   methods.reset();
+  //   setImageFile(null);
+  //   setPreview(null);
+  //   setSelectedColors([]);
+  //   setSelectedSizes([]);
+  // };
 
-      const productDoc = {
-        vendor_id: user.id,
-        image_url: imageUrl,
-        item_name: productData.productName,
-        item_category: productData.category,
-        item_description: productData.description,
-        item_price: productData.price,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      const { data: insertedProd, error: productError } = await supabase
-        .from("products")
-        .insert([productDoc])
-        .select();
-
-      if (productError) {
-        console.log("Error uploading product", productError.message);
-      } else {
-        console.log("inserted product", insertedProd);
-      }
-      console.log("Success:", insertedProd);
-      setImageFile(null);
-    } catch (err) {
-      console.error("submission failed:", err);
-    }
+  const onSubmit = (productData) => {
+    const productDoc = {
+      // vendor_id: user.id,
+      image_preview: preview,
+      image_url: imageFile,
+      item_name: productData.productName,
+      item_category: productData.category,
+      item_description: productData.description,
+      item_sizes: selectedSizes,
+      item_colors: selectedColors,
+      item_price: productData.price,
+      draftId: Date.now().toString(),
+    };
+    setDraftProducts((prev) => [...prev, productDoc]);
+    console.log(draftProducts);
     methods.reset();
-  }
+    setImageFile(null);
+    setPreview(null);
+    setSelectedColors([]);
+    setSelectedSizes([]);
+  };
+
+  // async function onSubmit(productData) {
+  //   try {
+  //     let imageUrl = null;
+  //     if (!imageFile) {
+  //       console.log("no file was selected");
+  //       return;
+  //     }
+
+  //     if (imageFile) {
+  //       imageUrl = await uploadImage(imageFile);
+  //     }
+
+  //     const {
+  //       data: { user },
+  //     } = await supabase.auth.getUser();
+
+  //     const productDoc = {
+  //       vendor_id: user.id,
+  //       image_url: imageUrl,
+  //       item_name: productData.productName,
+  //       item_category: productData.category,
+  //       item_description: productData.description,
+  //       item_sizes: selectedSizes,
+  //       item_colors: selectedColors,
+  //       item_price: productData.price,
+  //       created_at: new Date().toISOString(),
+  //       updated_at: new Date().toISOString(),
+  //     };
+  //     const { data: insertedProd, error: productError } = await supabase
+  //       .from("products")
+  //       .insert([productDoc])
+  //       .select();
+
+  //     if (productError) {
+  //       console.log("Error uploading product", productError.message);
+  //     } else {
+  //       console.log("inserted product", insertedProd);
+  //     }
+  //     console.log("Success:", insertedProd);
+  //     setImageFile(null);
+  //     setPreview(null);
+  //     setSelectedColors([]);
+  //     setSelectedSizes([]);
+  //   } catch (err) {
+  //     console.error("submission failed:", err);
+  //   }
+  //   methods.reset();
+  // }
 
   return (
     <>
@@ -102,8 +183,27 @@ export default function VendorStore() {
         >
           {/* <input type="file" onChange={handleFile} /> */}
           <StockupStore />
-          <ProductSpecification setImageFile={setImageFile} />
+          <ProductSpecification
+            setImageFile={setImageFile}
+            selectedColors={selectedColors}
+            setSelectedColors={setSelectedColors}
+            selectedSizes={selectedSizes}
+            setSelectedSizes={setSelectedSizes}
+            setPreview={setPreview}
+            preview={preview}
+          />
         </form>
+        <div>
+          <DraftProducts
+            draftProducts={draftProducts}
+            setDraftProducts={setDraftProducts}
+            setImageFile={setImageFile}
+            imageFile={imageFile}
+            setPreview={setPreview}
+            setSelectedSizes={setSelectedSizes}
+            setSelectedColors={setSelectedColors}
+          />
+        </div>
       </FormProvider>
     </>
   );

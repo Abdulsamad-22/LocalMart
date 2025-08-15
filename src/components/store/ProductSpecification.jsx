@@ -4,10 +4,15 @@ import { useFormContext } from "react-hook-form";
 import ProductSizes from "./ProductSizes";
 import ProductColors from "./ProductsColors";
 
-export default function ProductSpecification({ setImageFile }) {
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [preview, setPreview] = useState(null);
-
+export default function ProductSpecification({
+  setImageFile,
+  setSelectedColors,
+  selectedColors,
+  selectedSizes,
+  setSelectedSizes,
+  setPreview,
+  preview,
+}) {
   const {
     formState: { isSubmitting, errors },
   } = useFormContext();
@@ -30,7 +35,9 @@ export default function ProductSpecification({ setImageFile }) {
         </button>
       </div> */}
       <div className="space-y-2 mx-auto text-gray-800 mb-12">
-        <label className="block mb-1">Upload product image</label>
+        <label className="block text-[1.125rem] text-[#000] mb-1">
+          Upload Product Image
+        </label>
         <div className="relative">
           {/* Hidden file input */}
           <input
@@ -43,7 +50,7 @@ export default function ProductSpecification({ setImageFile }) {
           {/* upload area */}
           <div className="w-[301.75px] h-[218px]">
             <div
-              className="w-full h-full py-4 border-2 border-dashed border-[#009688] rounded-lg 
+              className="w-full h-full py-4
                flex flex-col items-center justify-center cursor-pointer 
                hover:border-blue-500 transition-colors overflow-hidden"
             >
@@ -51,7 +58,7 @@ export default function ProductSpecification({ setImageFile }) {
                 <img
                   src={preview}
                   alt="Preview"
-                  className="h-full w-full object-cover rounded-lg"
+                  className="w-[301.75px] h-[218px] object-cover rounded-lg"
                 />
               ) : (
                 <>
@@ -73,7 +80,10 @@ export default function ProductSpecification({ setImageFile }) {
         selectedSizes={selectedSizes}
         setSelectedSizes={setSelectedSizes}
       />
-      <ProductColors />
+      <ProductColors
+        selectedColors={selectedColors}
+        setSelectedColors={setSelectedColors}
+      />
       <div className="w-full ">
         <button
           type="submit"

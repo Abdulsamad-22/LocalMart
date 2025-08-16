@@ -9,7 +9,6 @@ import { supabase } from "../../supabase-client";
 import DraftProducts from "../store/DraftProducts";
 
 export default function VendorStore() {
-  // const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -22,33 +21,12 @@ export default function VendorStore() {
     category: yup.string().required("Product category is required"),
     description: yup.string().max(1000).required("Please describe product"),
     price: yup.string().required("Price is required"),
+    units: yup.string().required("Available Product unit is required"),
   });
 
   const methods = useForm({
     resolver: yupResolver(schema),
   });
-
-  async function uploadImage(file) {
-    if (!file) throw new Error("No file provided");
-
-    const filePath = `${file.name}-${Date.now()}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("product-images")
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data: publicData, error: publicError } = supabase.storage
-      .from("product-images")
-      .getPublicUrl(filePath);
-
-    if (publicError) {
-      console.error("Error getting public URL:", publicError.message);
-      return null;
-    }
-    return publicData.publicUrl;
-  }
 
   const onSubmit = (productData) => {
     const productDoc = {
@@ -59,6 +37,7 @@ export default function VendorStore() {
       item_description: productData.description,
       item_sizes: selectedSizes,
       item_colors: selectedColors,
+      item_units: productData.units,
       item_price: productData.price,
       draftId: editingDraftId || Date.now().toString(), // Keep ID if editing
     };
@@ -90,29 +69,7 @@ export default function VendorStore() {
     setSelectedSizes([]);
   };
 
-  // const onSubmit = (productData) => {
-  //   const productDoc = {
-  //     // vendor_id: user.id,
-  //     image_preview: preview,
-  //     image_url: imageFile,
-  //     item_name: productData.productName,
-  //     item_category: productData.category,
-  //     item_description: productData.description,
-  //     item_sizes: selectedSizes,
-  //     item_colors: selectedColors,
-  //     item_price: productData.price,
-  //     draftId: Date.now().toString(),
-  //   };
-  //   setDraftProducts((prev) => [...prev, productDoc]);
-  //   console.log(draftProducts);
-  //   methods.reset();
-  //   setImageFile(null);
-  //   setPreview(null);
-  //   setSelectedColors([]);
-  //   setSelectedSizes([]);
-  // };
-
-  // async function onSubmit(productData) {
+  // async function submitAll() {
   //   try {
   //     let imageUrl = null;
   //     if (!imageFile) {
@@ -128,21 +85,9 @@ export default function VendorStore() {
   //       data: { user },
   //     } = await supabase.auth.getUser();
 
-  //     const productDoc = {
-  //       vendor_id: user.id,
-  //       image_url: imageUrl,
-  //       item_name: productData.productName,
-  //       item_category: productData.category,
-  //       item_description: productData.description,
-  //       item_sizes: selectedSizes,
-  //       item_colors: selectedColors,
-  //       item_price: productData.price,
-  //       created_at: new Date().toISOString(),
-  //       updated_at: new Date().toISOString(),
-  //     };
   //     const { data: insertedProd, error: productError } = await supabase
   //       .from("products")
-  //       .insert([productDoc])
+  //       .insert({ vendor_id: user.id }, draftProducts)
   //       .select();
 
   //     if (productError) {
@@ -151,10 +96,6 @@ export default function VendorStore() {
   //       console.log("inserted product", insertedProd);
   //     }
   //     console.log("Success:", insertedProd);
-  //     setImageFile(null);
-  //     setPreview(null);
-  //     setSelectedColors([]);
-  //     setSelectedSizes([]);
   //   } catch (err) {
   //     console.error("submission failed:", err);
   //   }

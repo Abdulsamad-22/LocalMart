@@ -7,12 +7,21 @@ import CartPage from "./components/page/CartPage";
 import VendorRegistrationForm from "./components/verifyVendors/VendorRegistrationForm";
 import VendorStore from "./components/page/VendorStore";
 import Signup from "./components/forms/SIgnup";
+import { useState } from "react";
 
 function App() {
+  const [vendorSubmitting, setVendorSubmitting] = useState(false);
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
+        <Route
+          element={
+            <Layout
+              setVendorSubmitting={setVendorSubmitting}
+              vendorSubmitting={vendorSubmitting}
+            />
+          }
+        >
           <Route path="/" element={<HomePage />} />
           <Route path="/products/:id" element={<ProductsPage />} />
           <Route path="/carts" element={<CartPage />} />
@@ -22,7 +31,12 @@ function App() {
           <Route path="/vendorStore" element={<VendorStore />} />
         </Route>
 
-        <Route path="/registration" element={<VendorRegistrationForm />} />
+        <Route
+          path="/registration"
+          element={
+            <VendorRegistrationForm setVendorSubmitting={setVendorSubmitting} />
+          }
+        />
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </BrowserRouter>

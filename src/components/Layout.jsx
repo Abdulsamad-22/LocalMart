@@ -4,11 +4,11 @@ import Header from "./Utils/Header";
 import SearchQuery from "./Utils/SearchQuery";
 import ScrollToTop from "./Utils/ScrollToTop";
 
-export default function Layout() {
+export default function Layout({ vendorSubmitting }) {
   return (
     <ScrollToTop>
       <div className="min-h-screen flex flex-col">
-        <Header />
+        <Header vendorSubmitting={vendorSubmitting} />
         <SearchQuery />
         <main className="flex-grow my-6 md:my-12 px-4 md:px-12">
           <Outlet />
@@ -19,11 +19,11 @@ export default function Layout() {
   );
 }
 
-export function MinimalLayout() {
+export function MinimalLayout({ vendorSubmitting }) {
   return (
     <ScrollToTop>
       <div className="min-h-screen">
-        <Header />
+        <Header vendorSubmitting={vendorSubmitting} />
         <main className="flex-grow my-4 md:my-12">
           <Outlet />
         </main>

@@ -2,7 +2,7 @@ import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../../supabase-client";
-export default function Header() {
+export default function Header({ vendorSubmitting }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [session, setSession] = useState(null);
   const navigate = useNavigate();
@@ -38,6 +38,10 @@ export default function Header() {
       navigate("/signup", { state: { redirectTo: "/registration" } });
     } else {
       navigate("/registration");
+    }
+
+    if (!vendorSubmitting) {
+      navigate("/vendorStore");
     }
   };
 
@@ -89,9 +93,9 @@ export default function Header() {
 
           <button
             onClick={handleVendorRedirection}
-            className="hidden md:block py-2 px-3 rounded-lg border-[2px] border-[#636363] text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-transparent hover:bg-[#009688] hover:text-[#fff]"
+            className="hidden md:block py-2 px-3 rounded-lg border-[1px] border-gray-500 text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-transparent hover:bg-[#009688] hover:text-[#fff]"
           >
-            Sell on LocalMart
+            {vendorSubmitting ? "Sell on LocalMart" : "View my store"}
           </button>
         </div>
 
@@ -120,7 +124,7 @@ export default function Header() {
                   handleVendorRedirection();
                 }}
               >
-                Sell on LocalMart
+                {vendorSubmitting ? "Sell on LocalMart" : "View my store"}
               </button>
             </div>
           </div>

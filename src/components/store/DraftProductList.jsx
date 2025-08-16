@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { supabase } from "../../supabase-client";
 import { Trash, PencilSimple } from "@phosphor-icons/react";
 
-export default function DraftProducts({
+export default function DraftProductList({
   draftProducts,
   setDraftProducts,
   setImageFile,
@@ -40,7 +40,7 @@ export default function DraftProducts({
     // Scroll to top feature
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // Optional smooth scroll
+      behavior: "smooth",
     });
   };
 
@@ -120,7 +120,7 @@ export default function DraftProducts({
     }
   }
   return (
-    <div className="px-12">
+    <div className="px-4 md:px-12">
       <div className="space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center pb-2 border-b border-gray-100">
@@ -135,19 +135,19 @@ export default function DraftProducts({
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {draftProducts.map((product) => (
           <div
             key={product.draftId}
             className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden"
           >
             {/* Product Image */}
-            <div className="bg-gray-50 relative">
+            <div className="bg-gray-50 relative w-full md:w-full h-auto md:h-[320px]">
               {product.image_preview ? (
                 <img
                   src={product.image_preview}
                   alt={product.item_name}
-                  className="w-full h-[320px] object-cover"
+                  className=" w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -165,7 +165,9 @@ export default function DraftProducts({
                 {product.item_category}
               </p>
 
-              <p className="text-sm text-gray-900 mt-1">{product.item_units}</p>
+              <p className="text-sm text-gray-900 mt-1">
+                {product.item_units} units
+              </p>
 
               <div className="flex justify-between items-center mt-3">
                 <span className="font-semibold">${product.item_price}</span>
@@ -176,7 +178,7 @@ export default function DraftProducts({
             </div>
 
             {/* Actions */}
-            <div className="border-t border-gray-100 px-4 py-3 flex justify-end space-x-2">
+            <div className="border-t border-gray-100 px-4 py-2 md:py-3 flex justify-center md:justify-end space-x-2">
               <button
                 onClick={() => handleEdit(product.draftId)}
                 className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50"

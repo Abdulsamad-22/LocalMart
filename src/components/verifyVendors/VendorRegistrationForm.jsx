@@ -22,7 +22,7 @@ const schema = yup.object({
   // idFile: yup.mixed().required("A valid ID is required"),
 });
 
-export default function VendorRegistrationForm() {
+export default function VendorRegistrationForm({ setVendorSubmitting }) {
   const navigate = useNavigate();
 
   const {
@@ -61,9 +61,12 @@ export default function VendorRegistrationForm() {
       } else {
         console.log("Inserted vendor:", insertedData);
         navigate("/vendorStore");
+        setVendorSubmitting(true);
       }
     } catch (err) {
       console.error("Unexpected error:", err);
+    } finally {
+      setVendorSubmitting(false);
     }
     reset();
   }

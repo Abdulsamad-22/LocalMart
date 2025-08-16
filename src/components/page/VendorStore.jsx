@@ -5,8 +5,7 @@ import StockupStore from "../store/StockupStore";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { supabase } from "../../supabase-client";
-import DraftProducts from "../store/DraftProducts";
+import DraftProductList from "../store/DraftProductList";
 
 export default function VendorStore() {
   const [preview, setPreview] = useState(null);
@@ -69,39 +68,6 @@ export default function VendorStore() {
     setSelectedSizes([]);
   };
 
-  // async function submitAll() {
-  //   try {
-  //     let imageUrl = null;
-  //     if (!imageFile) {
-  //       console.log("no file was selected");
-  //       return;
-  //     }
-
-  //     if (imageFile) {
-  //       imageUrl = await uploadImage(imageFile);
-  //     }
-
-  //     const {
-  //       data: { user },
-  //     } = await supabase.auth.getUser();
-
-  //     const { data: insertedProd, error: productError } = await supabase
-  //       .from("products")
-  //       .insert({ vendor_id: user.id }, draftProducts)
-  //       .select();
-
-  //     if (productError) {
-  //       console.log("Error uploading product", productError.message);
-  //     } else {
-  //       console.log("inserted product", insertedProd);
-  //     }
-  //     console.log("Success:", insertedProd);
-  //   } catch (err) {
-  //     console.error("submission failed:", err);
-  //   }
-  //   methods.reset();
-  // }
-
   return (
     <>
       <div className="bg-[#009688] text-center text-[1.5rem] text-[#fff] p-8 mt-[5rem]">
@@ -126,7 +92,7 @@ export default function VendorStore() {
           />
         </form>
         <div>
-          <DraftProducts
+          <DraftProductList
             draftProducts={draftProducts}
             setDraftProducts={setDraftProducts}
             setImageFile={setImageFile}

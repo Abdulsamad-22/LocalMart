@@ -1,5 +1,5 @@
 import { FormProvider, useFormContext } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductSpecification from "../store/ProductSpecification";
 import StockupStore from "../store/StockupStore";
 import { useForm } from "react-hook-form";
@@ -12,8 +12,15 @@ export default function VendorStore() {
   const [imageFile, setImageFile] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
-  const [draftProducts, setDraftProducts] = useState([]);
   const [editingDraftId, setEditingDraftId] = useState(null);
+  const [draftProducts, setDraftProducts] = useState(() => {
+    const saved = localStorage.getItem("draftProducts");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("draftProducts", JSON.stringify(draftProducts));
+  }, [draftProducts]);
 
   const schema = yup.object({
     productName: yup.string().required("Product name is required"),

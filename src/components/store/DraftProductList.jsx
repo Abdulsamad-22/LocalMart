@@ -129,7 +129,7 @@ export default function DraftProductList({
           </h3>
           <button
             onClick={submitAllDrafts}
-            className=" text-[1rem] text-gray-500"
+            className="text-[1rem] text-gray-500"
           >
             Submit all
           </button>

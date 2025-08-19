@@ -7,6 +7,7 @@ import CartPage from "./components/page/CartPage";
 import VendorRegistrationForm from "./components/verifyVendors/VendorRegistrationForm";
 import VendorStore from "./components/page/VendorStore";
 import Signup from "./components/forms/SIgnup";
+import WishlistPage from "./components/page/WishlistPage";
 import { useState } from "react";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products/:id" element={<ProductsPage />} />
           <Route path="/carts" element={<CartPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
 
         <Route element={<MinimalLayout />}>

@@ -68,10 +68,13 @@ export default function Header({ vendorSubmitting }) {
             Login / Sign up
           </button>
 
-          <div className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer">
+          <Link
+            to="/wishlist"
+            className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer"
+          >
             <Heart size={20} />
             Wishlists
-          </div>
+          </Link>
 
           <Link
             to="/carts"

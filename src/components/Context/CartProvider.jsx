@@ -80,6 +80,7 @@ export default function CartProvider({ children }) {
       value={{
         cartItems,
         cartTotal,
+        setCartItems,
         increaseCart,
         decreaseCart,
         handleAddToCart,

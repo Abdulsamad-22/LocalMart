@@ -1,17 +1,25 @@
 import products from "../../../data/Products.json";
 import { Plus, Minus, X } from "@phosphor-icons/react";
-import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
-const product = products;
+import { useCart } from "../Context/CartProvider";
 
 export default function Wishlist() {
-  const { increaseCart, decreaseCart, WishlistItem } = useCart();
+  const {
+    increaseCart,
+    decreaseCart,
+    wishlistItems,
+    removeFromWishlist,
+    clearAllWishlist,
+    addAllToCart,
+  } = useWishlist();
+  const { handleAddToCart, cartItems } = useCart();
+
   return (
     <div>
-      <h2 className="text-2xl">Wishlist</h2>
+      <h2 className="text-lg font-semibold text-gray-800">Wishlist</h2>
 
       <div className="w-[80%]">
-        {product.slice(0, 4).map((item) => (
+        {wishlistItems.map((item) => (
           <div className="flex items-center justify-between">
             <div className="flex gap-4 items-center">
               <div className="w-[90px] md:w-[145px] h-[80px] md:h-[119px] rounded-md">
@@ -50,11 +58,35 @@ export default function Wishlist() {
                 </div>
               </div>
             </div>
-            <button className="flex items-center gap-1 py-1 md:py-2 px-1 md:px-3 text-[0.875rem] md:text-[0.875rem] transition-transform duration-300 hover:border-[#009688] hover:text-[#009688] border-[1px] border-[#c4c4c4] rounded-[4px]">
+            <button
+              onClick={() => handleAddToCart({ ...item, id: item.id })}
+              className="bg-[#009688] text-[#fff] px-4 py-2"
+            >
+              Add to cart
+            </button>
+
+            <button
+              onClick={() => removeFromWishlist(item.id)}
+              className="flex items-center gap-1 py-1 md:py-2 px-1 md:px-3 text-[0.875rem] md:text-[0.875rem] transition-transform duration-300 hover:border-[#009688] hover:text-[#009688] border-[1px] border-[#c4c4c4] rounded-[4px]"
+            >
               <X size={18} /> Remove
             </button>
           </div>
         ))}
+        <div className="text-right space-x-4 mt-6">
+          <button
+            onClick={() => clearAllWishlist()}
+            className="text-[#009688] underline"
+          >
+            Clear wishlist
+          </button>
+          <button
+            onClick={() => addAllToCart({ ...cartItems, wishlistItems })}
+            className="bg-[#009688] text-[#fff] px-4 py-2"
+          >
+            Add all to cart
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,15 +1,32 @@
-import { Phone, EnvelopeSimple, MapPin } from "@phosphor-icons/react";
+import {
+  Phone,
+  EnvelopeSimple,
+  MapPin,
+  LinkedinLogo,
+  XLogo,
+  InstagramLogo,
+  FacebookLogo,
+} from "@phosphor-icons/react";
 const footerLinks = [
   {
-    header: "About Clubs",
-    links: ["Homepage", "About Us", "Academy Programs", "Latest News"],
+    header: "Company",
+    links: ["About Us", "Blog", "Contact Us", "Career"],
   },
   {
-    header: "Team Info",
-    links: ["Players & Coaches", "Player Profile", "Fixtures", "Tournament"],
+    header: "Customer Services",
+    links: ["My Account", "Track Your Order", "Return", "FAQ"],
   },
   {
-    header: "Contact Us",
+    header: "Our Information",
+    links: [
+      "Privacy",
+      "User terms & Condition",
+      "Help & Support",
+      "Return Policy",
+    ],
+  },
+  {
+    header: "Contact Info",
     links: [
       { link: "+234 (0) 811-1642-890", icon: <Phone size={24} /> },
       {
@@ -29,26 +46,35 @@ export default function Footer() {
     <footer className="bg-[#005349] py-12 px-12">
       <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-0  mb-8 text-[#fff]">
         <div className="flex flex-col items-start gap-2 mb-2">
-          <div className="w-[66px] h-[69px] rounded-full bg-[#fff] relative mb-4">
-            <img
-              className="w-[49px] h-[43px] absolute top-4 left-2"
-              src="/images/logo.png"
-              alt=""
-            />
+          <div className=" rounded-full relative mb-4">
+            <h4 className="text-[1.5rem] font-semibold">LocalMart</h4>
+
+            <p className="w-60 text-[0.875rem] font-regular">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam
+              quasi dolorem facilis? Aspernatur, natus rerum possimus provident
+            </p>
           </div>
 
           <div>
-            <ul className="flex gap-4">
+            <ul className="flex gap-3">
+              <a>
+                <FacebookLogo size={24} />
+              </a>
+
               <a href="https://www.linkedin.com/in/abdulsamad-hussaini-481657283/">
-                <img src="/images/LinkedinLogo.svg" alt="" />
+                <LinkedinLogo size={24} />
               </a>
 
               <a href="https://x.com/_Hoossayn">
-                <img src="/images/XLogo.svg" alt="" />
+                <XLogo size={24} />
               </a>
 
               <a href="">
-                <img src="/images/InstagramLogo.svg" alt="" />
+                <InstagramLogo size={24} />
+              </a>
+
+              <a>
+                <EnvelopeSimple size={24} />
               </a>
             </ul>
           </div>

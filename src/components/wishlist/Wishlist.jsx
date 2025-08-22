@@ -1,4 +1,3 @@
-import products from "../../../data/Products.json";
 import { Plus, Minus, X } from "@phosphor-icons/react";
 import { useWishlist } from "../Context/WishlistProvider";
 import { useCart } from "../Context/CartProvider";
@@ -16,9 +15,11 @@ export default function Wishlist() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-gray-800">Wishlist</h2>
+      <h2 className="text-[1.25rem] font-semibold text-gray-800 mb-4">
+        Wishlist
+      </h2>
 
-      <div className="w-[80%]">
+      <div className="">
         {wishlistItems.map((item) => (
           <div className="flex items-center justify-between">
             <div className="flex gap-4 items-center">
@@ -43,7 +44,7 @@ export default function Wishlist() {
               <div className="flex items-center gap-4 md:gap-6 text-center rounded-md">
                 <div
                   onClick={() => decreaseCart(item.id)}
-                  className="p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-[1px] text-[#000] font-semibold hover:text-[#fff] border-[#c4c4c4] rounded-full cursor-pointer"
+                  className="p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-[1px] border-[#c4c4c4] text-[#000] font-semibold hover:text-[#fff] rounded-full cursor-pointer"
                 >
                   <Minus size={20} />
                 </div>
@@ -78,7 +79,7 @@ export default function Wishlist() {
             onClick={() => clearAllWishlist()}
             className="text-[#009688] underline"
           >
-            Clear wishlist
+            Clear Wishlist
           </button>
           <button
             onClick={() => addAllToCart({ ...cartItems, wishlistItems })}

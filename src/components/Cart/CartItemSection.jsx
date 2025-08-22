@@ -49,21 +49,18 @@ export default function CartItemSection() {
                   <div className="flex items-center gap-4 md:gap-6 text-center rounded-md">
                     <div
                       onClick={() => decreaseCart(cart.id)}
-                      className="p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-[1px] border-[#c4c4c4] rounded-full cursor-pointer"
+                      className="p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-[1px] border-[#c4c4c4] text-[#000] font-semibold hover:text-[#fff] rounded-full cursor-pointer"
                     >
-                      <Minus
-                        size={20}
-                        className="text-[#000] font-semibold  [&>svg]:hover:text-[#fff]"
-                      />
+                      <Minus size={20} className="" />
                     </div>
                     <span className="text-0.875rem] md:text-[1.125rem] font-semibold">
                       {cart.quantity}
                     </span>
                     <div
                       onClick={() => increaseCart(cart.id)}
-                      className="border-[1px] border-[#c4c4c4] transition-transform duration-300 hover:bg-[#009688] p-[0.35rem] md:p-2 rounded-full cursor-pointer"
+                      className="border-[1px] border-[#c4c4c4] transition-transform duration-300 hover:bg-[#009688] text-[#000] font-semibold hover:text-[#fff] p-[0.35rem] md:p-2 rounded-full cursor-pointer"
                     >
-                      <Plus size={20} className="text-[#000] font-semibold " />
+                      <Plus size={20} className="" />
                     </div>
                   </div>
 

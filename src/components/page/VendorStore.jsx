@@ -37,7 +37,13 @@ export default function VendorStore() {
   const onSubmit = (productData) => {
     const productDoc = {
       image_preview: preview,
-      image_url: imageFile,
+      image_metadata: imageFile
+        ? {
+            name: imageFile.name,
+            type: imageFile.type,
+            size: imageFile.size,
+          }
+        : null,
       item_name: productData.productName,
       item_category: productData.category,
       item_description: productData.description,

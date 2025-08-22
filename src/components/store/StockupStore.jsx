@@ -60,7 +60,7 @@ export default function StockupStore() {
         <div className="space-y-2 text-gray-800">
           <label htmlFor="unit">{`Units (No of item available)`}</label>
           <input {...register("units")} className="input" type="text" />
-          <p className="text-red-500 text-sm">{}</p>
+          <p className="text-red-500 text-sm">{errors.units?.message}</p>
         </div>
 
         <div className="w-[40%] space-y-2 text-gray-800">

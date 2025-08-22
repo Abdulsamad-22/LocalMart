@@ -84,20 +84,25 @@ export default function DraftProductList({
           let imageUrl = draft.image_url;
 
           // Upload new image if it's a File object (not yet uploaded)
-          if (draft.image_url instanceof File) {
-            imageUrl = await uploadImage(draft.image_url);
+          if (
+            draft.image_preview &&
+            draft.image_preview.startsWith("data:image")
+          ) {
+            // Convert base64 to File
+            const response = await fetch(draft.image_preview);
+            const blob = await response.blob();
+            const file = new File(
+              [blob],
+              draft.image_metadata?.name || "product-image.jpg",
+              { type: draft.image_metadata?.type || "image/jpeg" }
+            );
+
+            imageUrl = await uploadImage(file);
           }
 
           return {
-            vendor_id: user.id,
+            ...draft,
             image_url: imageUrl,
-            item_name: draft.item_name,
-            item_category: draft.item_category,
-            item_description: draft.item_description,
-            item_sizes: draft.item_sizes,
-            item_colors: draft.item_colors,
-            item_price: draft.item_price,
-            created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
         })

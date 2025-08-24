@@ -1,5 +1,5 @@
 import products from "../../../data/Products.json";
-import { Plus, Minus, X } from "@phosphor-icons/react";
+import { Plus, Minus, X, CurrencyNgn } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
 
 const cartItem = products;
@@ -20,7 +20,7 @@ export default function CartItemSection() {
           cartItems.slice(0, 3).map((cart, id) => (
             <div key={id} className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-center">
                   <div className="w-[90px] md:w-[145px] h-[80px] md:h-[119px]">
                     <img
                       className="w-full h-full rounded-[10px]"
@@ -39,8 +39,8 @@ export default function CartItemSection() {
                       </div>
                       {cart.vendors}
                     </div>
-                    <p className="text-[0.75rem] md:text-[0.875rem] font-semibold">
-                      ${cart.price}
+                    <p className="flex items-center text-[0.75rem] md:text-[1rem] font-semibold">
+                      <CurrencyNgn size={20} /> {cart.price}
                     </p>
                   </div>
                 </div>
@@ -49,7 +49,7 @@ export default function CartItemSection() {
                   <div className="flex items-center gap-4 md:gap-6 text-center rounded-md">
                     <div
                       onClick={() => decreaseCart(cart.id)}
-                      className="p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-[1px] border-[#c4c4c4] text-[#000] font-semibold hover:text-[#fff] rounded-full cursor-pointer"
+                      className="bg-[#000] p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] text-[#fff] font-semibold rounded-full cursor-pointer"
                     >
                       <Minus size={20} className="" />
                     </div>
@@ -58,7 +58,7 @@ export default function CartItemSection() {
                     </span>
                     <div
                       onClick={() => increaseCart(cart.id)}
-                      className="border-[1px] border-[#c4c4c4] transition-transform duration-300 hover:bg-[#009688] text-[#000] font-semibold hover:text-[#fff] p-[0.35rem] md:p-2 rounded-full cursor-pointer"
+                      className="bg-[#000] transition-transform duration-300 hover:bg-[#009688] text-[#fff] font-semibold p-[0.35rem] md:p-2 rounded-full cursor-pointer"
                     >
                       <Plus size={20} className="" />
                     </div>
@@ -72,7 +72,7 @@ export default function CartItemSection() {
                   </button>
                 </div>
               </div>
-              <hr className="border-[0.5px] border-[#EBF4F4] rounded-full" />
+              <hr className="border-[0.5px] border-gray-100 rounded-full" />
             </div>
           ))
         )}

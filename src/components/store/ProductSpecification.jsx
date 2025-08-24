@@ -19,11 +19,14 @@ export default function ProductSpecification({
 
   function handleImageUpload(e) {
     const file = e.target.files[0];
-    setImageFile(file);
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPreview(imageUrl);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result); // This becomes the base64 string
+      setImageFile(file);
+    };
+    reader.readAsDataURL(file); // Convert to data URL
   }
 
   return (

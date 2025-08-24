@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { supabase } from "../../supabase-client";
-import { Trash, PencilSimple } from "@phosphor-icons/react";
+import { Trash, PencilSimple, CurrencyNgn } from "@phosphor-icons/react";
 
 export default function DraftProductList({
   draftProducts,
@@ -175,7 +175,10 @@ export default function DraftProductList({
               </p>
 
               <div className="flex justify-between items-center mt-3">
-                <span className="font-semibold">${product.item_price}</span>
+                <span className="font-semibold flex items-center">
+                  <CurrencyNgn size={20} />
+                  {Number(product.item_price).toLocaleString("en-NG")}
+                </span>
                 <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
                   {product.item_sizes?.length || 0} sizes
                 </span>

@@ -1,4 +1,4 @@
-import { Plus, Minus, X } from "@phosphor-icons/react";
+import { Plus, Minus, X, CurrencyNgn } from "@phosphor-icons/react";
 import { useWishlist } from "../Context/WishlistProvider";
 import { useCart } from "../Context/CartProvider";
 
@@ -36,15 +36,16 @@ export default function Wishlist() {
                 </div>
               </div>
             </div>
-            <div className="text-[1.5rem] md:text-[0.875rem] font-semibold">
-              ${item.price}
+            <div className="flex items-center text-[1.5rem] md:text-[1rem] text-gray-900 font-semibold">
+              <CurrencyNgn size={20} />
+              {item.price.toLocaleString("en-NG")}
             </div>
 
             <div className="flex flex-col items-end gap-8">
               <div className="flex items-center gap-4 md:gap-6 text-center rounded-md">
                 <div
                   onClick={() => decreaseCart(item.id)}
-                  className="p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] hover:border-transparent border-[1px] border-[#c4c4c4] text-[#000] font-semibold hover:text-[#fff] rounded-full cursor-pointer"
+                  className="bg-[#000] p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] text-[#fff] font-semibold rounded-full cursor-pointer"
                 >
                   <Minus size={20} />
                 </div>
@@ -53,7 +54,7 @@ export default function Wishlist() {
                 </span>
                 <div
                   onClick={() => increaseCart(item.id)}
-                  className="border-[1px] border-[#c4c4c4] transition-transform duration-300 hover:bg-[#009688] text-[#000] font-semibold hover:text-[#fff] p-[0.35rem] md:p-2 rounded-full cursor-pointer"
+                  className="bg-[#000] transition-transform duration-300 hover:bg-[#009688] text-[#fff] font-semibold p-[0.35rem] md:p-2 rounded-full cursor-pointer"
                 >
                   <Plus size={20} />
                 </div>

@@ -1,6 +1,6 @@
 import products from "../../../data/Products.json";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Truck, Heart } from "@phosphor-icons/react";
+import { ShoppingCart, Truck, Heart, CurrencyNgn } from "@phosphor-icons/react";
 import { useState } from "react";
 import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
@@ -41,19 +41,17 @@ export default function ProductsDisplay({ limit }) {
               </div>
 
               <div className="bg-[#fff] px-3 py-4 space-y-3 rounded-b-[10px]">
-                <h2 className="text-[0.875rem] md:text-[1.25rem]">
-                  {products.name}
-                </h2>
+                <h2 className="font-medium text-gray-900">{products.name}</h2>
                 <div className="space-y-2 md:space-y-4">
-                  <div className="flex items-center text-[1rem] md:text-[1.25rem]">
-                    <div className="h-4 md:h-8  w-4 md:w-8 bg-[#B7FDF6] text-[0.875rem] md:text-[1.125rem] rounded-full flex items-center justify-center mr-2">
+                  <div className="flex items-center">
+                    <div className="h-4 md:h-8  w-4 md:w-8 bg-[#B7FDF6]  rounded-full flex items-center justify-center mr-2">
                       A
                     </div>
                     {products.vendors}
                   </div>
                   <div className="flex items-center">
                     <img src={products.ratings.image} alt="" />
-                    <div className="text-[0.875rem] md:text-[1.25rem] font-semibold">
+                    <div className="text-[0.875rem] font-semibold">
                       {products.ratings.number}
                       <span className="text-[0.75rem] md:text-[0.875rem] font-[400] pl-1">
                         {`(${products.ratings.reviews} reviews)`}
@@ -62,12 +60,13 @@ export default function ProductsDisplay({ limit }) {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold text-[0.875rem] md:text-[1.25rem]">
-                      ${products.price}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Truck size={24} color={"#3A3B3B"} />
-                      <p className="text-[0.75rem] md:text-[0.975rem]">
+                    <span className="flex items-center  font-semibold ">
+                      <CurrencyNgn size={20} />
+                      {products.price.toLocaleString("en-NG")}
+                    </span>
+                    <div className="flex items-center gap-[4px]">
+                      <Truck size={24} className="text-gray-500" />
+                      <p className="text-sm text-gray-500">
                         {products.delivery} mins away
                       </p>
                     </div>
@@ -78,7 +77,7 @@ export default function ProductsDisplay({ limit }) {
                     onClick={() =>
                       handleAddToCart({ ...products, id: products.id })
                     }
-                    className="flex items-center justify-center gap-2 w-full text-[0.875rem] md:text-[1rem] px-4 md:px-5 py-2 md:py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-2 md:mt-4"
+                    className="flex items-center justify-center gap-2 w-full text-[0.875rem] md:text-[1rem] px-4 md:px-5 py-2 md:py-2 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg mt-2 md:mt-4"
                   >
                     <ShoppingCart size={24} color="#fff" />
                     {products.cta}

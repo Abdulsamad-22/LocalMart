@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { supabase } from "../../supabase-client";
@@ -10,7 +10,7 @@ const schema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
   phone: yup.string().required("Phone number is required"),
   businessName: yup.string().required("Business name is required"),
-  businessType: yup.string().required("Business type is required"),
+  storeType: yup.string().required("Store type is required"),
   businessAddress: yup.string().required("Business address is required"),
   productCategory: yup.string().required("Product category is required"),
   socials: yup.string().required("A link to any business socials is required"),
@@ -30,9 +30,22 @@ export default function VendorRegistrationForm({ setVendorSubmitting }) {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    control,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const selectedStoreType = useWatch({
+    control,
+    name: "storeType",
+  });
+
+  const placeholder =
+    selectedStoreType === "online"
+      ? "Enter reference address (e.g house address)"
+      : selectedStoreType
+      ? "Enter store address"
+      : "Business Address";
 
   async function onSubmit(formData) {
     console.log("Submitting data:", formData);
@@ -42,7 +55,7 @@ export default function VendorRegistrationForm({ setVendorSubmitting }) {
         email: formData.email,
         phone_number: formData.phone,
         business_name: formData.businessName,
-        businessType: formData.businessType,
+        store_type: formData.storeType,
         business_address: formData.businessAddress,
         product_category: formData.productCategory,
         socials: formData.socials,
@@ -133,12 +146,12 @@ export default function VendorRegistrationForm({ setVendorSubmitting }) {
 
         <div>
           <input
-            {...register("businessAddress")}
-            placeholder="Business Address"
+            {...register("productCategory")}
+            placeholder="What will you sell?"
             className="input"
           />
           <p className="text-red-500 text-sm">
-            {errors.businessAddress?.message}
+            {errors.productCategory?.message}
           </p>
         </div>
 
@@ -152,12 +165,38 @@ export default function VendorRegistrationForm({ setVendorSubmitting }) {
         </div>
       </div>
 
-      <input
-        {...register("productCategory")}
-        placeholder="What will you sell?"
-        className="input mb-6"
-      />
-      <p className="text-red-500 text-sm">{errors.productCategory?.message}</p>
+      <div className="mb-6">
+        <label className="block mb-2 font-medium">Store Type</label>
+
+        <div className="flex items-center gap-4 mb-3">
+          {[
+            { value: "physical", label: "Physical Store Only" },
+            { value: "online", label: "Online Store Only" },
+            { value: "both", label: "Both Physical and Online" },
+          ].map((option) => (
+            <label key={option.value} className="flex items-center gap-1">
+              <input
+                type="radio"
+                value={option.value}
+                {...register("storeType")}
+                className="text-[#009688] focus:ring-[#009688]"
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+          <p className="text-red-500 text-sm">{errors.storeType?.message}</p>
+        </div>
+
+        <input
+          {...register("businessAddress")}
+          placeholder={placeholder}
+          className="input"
+          disabled={!selectedStoreType}
+        />
+        <p className="text-red-500 text-sm">
+          {errors.businessAddress?.message}
+        </p>
+      </div>
 
       {/* Bank Details */}
       <div className="grid md:grid-cols-2 gap-4 mb-6">

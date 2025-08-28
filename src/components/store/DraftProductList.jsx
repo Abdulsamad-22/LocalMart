@@ -10,10 +10,11 @@ export default function DraftProductList({
   setSelectedColors,
   setSelectedSizes,
   setEditingDraftId,
+  editingDraftId,
 }) {
   const { reset } = useFormContext();
-  const handleEdit = (draftId) => {
-    const draft = draftProducts.find((p) => p.draftId === draftId);
+  const handleEdit = (draft_id) => {
+    const draft = draftProducts.find((p) => p.draft_id === draft_id);
     const formData = {
       productName: draft.item_name,
       price: draft.item_price,
@@ -34,8 +35,9 @@ export default function DraftProductList({
     setSelectedSizes(draft.item_sizes || []);
     setSelectedColors(draft.item_colors || []);
 
-    setEditingDraftId(draftId);
-    setDraftProducts((prev) => prev.filter((p) => p.draftId !== draftId));
+    setEditingDraftId(draft_id);
+    console.log(editingDraftId);
+    setDraftProducts((prev) => prev.filter((p) => p.draft_id !== draft_id));
 
     // Scroll to top feature
     window.scrollTo({
@@ -44,8 +46,8 @@ export default function DraftProductList({
     });
   };
 
-  const handleDelete = (draftId) => {
-    setDraftProducts((drafts) => drafts.filter((p) => p.draftId !== draftId));
+  const handleDelete = (draft_id) => {
+    setDraftProducts((drafts) => drafts.filter((p) => p.draft_id !== draft_id));
   };
 
   async function uploadImage(file) {
@@ -71,58 +73,113 @@ export default function DraftProductList({
   }
 
   async function submitAllDrafts() {
+    if (!draftProducts || draftProducts.length === 0) {
+      alert("No products to submit");
+      return;
+    }
+
     try {
       const {
         data: { user },
         error: authError,
       } = await supabase.auth.getUser();
-      if (authError || !user) throw new Error("Not authenticated");
+
+      if (authError) {
+        console.error("Auth error:", authError);
+        throw new Error(`Authentication error: ${authError.message}`);
+      }
+
+      if (!user) {
+        console.error("No user found");
+        throw new Error("Not authenticated - please log in");
+      }
 
       // Process all drafts with image uploads
       const productsToInsert = await Promise.all(
-        draftProducts.map(async (draft) => {
-          let imageUrl = draft.image_url;
+        draftProducts.map(async (draft, index) => {
+          let imageUrl = null;
 
           // Upload new image if it's a File object (not yet uploaded)
           if (
             draft.image_preview &&
             draft.image_preview.startsWith("data:image")
           ) {
-            // Convert base64 to File
-            const response = await fetch(draft.image_preview);
-            const blob = await response.blob();
-            const file = new File(
-              [blob],
-              draft.image_metadata?.name || "product-image.jpg",
-              { type: draft.image_metadata?.type || "image/jpeg" }
-            );
+            try {
+              // Convert base64 to File
+              const response = await fetch(draft.image_preview);
+              const blob = await response.blob();
+              const file = new File(
+                [blob],
+                draft.image_url?.name || `product-${draft.draft_id}.jpg`,
+                { type: draft.image_url?.type || "image/jpeg" }
+              );
 
-            imageUrl = await uploadImage(file);
+              imageUrl = await uploadImage(file);
+            } catch (imageError) {
+              console.error(
+                `Image upload failed for ${draft.item_name}:`,
+                imageError
+              );
+              imageUrl = null;
+            }
+          } else if (typeof draft.image_url === "string") {
+            // Image already uploaded (existing URL)
+            imageUrl = draft.image_url;
+            console.log(`Using existing image URL for ${draft.item_name}`);
           }
 
-          return {
-            ...draft,
+          const productForDB = {
+            vendor_id: user.id,
             image_url: imageUrl,
+            item_name: draft.item_name,
+            item_category: draft.item_category,
+            item_description: draft.item_description,
+            item_sizes: draft.item_sizes,
+            item_colors: draft.item_colors,
+            item_units: draft.item_units,
+            item_price: parseFloat(draft.item_price),
             updated_at: new Date().toISOString(),
           };
+
+          if (!productForDB.item_name || !productForDB.item_category) {
+            console.error(
+              `Invalid product data for ${draft.item_name}:`,
+              productForDB
+            );
+            throw new Error(
+              `Missing required fields for product: ${draft.item_name}`
+            );
+          }
+
+          return productForDB;
         })
       );
 
       // Batch insert all products
-      const { data: insertedProducts, error } = await supabase
+      const { data: insertedProducts, error: insertError } = await supabase
         .from("products")
         .insert(productsToInsert)
         .select();
 
-      if (error) throw error;
+      if (insertError) {
+        console.error("Database insert error:", insertError);
+        console.error("Error details:", {
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint,
+          code: insertError.code,
+        });
+        throw new Error(`Database error: ${insertError.message}`);
+      }
 
       console.log("Successfully inserted:", insertedProducts);
       setDraftProducts([]); // Clear drafts after successful submission
-      return insertedProducts;
+      alert(`Successfully added ${insertedProducts.length} product(s)!`);
     } catch (err) {
       console.error("Submission failed:", err);
       throw err; // Re-throw for error handling in calling component
     }
+    console.log("submit all clicked");
   }
   return (
     <div className="px-4 md:px-12">
@@ -143,7 +200,7 @@ export default function DraftProductList({
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {draftProducts.map((product) => (
           <div
-            key={product.draftId}
+            key={product.draft_id}
             className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden"
           >
             {/* Product Image */}
@@ -188,7 +245,7 @@ export default function DraftProductList({
             {/* Actions */}
             <div className="border-t border-gray-100 px-4 py-2 md:py-3 flex justify-center md:justify-end space-x-2">
               <button
-                onClick={() => handleEdit(product.draftId)}
+                onClick={() => handleEdit(product.draft_id)}
                 className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50"
                 aria-label="Edit"
               >
@@ -196,7 +253,7 @@ export default function DraftProductList({
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(product.draftId)}
+                onClick={() => handleDelete(product.draft_id)}
                 className="flex items-center gap-1 text-gray-600 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50"
                 aria-label="Delete"
               >

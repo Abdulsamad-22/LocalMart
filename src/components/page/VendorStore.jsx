@@ -37,7 +37,7 @@ export default function VendorStore() {
   const onSubmit = (productData) => {
     const productDoc = {
       image_preview: preview,
-      image_metadata: imageFile
+      image_url: imageFile
         ? {
             name: imageFile.name,
             type: imageFile.type,
@@ -51,18 +51,28 @@ export default function VendorStore() {
       item_colors: selectedColors,
       item_units: productData.units,
       item_price: productData.price,
-      draftId: editingDraftId || Date.now().toString(), // Keep ID if editing
+      draft_id: editingDraftId || Date.now().toString(), // Keep ID if editing
     };
 
     // Editing existing product
     if (editingDraftId) {
-      setDraftProducts((prev) => [...prev, productDoc]);
+      setDraftProducts((prev) => {
+        // Remove the old version and add the updated version
+        const filtered = prev.filter(
+          (draft) => draft.draft_id !== editingDraftId
+        );
+        return [...filtered, productDoc];
+      });
+      console.log(editingDraftId);
       setEditingDraftId(null); // Exit edit mode
     }
     // Adding new product
     else {
+      // Check for duplicate by product name (case-insensitive)
       const isDuplicate = draftProducts.some(
-        (draft) => draft.item_name === productData.productName
+        (draft) =>
+          draft.item_name.toLowerCase().trim() ===
+          productData.productName.toLowerCase().trim()
       );
 
       if (!isDuplicate) {
@@ -111,6 +121,8 @@ export default function VendorStore() {
             setImageFile={setImageFile}
             imageFile={imageFile}
             setPreview={setPreview}
+            selectedSizes={selectedSizes}
+            selectedColors={selectedColors}
             setSelectedSizes={setSelectedSizes}
             setSelectedColors={setSelectedColors}
             editingDraftId={editingDraftId}

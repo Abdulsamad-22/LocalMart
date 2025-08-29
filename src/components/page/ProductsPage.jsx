@@ -2,12 +2,14 @@ import DeliveryOptions from "../AboutProducts/DeliveryOptions";
 import OverviewHeader from "../AboutProducts/OverViewHeader";
 import ProductsCard from "../AboutProducts/ProductsCard";
 import ProductsDisplay from "../AllProducts/ProductsDisplay";
-import products from "../../../data/Products.json";
+// import products from "../../../data/Products.json";
 import { useParams } from "react-router-dom";
+import { useProduct } from "../Context/ProductProvider";
 
 export default function ProductsPage() {
   const { id } = useParams();
-  const product = products.find((p) => p.id === id);
+  const { products } = useProduct();
+  const product = products.find((p) => p.id.toString() === id);
   if (!product) return <p>Product not found</p>;
   return (
     <>

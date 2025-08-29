@@ -94,6 +94,8 @@ export default function DraftProductList({
         throw new Error("Not authenticated - please log in");
       }
 
+      console.log("authenticated user", user.id);
+
       // Process all drafts with image uploads
       const productsToInsert = await Promise.all(
         draftProducts.map(async (draft, index) => {
@@ -174,6 +176,7 @@ export default function DraftProductList({
 
       console.log("Successfully inserted:", insertedProducts);
       setDraftProducts([]); // Clear drafts after successful submission
+      localStorage.removeItem("draftProducts");
       alert(`Successfully added ${insertedProducts.length} product(s)!`);
     } catch (err) {
       console.error("Submission failed:", err);

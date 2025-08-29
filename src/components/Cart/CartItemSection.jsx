@@ -1,8 +1,6 @@
-import products from "../../../data/Products.json";
 import { Plus, Minus, X, CurrencyNgn } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
 
-const cartItem = products;
 export default function CartItemSection() {
   const { cartItems, removeFromCart, increaseCart, decreaseCart } = useCart();
   return (

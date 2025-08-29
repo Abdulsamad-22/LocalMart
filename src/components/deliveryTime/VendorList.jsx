@@ -3,6 +3,7 @@ import { supabase } from "../../supabase-client";
 import getBuyerLocation from "./GetBuyerLocation";
 import { geocodeAddress } from "./GeocodeVendorAddress";
 import { getTravelTimes } from "./getTravelTimes";
+import { useProduct } from "../Context/ProductProvider";
 
 function getStateFromCoords(lat, lng) {
   if (!lat || !lng) return "Unknown State";
@@ -12,9 +13,10 @@ function getStateFromCoords(lat, lng) {
   return "Unknown State";
 }
 
-export default function VendorList({ vendors, setVendors }) {
+export default function VendorList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { vendors, setVendors } = useProduct();
 
   useEffect(() => {
     async function loadData() {
@@ -26,6 +28,7 @@ export default function VendorList({ vendors, setVendors }) {
         const { data: vendorData, error: dbError } = await supabase
           .from("vendors")
           .select("business_address, business_name");
+        // .select("vendor_coords, business_address, business_name");
 
         if (dbError) {
           console.error("Database error:", dbError);
@@ -58,12 +61,14 @@ export default function VendorList({ vendors, setVendors }) {
 
           try {
             const coords = await geocodeAddress(v.business_address);
+            // const coordsAdress = await geocodeAddress(v.coords_address);
             console.log(`Geocoding result for ${v.business_name}:`, coords);
 
             if (coords && coords.lat && coords.lng) {
               vendorsWithCoords.push({
                 name: v.business_name,
                 address: v.business_address,
+                // address: v.coords_address,
                 location: coords,
               });
               console.log(

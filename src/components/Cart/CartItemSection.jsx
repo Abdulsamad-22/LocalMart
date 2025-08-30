@@ -22,14 +22,14 @@ export default function CartItemSection() {
                   <div className="w-[90px] md:w-[145px] h-[80px] md:h-[119px]">
                     <img
                       className="w-full h-full rounded-[10px]"
-                      src={cart.image}
+                      src={cart.image_url}
                       alt=""
                     />
                   </div>
 
                   <div className="space-y-1">
                     <h2 className="text-[0.875rem] md:text-[1rem] md:text-[1rem]">
-                      {cart.name}
+                      {cart.item_name}
                     </h2>
                     <div className="flex items-center text-[0.75rem] md:text-[0.875rem]">
                       <div className="h-4 md:h-6  w-4 md:w-6 bg-[#2979FF] text-[0.75rem] md:text-[0.875rem] rounded-full flex items-center justify-center mr-2">
@@ -38,7 +38,7 @@ export default function CartItemSection() {
                       {cart.vendors}
                     </div>
                     <p className="flex items-center text-[0.75rem] md:text-[1rem] font-semibold">
-                      <CurrencyNgn size={20} /> {cart.price}
+                      <CurrencyNgn size={20} /> {cart.item_price}
                     </p>
                   </div>
                 </div>

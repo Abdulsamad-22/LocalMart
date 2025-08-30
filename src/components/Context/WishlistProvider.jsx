@@ -18,12 +18,14 @@ export default function WishlistProvider({ children }) {
 
   function addToWishlist(product) {
     setWishlistItems((prev) => {
-      const existingItem = prev.find((item) => item.id === product.id);
+      const existingItem = prev.find(
+        (item) => item.id === product.id.toString()
+      );
 
       if (!existingItem) {
         return [...prev, { ...product, quantity: 1 }];
       } else {
-        return prev.filter((item) => item.id !== product.id);
+        return prev.filter((item) => item.id !== product.id.toString());
       }
     });
   }

@@ -24,21 +24,21 @@ export default function Wishlist() {
           <div className="flex items-center justify-between">
             <div className="flex gap-4 items-center">
               <div className="w-[90px] md:w-[145px] h-[80px] md:h-[119px] rounded-md">
-                <img className="rounded-md" src={item.image} alt="" />
+                <img className="rounded-md" src={item.image_url} alt="" />
               </div>
-              <div className="space-y-2">
-                <h3>{item.name}</h3>
+              {/* <div className="space-y-2">
+                <h3>{item.item_name}</h3>
                 <div className="flex items-center text-[0.75rem] md:text-[0.875rem]">
                   <div className="h-4 md:h-6  w-4 md:w-6 bg-[#2979FF] text-[0.75rem] md:text-[0.875rem] rounded-full flex items-center justify-center mr-2">
                     A
                   </div>
                   {item.vendors}
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="flex items-center text-[1.5rem] md:text-[1rem] text-gray-900 font-semibold">
               <CurrencyNgn size={20} />
-              {item.price.toLocaleString("en-NG")}
+              {item.item_price.toLocaleString("en-NG")}
             </div>
 
             <div className="flex flex-col items-end gap-8">

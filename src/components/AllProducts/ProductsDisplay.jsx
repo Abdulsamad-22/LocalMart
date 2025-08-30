@@ -17,18 +17,31 @@ export default function ProductsDisplay({ limit }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // Check if products are cached in localStorage
+        const cachedProducts = localStorage.getItem("cachedProducts");
+        if (cachedProducts) {
+          setProducts(JSON.parse(cachedProducts));
+          setLoading(false);
+          return; // Skip fetch if cached
+        }
+
+        // Fetch from database if no cache
         const { data, error } = await supabase.from("products").select("*");
         if (error) {
           console.log("Error fetching products", error);
+        } else {
+          console.log("Fetched products:", data);
+          setProducts(data);
+          // Cache the fetched products
+          localStorage.setItem("cachedProducts", JSON.stringify(data));
         }
-        console.log("Fetched products:", data);
-        setProducts(data);
       } catch (err) {
         console.error("Error fetching available products", err.message);
       } finally {
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
   if (loading) {
@@ -44,10 +57,8 @@ export default function ProductsDisplay({ limit }) {
 
   return (
     <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-0 md:px-0">
-      {products.slice(0, limit || products.length).map((product, id) => {
+      {products.slice(0, limit || 12).map((product, id) => {
         const isWishlisted = isInWishList(product.id.toString());
-        const vendor = vendors.find((v) => v.id === product.vendor_id);
-        console.log(vendor);
         return (
           <div
             key={id}
@@ -71,7 +82,9 @@ export default function ProductsDisplay({ limit }) {
             </div>
 
             <div className="bg-[#fff] px-3 py-4 space-y-3 rounded-b-[10px]">
-              <h2 className="font-medium text-gray-900">{product.item_name}</h2>
+              <h2 className="font-semibold text-[0.875rem] md:text-[1rem] text-gray-900">
+                {product.item_name}
+              </h2>
               <div className="space-y-2 md:space-y-4">
                 <div className="flex items-center">
                   <div className="h-4 md:h-8  w-4 md:w-8 bg-[#B7FDF6]  rounded-full flex items-center justify-center mr-2">
@@ -81,29 +94,29 @@ export default function ProductsDisplay({ limit }) {
                     <span>{v.name}</span>
                   ))}
                 </div>
-                <div className="flex items-center">
-                  <img src="/images/Star.svg" alt="" />
-                  <div className="text-[0.875rem] font-semibold">
-                    4.5
-                    <span className="text-[0.75rem] md:text-[0.875rem] font-[400] pl-1">
-                      {`(120 reviews)`}
-                    </span>
-                  </div>
+                <div className="flex items-center gap-1">
+                  <img
+                    src="/images/Star.svg"
+                    alt="Rating"
+                    className="w-4 h-4"
+                  />
+                  <span className="font-medium">4.5</span>
+                  <span className="text-xs font-normal">(120 reviews)</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center  font-semibold ">
-                    <CurrencyNgn size={20} />
+                <div className="space-y-2">
+                  <span className="flex items-center font-semibold text-[1.125rem] text-gray-900">
+                    <CurrencyNgn size={18} className="mr-1" />
                     {Number(product.item_price).toLocaleString("en-NG")}
                   </span>
-                  <div className="flex items-center gap-[4px] text-gray-600">
-                    <Truck size={24} className="" />
-                    <p className="text-sm ">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Truck size={18} />
+                    <span>
                       {vendors.map((v) => (
-                        <span>{v.travelTime}</span>
-                      ))}
+                        <span>{v.travelTime || "N/A"}</span>
+                      ))}{" "}
                       mins away
-                    </p>
+                    </span>
                   </div>
                 </div>
               </div>

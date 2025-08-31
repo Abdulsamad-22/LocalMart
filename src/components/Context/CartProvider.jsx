@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-// import products from "../../../data/Products.json";
 import { useProduct } from "./ProductProvider";
 
 const CartContext = createContext();
@@ -24,13 +23,15 @@ export default function CartProvider({ children }) {
           item.id === product.id
             ? {
                 ...item,
-                price: item.unitPrice * (item.quantity + 1),
                 quantity: item.quantity + 1,
               }
             : item
         );
       } else {
-        return [...prev, { ...product, quantity: 1 }];
+        return [
+          ...prev,
+          { ...product, quantity: 1, price: Number(product.item_price) },
+        ];
       }
     });
     console.log(cartItems);
@@ -49,7 +50,6 @@ export default function CartProvider({ children }) {
           ? {
               ...item,
               quantity: item.quantity + 1,
-              price: item.unitPrice * (item.quantity + 1),
             }
           : item
       )
@@ -60,10 +60,10 @@ export default function CartProvider({ children }) {
         ? {
             ...prev,
             quantity: prev.quantity + 1,
-            price: prev.unitPrice * (prev.quantity + 1),
           }
         : prev;
     });
+    console.log(cartItems);
   }
 
   function decreaseCart(id) {
@@ -74,7 +74,6 @@ export default function CartProvider({ children }) {
             ? {
                 ...item,
                 quantity: item.quantity - 1,
-                price: item.unitPrice * (item.quantity - 1),
               }
             : item
         )
@@ -82,8 +81,8 @@ export default function CartProvider({ children }) {
     );
   }
 
-  const cartTotal = cartItems.reduce((sum, amount) => {
-    return sum + amount.price;
+  const cartTotal = cartItems.reduce((sum, item) => {
+    return sum + Number(item.price) * item.quantity;
   }, 0);
 
   return (

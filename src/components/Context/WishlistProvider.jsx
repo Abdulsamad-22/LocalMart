@@ -50,7 +50,11 @@ export default function WishlistProvider({ children }) {
         if (existingCartItem) {
           existingCartItem.quantity += 1;
         } else {
-          updatedCart.push({ ...wishlistItem, quantity: 1 });
+          updatedCart.push({
+            ...wishlistItem,
+            quantity: 1,
+            price: Number(wishlistItem.item_price),
+          });
         }
       });
       localStorage.removeItem("wishlistItems");
@@ -62,7 +66,7 @@ export default function WishlistProvider({ children }) {
   }
 
   function isInWishList(productId) {
-    return wishlistItems.some((item) => item.id === productId);
+    return wishlistItems.some((item) => item.id.toString() === productId);
   }
 
   function clearAllWishlist() {

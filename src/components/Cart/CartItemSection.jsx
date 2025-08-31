@@ -38,7 +38,8 @@ export default function CartItemSection() {
                       {cart.vendors}
                     </div>
                     <p className="flex items-center text-[0.75rem] md:text-[1rem] font-semibold">
-                      <CurrencyNgn size={20} /> {cart.item_price}
+                      <CurrencyNgn size={20} className="mr-1" />
+                      {Number(cart.price * cart.quantity).toLocaleString()}
                     </p>
                   </div>
                 </div>

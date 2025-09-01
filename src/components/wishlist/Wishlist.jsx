@@ -37,8 +37,8 @@ export default function Wishlist() {
               </div> */}
             </div>
             <div className="flex items-center text-[1.5rem] md:text-[1rem] text-gray-900 font-semibold">
-              <CurrencyNgn size={20} />
-              {item.item_price.toLocaleString("en-NG")}
+              <CurrencyNgn size={20} className="mr-1" />
+              {Number(item.item_price).toLocaleString("en-NG")}
             </div>
 
             <div className="flex flex-col items-end gap-8">

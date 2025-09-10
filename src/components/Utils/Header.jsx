@@ -1,48 +1,52 @@
 import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
 import { Link, redirect, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { supabase } from "../../supabase-client";
+import { useState } from "react";
+import { useAuth } from "../Context/AuthProvider";
+
 export default function Header({ vendorSubmitting }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [session, setSession] = useState(null);
   const navigate = useNavigate();
+  const { isVendor } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  useEffect(() => {
-    // Fetch initial session
-    async function fetchSession() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setSession(session);
-    }
-    fetchSession();
+  // useEffect(() => {
+  //   // Fetch initial session
+  //   async function fetchSession() {
+  //     const {
+  //       data: { session },
+  //     } = await supabase.auth.getSession();
+  //     setSession(session);
+  //   }
+  //   fetchSession();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+  //   const {
+  //     data: { subscription },
+  //   } = supabase.auth.onAuthStateChange((_event, session) => {
+  //     setSession(session);
+  //   });
 
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  //   // Cleanup subscription on unmount
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, []);
 
   const handleVendorRedirection = () => {
-    if (!session) {
-      navigate("/signup", { state: { redirectTo: "/registration" } });
-    } else {
-      navigate("/registration");
+    if (isVendor) {
+      navigate("/my-shop");
+      return;
     }
 
-    if (!vendorSubmitting) {
-      navigate("/vendorStore");
+    if (!session) {
+      navigate("/signup", { state: { redirectTo: "/vendor-registration" } });
+      return;
     }
+
+    navigate("/vendor-registration");
   };
 
   const handleSignupClick = () => {
@@ -98,7 +102,7 @@ export default function Header({ vendorSubmitting }) {
             onClick={handleVendorRedirection}
             className="hidden md:block py-2 px-3 rounded-lg border-[1px] border-gray-500 text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-transparent hover:bg-[#009688] hover:text-[#fff]"
           >
-            {vendorSubmitting ? "Sell on LocalMart" : "View my store"}
+            {!isVendor ? "Sell on LocalMart" : "View my store"}
           </button>
         </div>
 
@@ -127,7 +131,7 @@ export default function Header({ vendorSubmitting }) {
                   handleVendorRedirection();
                 }}
               >
-                {vendorSubmitting ? "Sell on LocalMart" : "View my store"}
+                {!isVendor ? "Sell on LocalMart" : "View my store"}
               </button>
             </div>
           </div>

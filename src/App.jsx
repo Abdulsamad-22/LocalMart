@@ -6,9 +6,12 @@ import Layout, { MinimalLayout } from "./components/Layout";
 import CartPage from "./components/page/CartPage";
 import VendorRegistrationForm from "./components/verifyVendors/VendorRegistrationForm";
 import VendorStore from "./components/page/VendorStore";
+import PublicVendorShop from "./components/store/PublicVendorShop";
 import Signup from "./components/forms/SIgnup";
 import WishlistPage from "./components/page/WishlistPage";
 import { useState } from "react";
+import MyVendorShop from "./components/store/MyVendorShop";
+import Login from "./components/forms/Login";
 
 function App() {
   const [vendorSubmitting, setVendorSubmitting] = useState(false);
@@ -30,16 +33,19 @@ function App() {
         </Route>
 
         <Route element={<MinimalLayout />}>
-          <Route path="/vendorStore" element={<VendorStore />} />
+          <Route path="/add-product" element={<VendorStore />} />
+          <Route path="/my-shop" element={<MyVendorShop />} />
+          <Route path="/vendor/:id" element={<PublicVendorShop />} />
         </Route>
 
         <Route
-          path="/registration"
+          path="/vendor-registration"
           element={
             <VendorRegistrationForm setVendorSubmitting={setVendorSubmitting} />
           }
         />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );

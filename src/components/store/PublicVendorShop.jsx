@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
 import { supabase } from "../../supabase-client";
 import VendorShopDisplay from "./VendorShopDisplay";
-import { Phone } from "@phosphor-icons/react";
 
 export default function PublicVendorShop() {
   const { id: vendorId } = useParams();
@@ -25,19 +24,12 @@ export default function PublicVendorShop() {
           return;
         }
 
-        const numericVendorId = vendorId;
-        if (isNaN(numericVendorId)) {
-          setError("Invalid shop ID");
-          setLoading(false);
-          return;
-        }
-
-        console.log("Fetching public shop data for vendor:", numericVendorId);
+        console.log("Fetching public shop data for vendor:", vendorId);
 
         const { data: vendorData, error: vendorError } = await supabase
           .from("vendors")
           .select("*")
-          .eq("vendor_id", vendorId)
+          // .eq("vendor_id", vendorId)
           .single();
 
         if (vendorError) {
@@ -52,7 +44,7 @@ export default function PublicVendorShop() {
 
         setVendor(vendorData);
 
-        if (isVendor && vendorData.vendor_id === numericVendorId) {
+        if (isVendor && vendorData.vendor_id === vendorId) {
           setIsOwnShop(true);
         }
       } catch (err) {
@@ -63,7 +55,7 @@ export default function PublicVendorShop() {
     }
 
     fetchPublicVendorData();
-  }, [vendorId, isVendor, vendorData]);
+  }, []); //vendorId isVendor vendorData
 
   if (loading) {
     return (
@@ -83,7 +75,7 @@ export default function PublicVendorShop() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Show banner if viewing own shop */}
-      {isOwnShop && (
+      {isOwnShop === false && (
         <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 mb-6">
           <p className="text-blue-800">
             📝 This is how your shop appears to customers.
@@ -112,7 +104,7 @@ export default function PublicVendorShop() {
         <div className="flex justify-center gap-4 mt-4 text-sm text-gray-600">
           {vendor.phone_number && (
             <span className="flex items-center gap-2">
-              📞 <Phone size={18} /> {vendor.phone_number}
+              📞 {vendor.phone_number}
             </span>
           )}
           {vendor.email && <span>📧 {vendor.email}</span>}

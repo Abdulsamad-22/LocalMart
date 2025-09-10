@@ -5,8 +5,7 @@ import { CurrencyNgn, PencilSimple, Trash } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { useProduct } from "../Context/ProductProvider";
 
-export default function VendorShopDisplay({ vendorId, isOwner }) {
-  const { user } = useAuth();
+export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { products, setProducts } = useProduct();
@@ -165,7 +164,7 @@ export default function VendorShopDisplay({ vendorId, isOwner }) {
                     className={`w-full py-2 rounded transition-colors ${
                       product.item_units === 0
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-[#009688] text-[#fff]"
                     }`}
                   >
                     {product.item_units === 0 ? "Out of Stock" : "Add to Cart"}

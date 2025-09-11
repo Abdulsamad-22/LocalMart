@@ -4,6 +4,8 @@ import * as yup from "yup";
 import { supabase } from "../../supabase-client";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../Context/AuthProvider";
+// import { geocodeAddress } from "../deliveryTime/GeocodeVendorAddress";
 
 const schema = yup.object({
   fullName: yup.string().required("Full name is required"),
@@ -49,13 +51,33 @@ export default function VendorRegistrationForm({ setVendorSubmitting }) {
 
   async function onSubmit(formData) {
     console.log("Submitting data:", formData);
+    // const coordsAddress = await geocodeAddress(formData.businessAddress)
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+    // const { data: user, error: authError } = await supabase.auth.getUser();
+    if (authError) {
+      console.error("Auth error:", authError);
+      throw new Error(`Authentication error: ${authError.message}`);
+    }
+
+    if (!user) {
+      console.error("No user found");
+      throw new Error("Not authenticated - please log in");
+    }
+
+    console.log("authenticated user", user.id);
+
     try {
       const vendorData = {
+        vendor_id: user.id,
         full_name: formData.fullName,
         email: formData.email,
         phone_number: formData.phone,
         business_name: formData.businessName,
         store_type: formData.storeType,
+        // vendor_coords: coordsAddress,
         business_address: formData.businessAddress,
         product_category: formData.productCategory,
         socials: formData.socials,

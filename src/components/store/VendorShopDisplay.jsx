@@ -127,7 +127,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                 />
               )}
               <div className="p-4">
-                <h3 className="font-semibold text-[1.125rem] mb-2 line-clamp-1">
+                <h3 className="font-semibold text-[1rem] mb-2 line-clamp-1">
                   {product.item_name}
                 </h3>
                 {product.item_description && (

@@ -108,6 +108,11 @@ export default function PublicVendorShop() {
             </span>
           )}
           {vendor.email && <span>📧 {vendor.email}</span>}
+          {vendor.socials && (
+            <a href={vendor.socials} target="_blank" rel="noopener noreferrer">
+              📧 Social media handle
+            </a>
+          )}
         </div>
       </div>
 

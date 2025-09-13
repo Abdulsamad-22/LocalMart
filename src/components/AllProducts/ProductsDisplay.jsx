@@ -1,4 +1,3 @@
-import products from "../../../data/Products.json";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Truck, Heart, CurrencyNgn } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
@@ -6,7 +5,6 @@ import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
 import { supabase } from "../../supabase-client";
 import { useProduct } from "../Context/ProductProvider";
-const productListings = products;
 
 export default function ProductsDisplay({ limit }) {
   const { handleAddToCart } = useCart();
@@ -14,6 +12,7 @@ export default function ProductsDisplay({ limit }) {
   const [loading, setLoading] = useState(true);
   const { products, setProducts, vendors } = useProduct();
 
+  console.log(vendors);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -59,6 +58,9 @@ export default function ProductsDisplay({ limit }) {
     <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 px-0 md:px-0">
       {products.slice(0, limit || 12).map((product, id) => {
         const isWishlisted = isInWishList(product.id.toString());
+        // const vendor = vendors.find(
+        //   (v) => v.vendor_id.toString() === product.vendor_id.toString()
+        // );
         return (
           <div
             key={id}
@@ -74,7 +76,9 @@ export default function ProductsDisplay({ limit }) {
               </Link>
 
               <Heart
-                onClick={() => addToWishlist({ ...product, id: product.id })}
+                onClick={() =>
+                  addToWishlist({ ...product, id: product.id.toString() })
+                }
                 size={24}
                 weight={isWishlisted ? "fill" : "regular"}
                 className="absolute right-2 top-2 text-[#009688]"
@@ -82,7 +86,7 @@ export default function ProductsDisplay({ limit }) {
             </div>
 
             <div className="bg-[#fff] px-3 py-4 space-y-3 rounded-b-[10px]">
-              <h2 className="font-semibold text-[0.875rem] md:text-[1rem] text-gray-900">
+              <h2 className="font-semibold text-[0.875rem] md:text-[1rem] text-gray-900 line-clamp-1">
                 {product.item_name}
               </h2>
               <div className="space-y-2 md:space-y-4">
@@ -91,8 +95,9 @@ export default function ProductsDisplay({ limit }) {
                     A
                   </div>
                   {vendors.map((v) => (
-                    <span>{v.name}</span>
+                    <span className="font-medium line-clamp-1">{v.name}</span>
                   ))}
+                  {/* <span>{vendor.name}</span> */}
                 </div>
                 <div className="flex items-center gap-1">
                   <img
@@ -105,7 +110,7 @@ export default function ProductsDisplay({ limit }) {
                 </div>
 
                 <div className="space-y-2">
-                  <span className="flex items-center font-semibold text-[1.125rem] text-gray-900">
+                  <span className="flex items-center font-semibold text-[1rem] md:text-[1.125rem] text-gray-900">
                     <CurrencyNgn size={18} className="mr-1" />
                     {Number(product.item_price).toLocaleString("en-NG")}
                   </span>
@@ -114,7 +119,8 @@ export default function ProductsDisplay({ limit }) {
                     <span>
                       {vendors.map((v) => (
                         <span>{v.travelTime || "N/A"}</span>
-                      ))}{" "}
+                      ))}
+                      {/* <span>{vendor.travelTime}</span> */}
                       mins away
                     </span>
                   </div>

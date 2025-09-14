@@ -15,6 +15,8 @@ import Login from "./components/forms/Login";
 
 function App() {
   const [vendorSubmitting, setVendorSubmitting] = useState(false);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   return (
     <BrowserRouter>
       <Routes>
@@ -23,10 +25,16 @@ function App() {
             <Layout
               setVendorSubmitting={setVendorSubmitting}
               vendorSubmitting={vendorSubmitting}
+              results={results}
+              setResults={setResults}
+              setLoading={setLoading}
             />
           }
         >
-          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/"
+            element={<HomePage results={results} loading={loading} />}
+          />
           <Route path="/products/:id" element={<ProductsPage />} />
           <Route path="/carts" element={<CartPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />

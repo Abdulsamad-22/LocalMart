@@ -1,13 +1,12 @@
 import Newsletter from "../newsletter/Newsletter";
 import ProductsDisplay from "../AllProducts/ProductsDisplay";
-import Footer from "../Utils/footer/Footer";
-import Header from "../Utils/Header";
-import SearchQuery from "../Utils/SearchQuery";
+import VendorList from "../deliveryTime/VendorList";
 
-export default function HomePage() {
+export default function HomePage({ results, loading }) {
   return (
     <>
-      <ProductsDisplay />
+      <VendorList />
+      <ProductsDisplay results={results} loading={loading} />
       <Newsletter />
     </>
   );

@@ -14,7 +14,7 @@ export default function Layout({
     <ScrollToTop>
       <div className="min-h-screen flex flex-col">
         <Header vendorSubmitting={vendorSubmitting} />
-        <SearchQuery setResults={setResults} setLoading={setLoading} />
+        <SearchQuery setLoading={setLoading} />
         <main className="flex-grow my-6 md:my-12 px-4 md:px-12">
           <Outlet />
         </main>

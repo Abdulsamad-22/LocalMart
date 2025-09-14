@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../supabase-client";
+import { useProduct } from "../Context/ProductProvider";
 
 export default function SearchQuery({ setResults, setLoading }) {
   const { register, watch } = useForm();
   const [allProducts, setAllProducts] = useState([]);
   const searchQuery = watch("search", "");
+  const { setProducts } = useProduct();
 
   useEffect(() => {
     async function fetchAllProducts() {
@@ -20,7 +22,7 @@ export default function SearchQuery({ setResults, setLoading }) {
 
         if (data && data.length > 0) {
           setAllProducts(data);
-          setResults(data); // Initially show all products
+          setProducts(data); // Initially show all products
         }
       } catch (err) {
         console.log("Unexpected error:", err.message);
@@ -34,7 +36,7 @@ export default function SearchQuery({ setResults, setLoading }) {
 
   useEffect(() => {
     if (!searchQuery || searchQuery.trim() === "") {
-      setResults(allProducts);
+      setProducts(allProducts);
     } else {
       // Filter products based on search query
       const filteredProducts = allProducts.filter(
@@ -47,7 +49,7 @@ export default function SearchQuery({ setResults, setLoading }) {
             ?.toLowerCase()
             .includes(searchQuery.toLowerCase())
       );
-      setResults(filteredProducts);
+      setProducts(filteredProducts);
     }
   }, [searchQuery, allProducts]);
   return (

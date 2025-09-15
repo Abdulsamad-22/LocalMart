@@ -13,11 +13,10 @@ export default function CartPage() {
         <CaretLeft size={24} />
         Continue Shopping
       </Link>
-
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-[1rem] mt-4">
-        <CartItemSection />
+      <CartItemSection />
+      {/* <div className="flex flex-col md:flex-row items-center md:items-start gap-[1rem] mt-4">
         <CartSummary />
-      </div>
+      </div> */}
     </>
   );
 }

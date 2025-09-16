@@ -5,7 +5,7 @@ import {
   ArrowRight,
   Shield,
   CurrencyNgn,
-  ShoppingBag,
+  ShoppingCart,
   Truck,
   Heart,
   Trash,
@@ -14,14 +14,8 @@ import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
 
 export default function CartItemSection() {
-  const {
-    cartItems,
-    removeFromCart,
-    increaseCart,
-    decreaseCart,
-    updateQuantity,
-  } = useCart();
-  const { addToWishlist, isInWishList } = useWishlist();
+  const { cartItems, removeFromCart, increaseCart, decreaseCart } = useCart();
+  const { addToWishlist } = useWishlist();
 
   // Calculate totals
   const subtotal = cartItems.reduce(
@@ -32,21 +26,22 @@ export default function CartItemSection() {
     (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
     0
   );
-  const deliveryCost = 15.99; // Free delivery over Ngn 5000
+  const deliveryCost = 15.99; // Free delivery over Ngn 50000
   const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + (subtotal < 100 ? deliveryCost : 0) + tax;
+  const total = subtotal + (subtotal < 50000 ? deliveryCost : 0) + tax;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Shopping Cart
               </h1>
               <p className="text-gray-600 mt-1">
-                {cartItems.length} item{cartItems.length !== 1 ? "s" : ""}
+                {cartItems.length} item{cartItems.length !== 1 ? "s" : ""} in
+                your cart
               </p>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -57,12 +52,12 @@ export default function CartItemSection() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="">
         {cartItems.length === 0 ? (
           /* Empty Cart */
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <ShoppingBag size={64} className="text-gray-300 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="bg-white shadow-sm p-12 text-center">
+            <ShoppingCart size={64} className="text-gray-300 mx-auto" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-[1px]">
               Your cart is empty
             </h2>
             <p className="text-gray-600 mb-6">
@@ -76,7 +71,7 @@ export default function CartItemSection() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm">
@@ -110,12 +105,6 @@ export default function CartItemSection() {
                                   {item.item_name}
                                 </h3>
 
-                                <div className="space-y-1 mb-3">
-                                  <div className="text-sm text-gray-500">
-                                    Sold by Slowflow fashion world
-                                  </div>
-                                </div>
-
                                 {/* Stock Status & Shipping */}
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
                                   <div className="flex items-center gap-2">
@@ -141,7 +130,7 @@ export default function CartItemSection() {
                                   {item.item_units > 0 && (
                                     <div className="flex items-center gap-1 text-sm text-gray-600">
                                       <Truck size={14} />
-                                      <span>Ships in 3-5 days</span>
+                                      <span>Delivery is in 3-5 days</span>
                                     </div>
                                   )}
                                 </div>
@@ -149,9 +138,12 @@ export default function CartItemSection() {
                                 {/* Action Buttons */}
                                 <div className="flex items-center gap-4 text-sm">
                                   <button
-                                    //                 onClick={() =>
-                                    //   addToWishlist({ ...product, id: product.id.toString() })
-                                    // }
+                                    onClick={() =>
+                                      addToWishlist({
+                                        ...item,
+                                        id: item.id.toString(),
+                                      })
+                                    }
                                     className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors"
                                   >
                                     <Heart size={14} />
@@ -273,14 +265,12 @@ export default function CartItemSection() {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Delivery</span>
                     <span className="font-medium">
-                      {subtotal >= 100 ? (
-                        <span className="flex items-center text-green-600">
-                          FREE
-                        </span>
+                      {subtotal >= 50000 ? (
+                        <span className="text-[#009688]">FREE</span>
                       ) : (
-                        `${(<CurrencyNgn />)} ${deliveryCost.toLocaleString(
-                          "en-NG"
-                        )}`
+                        <span className="flex items-center">
+                          <CurrencyNgn /> {deliveryCost.toLocaleString("en-NG")}
+                        </span>
                       )}
                     </span>
                   </div>
@@ -311,19 +301,26 @@ export default function CartItemSection() {
                   </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-gray-200">
+                <div className="px-6 py-4">
+                  <div className="bg-[#f4edeb] flex items-center justify-center rounded-[12px] p-[0.75rem] gap-2 text-sm text-gray-500">
+                    <Shield size={14} />
+                    <span>
+                      This is{" "}
+                      <span className="text-[#009668] text-[1rem]">
+                        {" "}
+                        carbon-neutral
+                      </span>{" "}
+                      delivery
+                    </span>
+                  </div>
+
                   <button
                     className="w-full bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
-    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] py-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-4"
                   >
                     Proceed to Checkout
                     <ArrowRight size={16} />
                   </button>
-
-                  <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-500">
-                    <Shield size={14} />
-                    <span>Secure SSL encrypted checkout</span>
-                  </div>
                 </div>
               </div>
             </div>

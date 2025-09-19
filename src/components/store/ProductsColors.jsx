@@ -57,38 +57,63 @@ export default function ProductColors({ selectedColors, setSelectedColors }) {
         ))}
       </div>
 
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">Custom Color</label>
-          <div className="flex gap-2">
+      <div className="bg-gray-50 p-4 rounded-lg border">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Add Custom Color
+        </label>
+
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+          {/* Color Name Input */}
+          <div className="sm:col-span-5">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Color Name
+            </label>
             <input
               type="text"
               value={customColorName}
               onChange={(e) => setCustomColorName(e.target.value)}
-              placeholder="Color name"
-              className="input"
+              placeholder="Enter color name"
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009688] focus:border-transparent transition-all duration-200"
             />
+          </div>
 
-            <div className="relative flex-2">
+          {/* Color Picker */}
+          <div className="sm:col-span-4">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Choose Color
+            </label>
+            <div className="relative">
               <input
                 type="color"
                 value={customColor}
                 onChange={(e) => setCustomColor(e.target.value)}
-                className="absolute opacity-0 w-full h-full cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
               <div
-                className="w-full h-10 rounded border border-gray-300 flex items-center justify-center"
-                style={{ backgroundColor: customColor || "#FFFFFF" }}
+                className="w-full h-10 rounded-lg border-2 border-gray-300 cursor-pointer transition-all duration-200 hover:border-[#009688] hover:shadow-md relative overflow-hidden group"
+                style={{ backgroundColor: customColor }}
               >
-                {!customColor && <span className="text-gray-400">Pick</span>}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-black bg-opacity-20 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    Click to change
+                  </div>
+                </div>
+                <div className="absolute top-1 right-1 bg-white bg-opacity-90 text-xs text-gray-600 px-1 py-0.5 rounded text-[10px] font-mono">
+                  {customColor}
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Add Button */}
+          <div className="sm:col-span-3">
             <button
               type="button"
               onClick={addCustomColor}
-              className="px-3 bg-[#009688] text-white rounded hover:bg-[#00897B]"
+              disabled={!customColorName.trim()}
+              className="w-full h-10 bg-[#009688] text-white rounded-lg font-medium hover:bg-[#00897B] focus:outline-none focus:ring-2 focus:ring-[#009688] focus:ring-offset-2 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Add
+              Add Color
             </button>
           </div>
         </div>

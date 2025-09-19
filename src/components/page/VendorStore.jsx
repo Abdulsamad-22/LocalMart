@@ -94,7 +94,7 @@ export default function VendorStore() {
   return (
     <>
       <div className="bg-[#009688] text-center text-[1.5rem] text-[#fff] p-8 mt-[5rem]">
-        <h2>Stock up my store</h2>
+        <h2>Stock my store</h2>
       </div>
 
       <FormProvider {...methods}>

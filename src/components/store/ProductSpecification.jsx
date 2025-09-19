@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Images, Plus } from "@phosphor-icons/react";
+import { Images, Upload } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
 import ProductSizes from "./ProductSizes";
 import ProductColors from "./ProductsColors";
@@ -30,18 +30,12 @@ export default function ProductSpecification({
   }
 
   return (
-    <div className="w-full md:w-[50%] bg-white p-4 flex flex-col ">
-      {/* <div className="w-full text-end mb-8">
-        <button className="w-[31%] flex items-end gap-2 text-[1rem] border-[1px] border-gray-600 p-2 rounded-[8px] ">
-          <Plus size={24} />
-          Add New Product
-        </button>
-      </div> */}
+    <div className="w-full md:w-[50%] bg-white p-4 md:p-6 flex flex-col ">
       <div className="space-y-2 mx-auto text-gray-800 mb-12">
-        <label className="block text-[1.125rem] text-[#000] mb-1">
-          Upload Product Image
+        <label className="block text-[1rem] text-gray-800 font-medium mb-1">
+          Upload or drag product image here
         </label>
-        <div className="relative">
+        <div className="relative border-[2px] border-[#009688] border-dashed rounded-lg">
           {/* Hidden file input */}
           <input
             type="file"
@@ -66,10 +60,10 @@ export default function ProductSpecification({
               ) : (
                 <>
                   <div className="text-5xl text-[#009688] mb-2">
-                    <Plus size={32} />
+                    <Upload size={32} />
                   </div>
                   <p className="text-gray-500 text-sm font-medium">
-                    Click to upload or drag and drop
+                    Upload or drag product image here
                   </p>
                 </>
               )}

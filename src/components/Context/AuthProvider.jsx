@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../supabase-client";
+import * as yup from "yup";
 
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
@@ -19,6 +20,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [vendorData, setVendorData] = useState(null);
   const [supabaseError, setSupabaseError] = useState(null);
+
+  // Yup schema
+  const schema = yup.object({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().min(8).max(12).required("Password is required"),
+  });
 
   // Get initial user and set up auth state listener
   useEffect(() => {
@@ -108,6 +115,7 @@ export function AuthProvider({ children }) {
   const login = async (formData) => {
     try {
       setLoading(true);
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -115,15 +123,25 @@ export function AuthProvider({ children }) {
 
       if (error) {
         const friendlyMessage =
-          errorMap[error.code] || "Something went wrong. Please try again.";
-
+          errorMap?.[error.code] || "Invalid email or password.";
         setSupabaseError(friendlyMessage);
+        return { success: false, data: null, error, user: null };
       }
 
-      return { data, error: null };
-    } catch (error) {
-      console.error("Login error:", error);
-      return { data: null, error };
+      setUser(data.user);
+
+      // Return success with user info
+      return {
+        success: true,
+        data,
+        error: null,
+        user: data.user,
+        isVendor: !!vendorData,
+      };
+    } catch (err) {
+      console.error("Login error:", err);
+      setSupabaseError("Unexpected error occurred. Please try again.");
+      return { success: false, data: null, error: err, user: null };
     } finally {
       setLoading(false);
     }
@@ -174,6 +192,7 @@ export function AuthProvider({ children }) {
     vendorData,
     loading,
     login,
+    schema,
     supabaseError,
     // signup,
     logout,

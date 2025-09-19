@@ -5,26 +5,25 @@ import { signInWithGoogle } from "../../firebase/firebase";
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase-client";
-import { useNavigate, useLocation } from "react-router-dom";
+import { redirect, useLocation, Link } from "react-router-dom";
 
 const errorMap = {
   PGRST302: "Invalid credentials. Please check your email or password.",
-  PGRST301: "User already exists. Please sign in instead.",
+  PGRST301: "Check email or password and try again.",
   PGRST303: "Your session has expired. Please log in again.",
   PGRST304: "Permission denied. You do not have access to this resource.",
-  PGRST305: "Too many requests. Please wait and try again later.",
-  PGRST306: "Email not confirmed. Please check your inbox.",
+  PGRST305: "Please wait and try again later.",
   PGRST307: "Invalid email format.",
   PGRST308: "Password is too weak. Please use a stronger password.",
 };
 
 export default function Signup() {
-  const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = location.state?.redirectTo || "/";
 
   const [loading, setLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState("");
+  const { login } = AuthProvider();
 
   const schema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -37,23 +36,9 @@ export default function Signup() {
     reset,
   } = useForm({ resolver: yupResolver(schema) });
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        navigate(redirectTo);
-      }
-    });
-
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate, redirectTo]);
-
   async function onSubmit(formData) {
     try {
+      setLoading(false);
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -65,6 +50,7 @@ export default function Signup() {
           errorMap[error.code] || "Something went wrong. Please try again.";
 
         setFirebaseError(friendlyMessage);
+        setLoading(true);
         return;
       }
 
@@ -73,29 +59,8 @@ export default function Signup() {
     } catch (err) {
       console.error("Registration failed:", err.message);
       console.error("Unexpected error during signup:", err);
-    }
-  }
-
-  async function signIn(log) {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: log.email,
-        password: log.password,
-      });
-
-      if (error) {
-        console.error("Error logging in:", error.message);
-        return;
-      }
-
-      console.log("User logged in:", data);
-    } catch (err) {
-      console.error("Unexpected error during login:", err);
-      const friendlyMessage =
-        errorMap[err.code] || "Something went wrong. Please try again.";
-
-      setFirebaseError(friendlyMessage);
-      reset();
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -179,12 +144,13 @@ export default function Signup() {
           </div>
           <p className=" mb-12">
             Already have an accout?
-            <span
-              onClick={handleSubmit(signIn)}
+            <Link
+              to="/login"
+              onClick={() => handleSubmit(login)}
               className="ml-1 text-[#009688] font-semibold hover:text-style-underline cursor-pointer"
             >
               Login
-            </span>
+            </Link>
           </p>
           <button
             type="submit"
@@ -218,7 +184,7 @@ export default function Signup() {
             )}
           </button>
           <p className="text-[0.875rem]">
-            By continuing you agree to LocalMart's{" "}
+            By continuing you agree to LocalMart's
             <a className="text-[#009688] underline">Terms and Conditions</a>
           </p>
         </div>

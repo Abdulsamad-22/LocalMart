@@ -17,12 +17,14 @@ import {
 } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
 import { useProduct } from "../Context/ProductProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "../../supabase-client";
 
 export default function ProductsCard({ product }) {
-  const { handleAddToCart, increaseCart, decreaseCart, addToCart } = useCart();
+  const { addToCart } = useCart();
   const { vendors } = useProduct();
-  // const [selectedColor, setSelectedColor] = useState(null);
+
   const [selectedImage, setSelectedImage] = useState(0);
   // const [selectedStorage, setSelectedStorage] = useState(
   //   product.variants.storage[1]
@@ -31,6 +33,7 @@ export default function ProductsCard({ product }) {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
+  const [goToVendorStore, setGoToVendorStore] = useState(null);
 
   const tempRating = 4.5;
   const reviewCount = 3442;
@@ -96,36 +99,39 @@ export default function ProductsCard({ product }) {
     );
   };
 
+  useEffect(() => {
+    async function fetchVendorID() {
+      try {
+        // Fetch vendors ID from database;
+        const { data: vendorData, error: vendorError } = await supabase
+          .from("vendors")
+          .select("*");
+
+        if (vendorError) {
+          console.error("Database error:", vendorError);
+          throw vendorError;
+        }
+
+        if (!vendorData) {
+          console.warn("No vendors found in database");
+          return;
+        }
+
+        if (vendorData) {
+          setGoToVendorStore(vendorData);
+        }
+      } catch (err) {
+        console.log("Unexpected error fetching vendor ID", err.message);
+      }
+    }
+    fetchVendorID();
+  }, []);
+
   return (
     <>
-      <div className="min-h-screen bg-gray-50 px-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Breadcrumb */}
-          <nav className="text-sm text-gray-600 mb-6">
-            <ol className="flex items-center space-x-2">
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Home
-                </a>
-              </li>
-              <li>/</li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Electronics
-                </a>
-              </li>
-              <li>/</li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Smartphones
-                </a>
-              </li>
-              <li>/</li>
-              <li className="text-gray-900 font-medium">{product.brand}</li>
-            </ol>
-          </nav>
-
-          <div className="grid grid-cols-1 lg:grid-cols-[30em_1fr] gap-20 mb-12">
+      <div className="min-h-screen bg-gray-50 px-2 md:px-8">
+        <div className="max-w-7xl mx-auto px-0 md:px-3 sm:px-6 lg:px-8 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[30em_1fr] gap-4 md:gap-20 mb-12">
             {/* Product Images */}
             <div className="space-y-4">
               {/* Main Image */}
@@ -134,7 +140,7 @@ export default function ProductsCard({ product }) {
                   // src={product.images[selectedImage]}
                   src={product.image_url}
                   alt={product.item_name}
-                  className="w-[30em] h-[450px] object-cover "
+                  className="w-[30em] md:w-[30em] md:h-[450px] object-cover "
                   // className="w-full h-96 sm:h-[500px] object-cover"
                 />
 
@@ -151,13 +157,6 @@ export default function ProductsCard({ product }) {
                 >
                   <CaretRight size={20} />
                 </button>
-
-                {/* Discount Badge */}
-                {/* {discount > 0 && (
-                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-lg font-semibold text-sm">
-                    {discount}% OFF
-                  </div>
-                )} */}
               </div>
 
               {/* Thumbnail Images */}
@@ -189,9 +188,10 @@ export default function ProductsCard({ product }) {
                 {/* <div className="text-sm text-gray-600 mb-2">
                 <span className="font-medium text-blue-600 hover:underline cursor-pointer">{product.brand}</span>
               </div> */}
-                <span className="text-sm text-gray-400 mb-4">
-                  {product.item_category}
-                </span>
+                <div className="text-sm text-gray-400 mb-1">
+                  <span>{product.item_category}</span>
+                </div>
+
                 <h2 className="text-[1rem] md:text-[1.25rem] font-semibold text-gray-900">
                   {product.item_name}
                 </h2>
@@ -202,7 +202,6 @@ export default function ProductsCard({ product }) {
                   </span>
 
                   <div className="flex items-center gap-1 ">
-                    {/* <img src="/images/Star.svg" alt="" /> */}
                     <Star weight="fill" className="text-yellow-400" size={20} />
 
                     <div className="text-[0.875rem] md:text-[1rem] font-regular">
@@ -223,24 +222,6 @@ export default function ProductsCard({ product }) {
                   {product.item_description}
                 </p>
               </div>
-
-              {/* Price */}
-              {/* <div className="border-b pb-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <span className="flex items-center text-[1.25rem] font-bold text-gray-900">
-                    <CurrencyNgn size={20} />
-                    {Number(product.item_price).toLocaleString("en-NG")}
-                  </span>
-                  {product.originalPrice > product.price && (
-                  <span className="text-xl text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
-                )} 
-                </div>
-                 {discount > 0 && (
-                <div className="text-sm text-red-600 font-medium">
-                  You save ${(product.originalPrice - product.price).toFixed(2)} ({discount}% off)
-                </div>
-              )} 
-              </div> */}
 
               {/* Variants */}
               <div className="space-y-4">
@@ -273,25 +254,6 @@ export default function ProductsCard({ product }) {
                     ))}
                   </select>
                 )}
-                {/* Storage */}
-                {/* <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Storage: {selectedStorage}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.variants.storage.map((storage) => (
-                    <button
-                      key={storage}
-                      onClick={() => setSelectedStorage(storage)}
-                      className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${
-                        selectedStorage === storage
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                      }`}
-                    >
-                      {storage}
-                    </button>
-                  ))}
-                </div>
-              </div> */}
 
                 {/* Color */}
                 <div>
@@ -352,7 +314,7 @@ export default function ProductsCard({ product }) {
               </div>
 
               {/* Quantity & Actions */}
-              <div className="space-y-4 pt-4 border-t border-dashed border-gray-300">
+              <div className="space-y-4 pt-4 border-t-[1px] border-dashed border-gray-300">
                 {/* Quantity */}
                 <div className="flex items-center gap-4">
                   <span className="font-medium text-gray-900">Quantity:</span>
@@ -383,7 +345,13 @@ export default function ProductsCard({ product }) {
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
-                    onClick={() => addToCart({ ...product, id: product.id })}
+                    onClick={() =>
+                      addToCart({
+                        ...product,
+                        id: product.id,
+                        quantity: quantity,
+                      })
+                    }
                     disabled={product.item_units < 1}
                     className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
                     hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] py-4 px-6 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
@@ -427,7 +395,9 @@ export default function ProductsCard({ product }) {
                     <div className="font-medium text-gray-900">
                       Free Delivery
                     </div>
-                    {/* <div className="text-sm text-gray-600">{product.shippingInfo.deliveryTime}</div> */}
+                    <div className="text-sm text-gray-600">
+                      3-5 business days
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -437,7 +407,9 @@ export default function ProductsCard({ product }) {
                     <div className="font-medium text-gray-900">
                       Easy Returns
                     </div>
-                    {/* <div className="text-sm text-gray-600">{product.DeliveryInfo.returnPolicy}</div> */}
+                    <div className="text-sm text-gray-600">
+                      30-days return ploicy
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -471,9 +443,12 @@ export default function ProductsCard({ product }) {
                     </div>
                     <div className="text-sm text-gray-600">5k + sold</div>
                   </div>
-                  <button className="text-sm bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors">
+                  <Link
+                    to={`/vendor/${goToVendorStore?.vendor_id}`}
+                    className="text-sm bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors"
+                  >
                     View Store
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -557,7 +532,7 @@ export default function ProductsCard({ product }) {
                         Customer Reviews
                       </h3>
                       <div className="flex items-center gap-4 mb-4">
-                        <span className="text-3xl font-bold">4.5</span>
+                        <span className="text-3xl font-bold">{tempRating}</span>
                         <div>
                           <div className="flex items-center mb-1">
                             {renderStars(tempRating)}
@@ -569,7 +544,10 @@ export default function ProductsCard({ product }) {
                       </div>
                     </div>
                     <div className="flex justify-end">
-                      <button className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                      <button
+                        className="bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
+     text-[#fff] px-6 py-2 rounded-lg font-medium hover:from-[#00897B] hover:to-[#005B4F] transition-colors"
+                      >
                         Write a Review
                       </button>
                     </div>
@@ -625,141 +603,6 @@ export default function ProductsCard({ product }) {
           </div>
         </div>
       </div>
-      {/* <div className="w-full md:w-[70%] bg-[#fff] rounded-[10px] p-4 flex flex-col md:flex-row gap-8 items-start">
-        <div className="w-full md:w-[445px] h-[306px]">
-          <img
-            className="w-full h-full rounded-[10px]"
-            src={product.image_url}
-            alt=""
-          />
-        </div>
-
-        <div className="w-full md:w-[50%] space-y-4">
-          <div className="">
-            <h2 className="text-[1rem] md:text-[1.5rem] font-semibold text-gray-900">
-              {product.item_name}
-            </h2>
-            <div className="flex justify-between py-2 border-b-[1px] border-gray-300 mb-4">
-              <span className="flex items-center font-semibold text-[1rem] md:text-[1rem]">
-                <CurrencyNgn size={20} />{" "}
-                {Number(product.item_price).toLocaleString("en-NG")}
-              </span>
-
-              <div className="flex items-center gap-2 ">
-                <img src="/images/Star.svg" alt="" />
-                <div className="text-[0.875rem] md:text-[1rem] font-regular">
-                  4.5
-                </div>
-              </div>
-            </div>
-
-            <p className="text-gray-600 text-sm mb-3 line-clamp-3 mb-6">
-              {product.item_description}
-            </p>
-            {product.item_sizes && product.item_sizes.length > 0 && (
-              <select
-                className="w-[20%] px-3 py-2 rounded-lg border 
-          border-[#009688] text-gray-700 text-sm
-          focus:outline-none
-          hover:border-[#00796B] transition-all duration-200 mb-4"
-              >
-                {product.item_sizes.map((size, index) => (
-                  <option
-                    key={index}
-                    value={size}
-                    className="
-              hover:bg-[#009688]/10 
-              active:bg-[#009688] active:text-white
-              cursor-pointer
-            "
-                  >
-                    {size}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            <div className="flex gap-3 mb-4">
-              {product.item_colors.map((color, idx) => {
-                const isSelected = selectedColor === color;
-
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => setSelectedColor(color)}
-                    className={`
-              relative w-10 h-10 rounded-full cursor-pointer transition-all duration-200
-              flex items-center justify-center
-              ${isSelected ? "p-1 border-2 border-[#009688]" : ""}
-            `}
-                  >
-                    <div
-                      className="w-full h-full rounded-full"
-                      style={{ backgroundColor: color }}
-                    />
-                    {isSelected && (
-                      <Check
-                        size={18}
-                        className="absolute text-white"
-                        strokeWidth={3}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="text-[0.875rem] md:text-[0.975rem] mb-2">
-              {product.item_units} Units Left
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-[0.975rem] text-gray-600">
-                <Truck size={20} />
-                <p className="">
-                  {vendors.map((v) => (
-                    <span>{v.travelTime}</span>
-                  ))}{" "}
-                  mins away
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center w-20 px-0 py-1 gap-2 text-center rounded-md">
-            <div
-              onClick={() => decreaseCart(product.id)}
-              className="bg-[#000] text-[#fff] font-semibold p-2 transition-transform duration-300 hover:bg-[#009688] rounded-full cursor-pointer"
-            >
-              <Minus size={20} className="" />
-            </div>
-            <div className="flex items-center justify-center w-10 h-10 text-[1.125rem] px-4 py-2 text-[#000] font-semibold">
-              {product.quantity}
-            </div>
-            <div
-              onClick={() => increaseCart(product.id)}
-              className="bg-[#000] text-[#fff] font-semibold p-2  transition-transform duration-300 hover:bg-[#009688] rounded-full cursor-pointer"
-            >
-              <Plus size={20} />
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => addToCart({ ...product, id: product.id })}
-              className="flex items-center justify-center gap-2 flex-[2.5] w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff] item-center rounded-lg"
-            >
-              <ShoppingCart size={24} color="#fff" />
-              Add to Cart
-            </button>
-
-            <button
-              onClick={() => handleAddToCart({ ...product, id: product.id })}
-              className="flex items-center justify-center gap-2 flex-1 w-full px-5 py-3 border-[1px] border-gray-600 text-[#000] item-center rounded-lg"
-            >
-              Buy Now
-            </button>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }

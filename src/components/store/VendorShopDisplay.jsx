@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthProvider";
 import { supabase } from "../../supabase-client";
-import { CurrencyNgn, PencilSimple, Trash } from "@phosphor-icons/react";
+import {
+  CurrencyNgn,
+  PencilSimple,
+  ShoppingCart,
+  Trash,
+} from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { useProduct } from "../Context/ProductProvider";
+import { useCart } from "../Context/CartProvider";
 
 export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { products, setProducts } = useProduct();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -41,11 +48,6 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
       fetchProducts();
     }
   }, [vendorId]);
-
-  const handleAddToCart = (product) => {
-    // Add to cart logic here
-    console.log("Adding to cart:", product);
-  };
 
   const handleEditProduct = (productId) => {
     // Navigate to edit product page
@@ -123,7 +125,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                 <img
                   src={product.image_url}
                   alt={product.item_name}
-                  className="w-full h-48 object-cover"
+                  className="w-full md:w-full h-auto md:h-[218px] object-cover"
                 />
               )}
               <div className="p-4">
@@ -159,14 +161,15 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                 {!isOwner ? (
                   // Customer view - Add to Cart button
                   <button
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => addToCart(product)}
                     disabled={product.item_units === 0}
                     className={`w-full py-2 rounded transition-colors ${
                       product.item_units === 0
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-[#009688] text-[#fff]"
+                        : "flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff]"
                     }`}
                   >
+                    {product.item_units !== 0 ? <ShoppingCart size={20} /> : ""}
                     {product.item_units === 0 ? "Out of Stock" : "Add to Cart"}
                   </button>
                 ) : (

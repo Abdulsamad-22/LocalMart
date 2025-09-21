@@ -19,7 +19,7 @@ export default function () {
 
     if (result.success) {
       // Handle navigation based on user type
-      if (result.isVendor) {
+      if (result.isVendor && result.user) {
         navigate("/my-shop", { state: { redirectTo: "/" } });
       } else {
         navigate("/");

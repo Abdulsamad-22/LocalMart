@@ -73,13 +73,13 @@ export default function PublicVendorShop() {
     );
   }
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="py-8">
       {/* Show banner if viewing own shop */}
       {isOwnShop === false && (
-        <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 mb-6">
-          <p className="text-blue-800">
+        <div className=" border border-[#009688] bg-[#009688]/10 py-4 px-12 mb-6">
+          <p className="text-gray-900">
             📝 This is how your shop appears to customers.
-            <Link to="/my-shop" className="ml-2 text-blue-600 underline">
+            <Link to="/my-shop" className="ml-2 text-gray-900 underline">
               Go to Dashboard
             </Link>
           </p>
@@ -116,12 +116,14 @@ export default function PublicVendorShop() {
         </div>
       </div>
 
-      {/* Shop Display */}
-      <VendorShopDisplay
-        vendorId={vendor.vendor_id}
-        isOwner={false}
-        currentUser={user}
-      />
+      <div className=" px-12">
+        {/* Shop Display */}
+        <VendorShopDisplay
+          vendorId={vendor.vendor_id}
+          isOwner={false}
+          currentUser={user}
+        />
+      </div>
     </div>
   );
 }

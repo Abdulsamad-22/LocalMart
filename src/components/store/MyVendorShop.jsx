@@ -3,6 +3,7 @@ import { supabase } from "../../supabase-client";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
 import VendorShopDisplay from "./VendorShopDisplay";
+import { CopySimple } from "@phosphor-icons/react";
 
 export default function MyVendorShop() {
   const { user, vendorData, loading: authLoading, isVendor } = useAuth();
@@ -38,66 +39,63 @@ export default function MyVendorShop() {
   const shareUrl = `${window.location.origin}/vendor/${vendorData?.vendor_id}`;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Dashboard Header */}
-      <div className="bg-blue-50 rounded-lg p-6 mb-8">
-        <h1 className="text-3xl font-bold text-blue-900 mb-2">
-          My Shop Dashboard
-        </h1>
-        <p className="text-blue-700 mb-4">
-          Welcome back,{" "}
-          {vendorData?.business_name || vendorData?.full_name || user?.email}!
-        </p>
+    <div className="container mx-auto px-3 py-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between">
+        {/* Dashboard Header */}
+        <div className="bg-[#009688]/8 rounded-lg py-6 mb-2 md:mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            My Shop Dashboard
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Welcome back,{" "}
+            {vendorData?.business_name || vendorData?.full_name || user?.email}!
+          </p>
 
-        {/* Dashboard Actions */}
-        <div className="flex flex-wrap gap-4">
-          <Link
-            to="/add-product"
-            className="bg-[#009688] text-[#fff] px-4 py-2 rounded"
-          >
-            Add New Product
-          </Link>
-          <Link
-            to="/manage-products"
-            className="bg-blue-500 text-[#fff] px-4 py-2 rounded"
-          >
-            Manage Products
-          </Link>
-          <Link
-            to="/orders"
-            className="bg-purple-600 text-[#fff] px-4 py-2 rounded hover:bg-purple-700"
-          >
-            View Orders
-          </Link>
-        </div>
-      </div>
-
-      {/* Share Shop Section */}
-      <div className="bg-gray-50 rounded-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Share Your Shop</h2>
-        <div className="flex items-center gap-4">
           <Link
             to={`/vendor/${vendorData?.vendor_id}`}
-            className="text-blue-600 underline"
+            className="text-cyan-600 underline"
             target="_blank"
             rel="noopener noreferrer"
           >
             View Public Shop
           </Link>
+
+          {/* Dashboard Actions */}
+          <div className="flex flex-wrap gap-4 mt-3">
+            <Link
+              to="/add-product"
+              className="bg-[#009688] text-[#fff] px-4 py-2 rounded"
+            >
+              Add New Product
+            </Link>
+            <Link
+              to="/manage-products"
+              className="bg-blue-500 text-[#fff] px-4 py-2 rounded"
+            >
+              Manage Products
+            </Link>
+            <Link
+              to="/orders"
+              className="bg-purple-600 text-[#fff] px-4 py-2 rounded hover:bg-purple-700"
+            >
+              View Orders
+            </Link>
+          </div>
+        </div>
+
+        {/* Share Shop Section */}
+        <div className="bg-gray-50 rounded-lg mb-8">
           <button
             onClick={() => {
               navigator.clipboard.writeText(shareUrl);
               alert("Shop URL copied to clipboard!");
             }}
-            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+            className="flex items-center gap-1 bg-[#009688]/10 text-sm text-[009688] px-3 py-3 rounded hover:bg-[009688]"
           >
-            Copy Shop URL
+            <CopySimple size={20} />
+            Copy shop link
           </button>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          Share this URL:{" "}
-          <code className="bg-gray-200 px-2 py-1 rounded">{shareUrl}</code>
-        </p>
       </div>
 
       {/* Shop Display */}

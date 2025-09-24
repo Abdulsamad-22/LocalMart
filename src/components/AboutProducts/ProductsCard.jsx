@@ -16,14 +16,11 @@ import {
   CurrencyNgn,
 } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
-import { useProduct } from "../Context/ProductProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "../../supabase-client";
 
-export default function ProductsCard({ product }) {
+export default function ProductsCard({ product, vendorInfo }) {
   const { addToCart } = useCart();
-  const { vendors } = useProduct();
 
   const [selectedImage, setSelectedImage] = useState(0);
   // const [selectedStorage, setSelectedStorage] = useState(
@@ -33,7 +30,6 @@ export default function ProductsCard({ product }) {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
-  const [goToVendorStore, setGoToVendorStore] = useState(null);
 
   const tempRating = 4.5;
   const reviewCount = 3442;
@@ -98,34 +94,6 @@ export default function ProductsCard({ product }) {
       (prev) => (prev - 1 + product.images.length) % product.images.length
     );
   };
-
-  useEffect(() => {
-    async function fetchVendorID() {
-      try {
-        // Fetch vendors ID from database;
-        const { data: vendorData, error: vendorError } = await supabase
-          .from("vendors")
-          .select("*");
-
-        if (vendorError) {
-          console.error("Database error:", vendorError);
-          throw vendorError;
-        }
-
-        if (!vendorData) {
-          console.warn("No vendors found in database");
-          return;
-        }
-
-        if (vendorData) {
-          setGoToVendorStore(vendorData);
-        }
-      } catch (err) {
-        console.log("Unexpected error fetching vendor ID", err.message);
-      }
-    }
-    fetchVendorID();
-  }, []);
 
   return (
     <>
@@ -439,12 +407,13 @@ export default function ProductsCard({ product }) {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-[#009688] hover:underline cursor-pointer">
-                      Slowflow fashion world
+                      {vendorInfo.name}
+                      {/* Slowflow fashion world */}
                     </div>
                     <div className="text-sm text-gray-600">5k + sold</div>
                   </div>
                   <Link
-                    to={`/vendor/${goToVendorStore?.vendor_id}`}
+                    to={`/vendor/${vendorInfo.id}`}
                     className="text-sm bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors"
                   >
                     View Store
@@ -561,14 +530,14 @@ export default function ProductsCard({ product }) {
                         className="border-b border-gray-100 pb-4 last:border-0"
                       >
                         <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-semibold text-blue-600">
+                          <div className="w-10 h-10 bg-[#009688]/20 rounded-full flex items-center justify-center font-semibold text-[#009688]">
                             {review.user.charAt(0)}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="font-medium">{review.user}</span>
                               {review.verified && (
-                                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                                   Verified Purchase
                                 </span>
                               )}

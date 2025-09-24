@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { supabase } from "../../supabase-client";
 import { useProduct } from "../Context/ProductProvider";
 
-export default function SearchQuery({ setResults, setLoading }) {
+export default function SearchQuery({ setLoading }) {
   const { register, watch } = useForm();
   const [allProducts, setAllProducts] = useState([]);
   const searchQuery = watch("search", "");

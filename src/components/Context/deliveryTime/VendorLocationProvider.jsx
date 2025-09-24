@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../../supabase-client";
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../../../supabase-client";
 import getBuyerLocation from "./GetBuyerLocation";
 import { geocodeAddress } from "./GeocodeVendorAddress";
 import { getTravelTimes } from "./getTravelTimes";
-import { useProduct } from "../Context/ProductProvider";
+
+const LocationContext = createContext();
+export const useVendorLocation = () => useContext(LocationContext);
 
 function getStateFromCoords(lat, lng) {
   if (!lat || !lng) return "Unknown State";
@@ -13,10 +15,10 @@ function getStateFromCoords(lat, lng) {
   return "Unknown State";
 }
 
-export default function VendorList() {
+export default function VendorLocationProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { vendors, setVendors } = useProduct();
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
     async function loadData() {
@@ -27,7 +29,7 @@ export default function VendorList() {
         console.log("Fetching vendors from database...");
         const { data: vendorData, error: dbError } = await supabase
           .from("vendors")
-          .select("business_address, business_name");
+          .select("*");
         // .select("vendor_coords, business_address, business_name");
 
         if (dbError) {
@@ -48,11 +50,11 @@ export default function VendorList() {
         const vendorsWithCoords = [];
 
         for (const [index, v] of vendorData.entries()) {
-          // console.log(
-          //   `Processing vendor ${index + 1}/${vendorData.length}: ${
-          //     v.business_name
-          //   }`
-          // );
+          console.log(
+            `Processing vendor ${index + 1}/${vendorData.length}: ${
+              v.business_name
+            }`
+          );
 
           if (!v.business_address) {
             console.warn(`Vendor ${v.business_name} has no address, skipping`);
@@ -68,6 +70,7 @@ export default function VendorList() {
               vendorsWithCoords.push({
                 name: v.business_name,
                 address: v.business_address,
+                id: v.vendor_id,
                 // address: v.coords_address,
                 location: coords,
               });
@@ -151,6 +154,7 @@ export default function VendorList() {
 
         console.log("Final vendors array:", finalVendors);
         setVendors(finalVendors);
+        console.log(vendors);
       } catch (error) {
         console.error("Error in loadData:", error);
         setError(`Failed to load vendor data: ${error.message}`);
@@ -162,20 +166,20 @@ export default function VendorList() {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <div>
-        <p>Loading vendors and calculating delivery times...</p>
-        <p>
-          <small>This may take a few moments</small>
-        </p>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen">
+  //       <p>Loading products and calculating delivery times...</p>
+  //       <p>
+  //         <small>This may take a few moments</small>
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
-      <div>
+      <div className="flex justify-center items-center min-h-screen">
         <h2>Error Loading Vendors</h2>
         <p style={{ color: "red" }}>{error}</p>
         <button onClick={() => window.location.reload()}>Try Again</button>
@@ -185,57 +189,65 @@ export default function VendorList() {
 
   if (vendors.length === 0) {
     return (
-      <div>
+      <div className="flex flex-col justify-center items-center min-h-screen">
         <h2>No Vendors Found</h2>
-        <p>No vendors are currently available in your area.</p>
+        <p>Unable to fetch products</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>Available Vendors</h2>
-      <p>Found {vendors.length} vendor(s)</p>
-
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {vendors.map((vendor, i) => (
-          <li
-            key={vendor.name || i}
-            style={{
-              padding: "10px",
-              border: "1px solid #ddd",
-              margin: "5px 0",
-              borderRadius: "5px",
-            }}
-          >
-            <div>
-              <strong>{vendor.name}</strong>
-              <br />
-              <small>{vendor.address}</small>
-            </div>
-
-            <div style={{ marginTop: "5px" }}>
-              {vendor.hasRoute ? (
-                <span style={{ color: "green" }}>
-                  🚗 Delivery time: {vendor.travelTime} minutes
-                </span>
-              ) : vendor.state ? (
-                <span style={{ color: "orange" }}>
-                  📍 Located in: {vendor.state}
-                </span>
-              ) : (
-                <span style={{ color: "red" }}>❌ Location unavailable</span>
-              )}
-            </div>
-
-            {vendor.error && (
-              <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-                Error: {vendor.error}
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <LocationContext.Provider
+      value={{ vendors, setVendors, loading, setLoading }}
+    >
+      {children}
+    </LocationContext.Provider>
   );
+
+  // return (
+  //   <div>
+  //     <h2>Available Vendors</h2>
+  //     <p>Found {vendors.length} vendor(s)</p>
+
+  //     <ul style={{ listStyle: "none", padding: 0 }}>
+  //       {vendors.map((vendor, i) => (
+  //         <li
+  //           key={vendor.name || i}
+  //           style={{
+  //             padding: "10px",
+  //             border: "1px solid #ddd",
+  //             margin: "5px 0",
+  //             borderRadius: "5px",
+  //           }}
+  //         >
+  //           <div>
+  //             <strong>{vendor.name}</strong>
+  //             <br />
+  //             <small>{vendor.address}</small>
+  //           </div>
+
+  //           <div style={{ marginTop: "5px" }}>
+  //             {vendor.hasRoute ? (
+  //               <span style={{ color: "green" }}>
+  //                 🚗 Delivery time: {vendor.travelTime} minutes
+  //               </span>
+  //             ) : vendor.state ? (
+  //               <span style={{ color: "orange" }}>
+  //                 📍 Located in: {vendor.state}
+  //               </span>
+  //             ) : (
+  //               <span style={{ color: "red" }}>❌ Location unavailable</span>
+  //             )}
+  //           </div>
+
+  //           {vendor.error && (
+  //             <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+  //               Error: {vendor.error}
+  //             </div>
+  //           )}
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   </div>
+  // );
 }

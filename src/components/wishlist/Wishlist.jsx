@@ -2,6 +2,7 @@ import {
   Heart,
   ShoppingCart,
   X,
+  Star,
   CurrencyNgn,
   Funnel,
   CaretDown,
@@ -135,8 +136,12 @@ export default function Wishlist() {
 
                           {/* Rating & Reviews */}
                           <div className="flex items-center gap-2 mb-3">
-                            <div className="flex items-center gap-1">
-                              <img src="/images/Star.svg" />
+                            <div className="flex items-center gap-[0.5px]">
+                              <Star
+                                weight="fill"
+                                className="text-yellow-400"
+                                size={20}
+                              />
                             </div>
                             <span className="text-sm font-medium text-gray-700">
                               4.5
@@ -180,18 +185,18 @@ export default function Wishlist() {
                           </div>
 
                           {/* Action Buttons */}
-                          <div className="flex flex-col gap-2 w-full sm:w-48">
+                          <div className="flex flex-col gap-4 w-full sm:w-[9em]">
                             <button
                               onClick={() => addToCart(item)}
                               className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
-    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-4 py-[0.75rem] rounded-lg font-medium transition-colors"
+    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-4 py-[0.75rem] rounded-lg transition-colors"
                             >
                               <ShoppingCart size={18} />
                               Add to Cart
                             </button>
                             <button
                               onClick={() => removeFromWishlist(item.id)}
-                              className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-[0.625rem] rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                              className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-[0.625rem] rounded-lg hover:bg-gray-50 transition-colors"
                             >
                               <X size={18} />
                               Remove
@@ -219,13 +224,13 @@ export default function Wishlist() {
                 <button
                   onClick={() => addAllToCart(wishlistItems)}
                   className="bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
-    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-6 py-3 rounded-lg font-medium transition-colors"
+    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                   Add All to Cart
                 </button>
                 <button
                   onClick={() => clearAllWishlist()}
-                  className="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                 >
                   Clear Wishlist
                 </button>

@@ -12,6 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
+import { Link } from "react-router-dom";
 
 export default function CartItemSection() {
   const { cartItems, removeFromCart, increaseCart, decreaseCart } = useCart();
@@ -44,7 +45,7 @@ export default function CartItemSection() {
                 your cart
               </p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-[#009688]">
               <Shield size={16} />
               <span>Secure Checkout</span>
             </div>
@@ -56,19 +57,25 @@ export default function CartItemSection() {
         {cartItems.length === 0 ? (
           /* Empty Cart */
           <div className="bg-white shadow-sm p-12 text-center">
-            <ShoppingCart size={64} className="text-gray-300 mx-auto" />
+            {/* <ShoppingCart size={64} className="text-gray-300 mx-auto" /> */}
+            <img
+              className="mx-auto"
+              src="/images/illustration-empty-cart.svg"
+              alt="empty cart"
+            />
             <h2 className="text-xl font-semibold text-gray-900 mb-[1px]">
               Your cart is empty
             </h2>
             <p className="text-gray-600 mb-6">
               Add some products to get started
             </p>
-            <button
+            <Link
+              to="/"
               className="bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
     hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-6 py-[0.75rem] rounded-lg font-medium transition-colors"
             >
               Continue Shopping
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
@@ -164,7 +171,7 @@ export default function CartItemSection() {
                                 {/* Price */}
                                 <div className="text-right">
                                   <div className="flex items-center text-[1.125rem] font-semibold text-gray-900">
-                                    <CurrencyNgn />
+                                    <CurrencyNgn size={20} />
                                     {Number(
                                       item.price * item.quantity
                                     ).toLocaleString("en-NG")}
@@ -187,7 +194,7 @@ export default function CartItemSection() {
                                     <button
                                       onClick={() => decreaseCart(item.id)}
                                       disabled={item.quantity <= 1}
-                                      className="bg-[#000] p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] text-[#fff] font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
                                     >
                                       <Minus size={14} />
                                     </button>
@@ -199,7 +206,7 @@ export default function CartItemSection() {
                                       disabled={
                                         item.quantity >= item.item_units
                                       }
-                                      className="bg-[#000] p-[0.35rem] md:p-2 transition-transform duration-300 hover:bg-[#009688] text-[#fff] font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
                                     >
                                       <Plus size={14} />
                                     </button>
@@ -245,7 +252,7 @@ export default function CartItemSection() {
                       items)
                     </span>
                     <span className="flex items-center font-medium">
-                      <CurrencyNgn />
+                      <CurrencyNgn size={18} />
                       {subtotal.toLocaleString("en-NG")}
                     </span>
                   </div>
@@ -255,7 +262,7 @@ export default function CartItemSection() {
                     <div className="flex justify-between items-center text-green-600">
                       <span>Total Savings</span>
                       <span className="flex items-center font-medium">
-                        <CurrencyNgn />
+                        <CurrencyNgn size={18} />
                         {savings.toLocaleString("en-NG")}
                       </span>
                     </div>
@@ -269,7 +276,8 @@ export default function CartItemSection() {
                         <span className="text-[#009688]">FREE</span>
                       ) : (
                         <span className="flex items-center">
-                          <CurrencyNgn /> {deliveryCost.toLocaleString("en-NG")}
+                          <CurrencyNgn size={18} />{" "}
+                          {deliveryCost.toLocaleString("en-NG")}
                         </span>
                       )}
                     </span>
@@ -277,7 +285,7 @@ export default function CartItemSection() {
 
                   {subtotal < 100 && (
                     <div className="flex items-center text-sm text-blue-600">
-                      Add <CurrencyNgn />
+                      Add <CurrencyNgn size={18} />
                       {(100 - subtotal).toLocaleString("en-NG")} more for FREE
                       delivery
                     </div>
@@ -287,7 +295,7 @@ export default function CartItemSection() {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Tax</span>
                     <span className="flex items-center font-medium">
-                      <CurrencyNgn /> {tax.toLocaleString("en-NG")}
+                      <CurrencyNgn size={18} /> {tax.toLocaleString("en-NG")}
                     </span>
                   </div>
 
@@ -295,7 +303,8 @@ export default function CartItemSection() {
                     <div className="flex justify-between items-center text-[1.125rem] font-medium">
                       <span>Total</span>
                       <span className="flex items-center">
-                        <CurrencyNgn /> {total.toLocaleString("en-NG")}
+                        <CurrencyNgn size={20} />{" "}
+                        {total.toLocaleString("en-NG")}
                       </span>
                     </div>
                   </div>

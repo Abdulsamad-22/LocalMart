@@ -14,20 +14,11 @@ import MyVendorShop from "./components/store/MyVendorShop";
 import Login from "./components/forms/Login";
 
 function App() {
-  const [vendorSubmitting, setVendorSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          element={
-            <Layout
-              setVendorSubmitting={setVendorSubmitting}
-              vendorSubmitting={vendorSubmitting}
-              setLoading={setLoading}
-            />
-          }
-        >
+        <Route element={<Layout setLoading={setLoading} />}>
           <Route path="/" element={<HomePage loading={loading} />} />
           <Route path="/products/:id" element={<ProductsPage />} />
           <Route path="/carts" element={<CartPage />} />
@@ -42,9 +33,7 @@ function App() {
 
         <Route
           path="/vendor-registration"
-          element={
-            <VendorRegistrationForm setVendorSubmitting={setVendorSubmitting} />
-          }
+          element={<VendorRegistrationForm />}
         />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />

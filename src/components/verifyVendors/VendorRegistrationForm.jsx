@@ -3,8 +3,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { supabase } from "../../supabase-client";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useAuth } from "../Context/AuthProvider";
 // import { geocodeAddress } from "../deliveryTime/GeocodeVendorAddress";
 
 const schema = yup.object({
@@ -24,7 +22,7 @@ const schema = yup.object({
   // idFile: yup.mixed().required("A valid ID is required"),
 });
 
-export default function VendorRegistrationForm({ setVendorSubmitting }) {
+export default function VendorRegistrationForm() {
   const navigate = useNavigate();
 
   const {
@@ -96,12 +94,10 @@ export default function VendorRegistrationForm({ setVendorSubmitting }) {
       } else {
         console.log("Inserted vendor:", insertedData);
         navigate("/vendorStore");
-        setVendorSubmitting(true);
       }
     } catch (err) {
       console.error("Unexpected error:", err);
     } finally {
-      setVendorSubmitting(false);
     }
     reset();
   }

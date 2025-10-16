@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Images, Upload } from "@phosphor-icons/react";
+import { Images, Upload, Plus } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
 import ProductSizes from "./ProductSizes";
 import ProductColors from "./ProductsColors";
+import { useProduct } from "../Context/ProductProvider";
 
 export default function ProductSpecification({
   setImageFile,
@@ -13,8 +14,10 @@ export default function ProductSpecification({
   setPreview,
   preview,
 }) {
+  const { editingProduct } = useProduct();
   const {
     formState: { isSubmitting, errors },
+    handleCancelEdit,
   } = useFormContext();
 
   function handleImageUpload(e) {
@@ -28,6 +31,21 @@ export default function ProductSpecification({
     };
     reader.readAsDataURL(file); // Convert to data URL
   }
+
+  // const handleCancelEdit = () => {
+  //   console.log("❌ Canceling edit");
+  //   setEditingProduct(null);
+  //   reset({
+  //     productName: "",
+  //     category: "",
+  //     description: "",
+  //     units: "",
+  //     price: "",
+  //   });
+  //   setPreview(null);
+  //   setSelectedSizes([]);
+  //   setSelectedColors([]);
+  // };
 
   return (
     <div className="w-full md:w-[50%] bg-white p-4 md:p-6 flex flex-col ">
@@ -82,13 +100,33 @@ export default function ProductSpecification({
         setSelectedColors={setSelectedColors}
       />
       <div className="w-full ">
-        <button
+        {/* <button
           type="submit"
           disabled={isSubmitting}
           className=" bg-gradient-to-r from-[#009688] to-[#00695C] text-white px-6 py-2 rounded mt-8"
         >
           Save Product
-        </button>
+        </button> */}
+        <div className="flex gap-3 mt-6">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex-1 flex items-center gap-2 justify-center bg-[#009688] text-white py-3 rounded-lg hover:bg-[#00897B]"
+          >
+            {!editingProduct ? <Plus size={20} /> : ""}
+            {editingProduct ? "✓ Update Product" : "Add Product"}
+          </button>
+
+          {editingProduct && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="px-6 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

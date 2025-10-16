@@ -48,6 +48,7 @@ export default function StockupStore() {
           <textarea
             {...register("description")}
             className="w-full h-[120px] p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#009688]"
+            placeholder="Briefly describe this product..."
           />
           <p className="text-red-500 text-sm">{errors.description?.message}</p>
         </div>

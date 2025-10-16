@@ -186,20 +186,25 @@ export default function DraftProductList({
   }
   return (
     <div className="px-4 md:px-12">
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">
-            Draft Products ({draftProducts.length})
-          </h3>
-          <button
-            onClick={submitAllDrafts}
-            className="text-[1rem] text-gray-500"
-          >
-            Submit all
-          </button>
+      {draftProducts.length === 0 ? (
+        ""
+      ) : (
+        <div className="space-y-4">
+          {/* Header */}
+          <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Draft Products ({draftProducts.length})
+            </h3>
+            <button
+              onClick={submitAllDrafts}
+              className="text-[1rem] text-gray-500"
+            >
+              Submit all
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {draftProducts.map((product) => (
           <div

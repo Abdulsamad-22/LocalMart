@@ -65,7 +65,7 @@ export default function ProductColors({ selectedColors, setSelectedColors }) {
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
           {/* Color Name Input */}
           <div className="sm:col-span-5">
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-sm text-gray-600 mb-1">
               Color Name
             </label>
             <input
@@ -79,7 +79,7 @@ export default function ProductColors({ selectedColors, setSelectedColors }) {
 
           {/* Color Picker */}
           <div className="sm:col-span-4">
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-sm text-gray-600 mb-1">
               Choose Color
             </label>
             <div className="relative">
@@ -111,7 +111,7 @@ export default function ProductColors({ selectedColors, setSelectedColors }) {
               type="button"
               onClick={addCustomColor}
               disabled={!customColorName.trim()}
-              className="w-full h-10 bg-[#009688] text-white rounded-lg font-medium hover:bg-[#00897B] focus:outline-none focus:ring-2 focus:ring-[#009688] focus:ring-offset-2 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-10 bg-[#009688] text-white rounded-lg hover:bg-[#00897B] focus:outline-none focus:ring-2 focus:ring-[#009688] focus:ring-offset-2 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               Add Color
             </button>

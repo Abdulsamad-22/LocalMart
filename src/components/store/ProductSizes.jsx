@@ -92,7 +92,7 @@ export default function ProductSizes({ selectedSizes, setSelectedSizes }) {
             type="button"
             onClick={addCustomSize}
             disabled={!customSize.trim()}
-            className="px-4 py-2 bg-[#009688] text-white rounded-lg font-medium hover:bg-[#00897B] focus:outline-none focus:ring-2 focus:ring-[#009688] focus:ring-offset-2 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-[#009688] text-white rounded-lg hover:bg-[#00897B] focus:outline-none focus:ring-2 focus:ring-[#009688] focus:ring-offset-2 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Add
           </button>

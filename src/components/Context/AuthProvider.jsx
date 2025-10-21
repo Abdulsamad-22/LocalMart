@@ -70,6 +70,7 @@ export function AuthProvider({ children }) {
 
       if (user) {
         // await setUserWithVendorData(user);
+        setUser(user);
         console.log(user);
       }
     } catch (error) {

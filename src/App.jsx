@@ -12,6 +12,7 @@ import WishlistPage from "./components/page/WishlistPage";
 import { useState } from "react";
 import MyVendorShop from "./components/store/MyVendorShop";
 import Login from "./components/forms/Login";
+import CheckoutPage from "./components/page/CheckoutPage";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ function App() {
           <Route path="/add-product" element={<VendorStore />} />
           <Route path="/my-shop" element={<MyVendorShop />} />
           <Route path="/vendor/:id" element={<PublicVendorShop />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
 
         <Route

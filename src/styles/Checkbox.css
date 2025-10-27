@@ -1,0 +1,33 @@
+.checkbox {
+  width: 18px;
+  height: 18px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #96a9ab;
+  border-radius: 2px; /* Optional: make it square or rounded */
+  background-color: #fff;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Change to green when checked */
+.checkbox:checked {
+  border-color: #009688;
+  background-color: #009688;
+}
+
+/* Create a checkmark using the ::after pseudo-element */
+.checkbox:checked::after {
+  content: "";
+  display: block;
+  width: 7px;
+  height: 12px;
+  border: solid #f8f8f8;
+  border-width: 0 2px 2px 0;
+
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}

@@ -1,39 +1,22 @@
-import { PAYSTACK_KEY } from "./getBankCode";
+import { supabase } from "../../../supabase-client";
 export const verifyAccountNumber = async (accountNumber, bankCode) => {
   try {
-    const response = await fetch(
-      `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const { data, error } = await supabase.functions.invoke("verify-account", {
+      body: { accountNumber, bankCode },
+    });
 
-    const result = await response.json();
-
-    if (result.status) {
-      console.log(`Account verified: ${result.data.account_name}`);
-
-      return {
-        success: true,
-        accountName: result.data.account_name,
-      };
-    } else {
-      console.error(`Account verification failed: ${result.message}`);
-
-      return {
-        success: false,
-        error: result.message,
-      };
+    if (error || !data.success) {
+      console.error("Verification failed:", error);
+      return { success: false, error: error?.message || data?.error };
     }
-  } catch (error) {
-    console.error("Error verifying account:", error);
+
     return {
-      success: false,
-      error: error.message,
+      success: true,
+      accountName: data.accountName,
+      accountNumber: data.accountNumber,
     };
+  } catch (error) {
+    console.error("Exception:", error);
+    return { success: false, error: error.message };
   }
 };

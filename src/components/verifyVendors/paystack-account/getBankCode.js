@@ -1,46 +1,20 @@
-export const PAYSTACK_KEY = import.meta.env.VITE_PAYSTACK_KEY;
+// import {supabase} from ""
+import { supabase } from "../../../supabase-client";
+
 export const getBankCode = async (bankName) => {
   try {
-    const response = await fetch(
-      "https://api.paystack.co/bank?country=nigeria",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const { data, error } = await supabase.functions.invoke("get-bank-code", {
+      body: { bankName },
+    });
 
-    const result = await response.json();
-
-    if (result.status) {
-      const normalizedInput = bankName.toLowerCase().trim();
-
-      let bank = result.data.find(
-        (b) => b.name.toLowerCase() === normalizedInput
-      );
-
-      // Try exact match
-      if (!bank) {
-        bank = result.data.find(
-          (b) =>
-            b.name.toLowerCase().includes(normalizedInput) ||
-            normalizedInput.includes(b.name.toLowerCase())
-        );
-      }
-
-      // Try partial match
-      if (bank) {
-        console.log(`found bank: ${bank.name} (${bank.code})`);
-        return bank.code;
-      }
-
-      console.warn(`Bank not found for: ${bankName}`);
+    if (error || !data.success) {
+      console.error("Error getting bank code:", error);
       return null;
     }
+
+    return data.bankCode;
   } catch (error) {
-    console.error("Error fetching banks:", error);
+    console.error("Exception:", error);
     return null;
   }
 };

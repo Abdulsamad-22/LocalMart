@@ -23,29 +23,36 @@ export default function CalculatePaymentSplit(
   Object.entries(vendorTotals).forEach(([vendorId, vendorAmount]) => {
     const vendor = vendors.find((v) => v.vendor_id.toString() === vendorId);
 
-    if (vendor && vendor.subaccount_code) {
-      const platformFee = (vendorAmount * platformFeePercentage) / 100;
+    if (
+      vendor &&
+      vendor.subaccount_code &&
+      typeof vendor.subaccount_code === "string"
+    ) {
+      const platformFee = Math.round(
+        vendorAmount * (platformFeePercentage / 100)
+      );
       const vendorReceives = vendorAmount - platformFee;
 
       splits.push({
         subaccount: vendor.subaccount_code,
-        share: vendorReceives * 100,
+        share: Math.round(vendorReceives * 100),
         transaction_charge_type: "flat",
         transaction_charge: 0,
       });
     }
   });
   return {
-    totalAmount: totalAmount * 100, // Convert to kobo
+    totalAmount: Math.round(totalAmount * 100), // Convert to kobo
     splits,
     vendorTotals,
     summary: {
       totalAmount,
       platformFee: Object.values(vendorTotals).reduce(
-        (sum, amount) => sum + amount * (platformFeePercentage / 100),
+        (sum, amount) =>
+          Math.round(sum + amount * (platformFeePercentage / 100)),
         0
       ),
-      vendorPayouts: splits.reduce((sum, split) => sum + split.share / 100, 0),
+      vendorPayouts: splits.reduce((sum, split) => sum + split.share, 0) / 100,
     },
   };
 }

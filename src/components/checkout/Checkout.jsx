@@ -13,7 +13,7 @@ export default function Checkout() {
   return (
     <div className="flex-1">
       <div className=" space-y-6">
-        <div className="bg-[#fff] p-4 rounded-[8px]">
+        <div className="bg-[#fff] p-6 rounded-[8px]">
           <div className="mb-3">
             <h3 className="text-[1.25rem] text-gray-700 font-semibold">
               Contact Information
@@ -139,7 +139,7 @@ export default function Checkout() {
         </div>
 
         {deliveryOption && (
-          <div className="bg-[#fff] p-4 rounded-[8px]">
+          <div className="bg-[#fff] p-6 rounded-[8px]">
             <div className="mb-3">
               <h3 className="text-[1.25rem] text-gray-700 font-semibold">
                 Recepient Information

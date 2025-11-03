@@ -1,11 +1,9 @@
 import { useCart } from "../Context/CartProvider";
-import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
 import { CurrencyNgn, Trash } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
 
-export default function CheckoutSummary({ loading }) {
-  const { cartItems } = useCart();
-  const { vendors } = useVendorLocation();
+export default function CheckoutSummary({ loading, vendorInfo }) {
+  const { cartItems, removeFromCart } = useCart();
   const {
     formState: { isSubmitting },
   } = useFormContext();
@@ -18,7 +16,9 @@ export default function CheckoutSummary({ loading }) {
           <h2 className="text-xl font-semibold mb-4">Review Your Order</h2>
 
           {cartItems.map((item, index) => {
-            const vendor = vendors.find((v) => v.id === item.vendor_id);
+            const vendor = vendorInfo.find(
+              (v) => v.vendor_id === item.vendor_id
+            );
             return (
               <div
                 key={item.id}
@@ -57,12 +57,15 @@ export default function CheckoutSummary({ loading }) {
                     </div>
 
                     <p className="text-sm text-gray-600">
-                      Sold by: {vendor?.name}
+                      Sold by: {vendor?.business_name}
                     </p>
                   </div>
                 </div>
 
-                <div className="text-right cursor-pointer hover:text-[#009688]">
+                <div
+                  onClick={() => removeFromCart(item.id)}
+                  className="text-right cursor-pointer text-gray-700 hover:text-[#009688]"
+                >
                   <Trash size={20} />
                   {/* <p className="flex items-center font-medium">
                   <CurrencyNgn size={18} />
@@ -76,7 +79,7 @@ export default function CheckoutSummary({ loading }) {
       </div>
 
       {/* Payment Summary */}
-      <div className="bg-[#fff] rounded-lg p-6 mb-6">
+      <div className="bg-[#fff] rounded-lg p-6">
         <h3 className="font-semibold mb-4">Payment Summary</h3>
         <div className="space-y-2">
           <div className="flex justify-between">
@@ -110,24 +113,24 @@ export default function CheckoutSummary({ loading }) {
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Checkout Button */}
-      <button
-        type="submit"
-        disabled={isSubmitting || loading || cartItems.length === 0}
-        className="w-full bg-[#009688] flex items-center justify-center text-[1.125rem] text-white py-3 rounded-lg hover:bg-[#00897B] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-      >
-        {
-          isSubmitting || loading ? "Processing..." : "Place order"
-          // <>
-          //   Pay <CurrencyNgn size={18} className="ml-2 font-medium" />{" "}
-          //   {cartItems
-          //     .reduce((sum, item) => sum + item.price * item.quantity, 0)
-          //     .toLocaleString("en-NG")}
-          // </>
-        }
-      </button>
+        {/* Checkout Button */}
+        <button
+          type="submit"
+          disabled={isSubmitting || loading || cartItems.length === 0}
+          className="w-full bg-[#009688] flex items-center justify-center text-[1.125rem] text-white py-3 rounded-lg hover:bg-[#00897B] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors mt-6"
+        >
+          {
+            isSubmitting || loading ? "Processing..." : "Place order"
+            // <>
+            //   Pay <CurrencyNgn size={18} className="ml-2 font-medium" />{" "}
+            //   {cartItems
+            //     .reduce((sum, item) => sum + item.price * item.quantity, 0)
+            //     .toLocaleString("en-NG")}
+            // </>
+          }
+        </button>
+      </div>
     </div>
   );
 }

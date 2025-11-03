@@ -7,14 +7,14 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useCart } from "../Context/CartProvider";
 import { supabase } from "../../supabase-client";
-import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
 import CalculatePaymentSplit from "../Utils/CalculatePaymentSplit";
 import { usePaystackPayment } from "../../hooks/usePaymentHook";
-import { PAYSTACK_KEY } from "../verifyVendors/paystack-account/getBankCode";
 import { verifyPayment } from "../cart/verifyPayment";
 import { createOrderRecords } from "../Cart/createOrderRecords";
 import { useAuth } from "../Context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+
+const paystack_publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
 const schema = yup.object({
   // Contact Information
@@ -59,16 +59,14 @@ const schema = yup.object({
 export default function CheckoutProvider() {
   const [loading, setLoading] = useState(false);
   const { cartItems } = useCart();
-  const { setVendors, vendors } = useVendorLocation();
+  const [vendorInfo, setVendorInfo] = useState([]);
   const { user } = useAuth();
-  const initializePayment = usePaystackPayment();
   const methods = useForm({
     resolver: yupResolver(schema),
   });
   const navigate = useNavigate();
 
   const showNotification = (message, type) => {
-    // You can replace this with your preferred notification system
     console.log(`${type}: ${message}`);
     alert(message); // Temporary fallback
   };
@@ -83,103 +81,171 @@ export default function CheckoutProvider() {
         .select("vendor_id, subaccount_code, business_name")
         .in("vendor_id", vendorIds);
 
-      if (data) setVendors(data);
+      if (data) setVendorInfo(data);
       if (error) console.error("Error fetching vendors:", error);
     };
 
-    fetchVendors(); // Call it once when cartItems changes
+    fetchVendors();
   }, [cartItems]);
 
-  // useEffect(() => {
-  //   const fetchVendors = async () => {
-  //     const vendorIds = [...new Set(cartItems.map((item) => item.vendor_id))];
-  //     if (cartItems.length === 0) return;
+  const initializePayment = usePaystackPayment();
 
-  //     const { data, error } = await supabase
-  //       .from("vendors")
-  //       .select("vendor_id, subaccount_code, business_name")
-  //       .in("vendor_id", vendorIds);
+  const handleCheckout = () => {
+    try {
+      setLoading(true);
+      if (!user || !user.email) {
+        alert("Please log in to continue");
+        return;
+      }
 
-  //     if (data) setVendors(data);
-  //     if (error) console.error("Error fetching vendors:", error);
+      console.log("User:", user);
 
-  //     // if (cartItems.length > 0) {
-  //     //   fetchVendors();
-  //     // }
-  //   };
-  //   fetchVendors();
-  // }, [cartItems]);
+      // 2. Validate cart
+      if (cartItems.length === 0) {
+        alert("Your cart is empty");
+        return;
+      }
+      if (vendorInfo?.length === 0) {
+        alert("Please wait, loading vendor information...");
+        return;
+      }
 
-  const handleCheckout = (formData) => {
-    if (vendors.length === 0) {
-      alert("Please wait, loading vendor information...");
-      return;
-    }
+      const paymentData = CalculatePaymentSplit(cartItems, vendorInfo, 5);
 
-    setLoading(true);
-    const paymentData = CalculatePaymentSplit(cartItems, vendors, 5);
-    console.log("💰 Payment Summary:", paymentData.summary);
-    console.log("delivery information", formData);
-    console.log("payout is clicked");
+      const config = {
+        publicKey: paystack_publicKey,
+        email: user.email,
+        amount: Math.round(Number(paymentData.totalAmount)),
+        ref: `order_${Date.now()}_${user.id}`,
+      };
 
-    const config = {
-      reference: `order_${Date.now()}_${user.id}`,
-      email: user.email,
-      amount: paymentData.totalAmount, // Total amount in kobo
-      publicKey: PAYSTACK_KEY,
-      split_code: undefined, // We'll use subaccounts instead
-      subaccount:
-        paymentData.splits.length === 1
-          ? paymentData.splits[0].subaccount
-          : undefined,
-      split:
-        paymentData.splits.length > 1
-          ? {
-              type: "flat",
-              bearer_type: "all-proportional", // Everyone bears charges proportionally
-              subaccounts: paymentData.splits,
-            }
-          : undefined,
-      metadata: {
+      // Add subaccount if single vendor has a valid subaccount
+      if (paymentData.splits.length === 1) {
+        const split = paymentData.splits[0];
+
+        if (
+          split.subaccount &&
+          typeof split.subaccount === "string" &&
+          split.subaccount.length > 0
+        ) {
+          config.subaccount = split.subaccount;
+          console.log("Single vendor - subaccount:", config.subaccount);
+        } else {
+          console.error(
+            "Invalid subaccount for single vendor:",
+            split.subaccount
+          );
+          alert("Vendor payment setup incomplete. Cannot proceed.");
+          return;
+        }
+      }
+
+      // Add split if multiple vendors has a valid subaccounts
+      else if (paymentData.splits.length > 1) {
+        // Validate all splits have required data
+        const invalidSplits = paymentData.splits.filter(
+          (split) =>
+            !split.subaccount ||
+            typeof split.subaccount !== "string" ||
+            !split.share ||
+            typeof split.share !== "number" ||
+            split.share <= 0
+        );
+
+        if (invalidSplits.length > 0) {
+          console.error("Invalid splits found:", invalidSplits);
+          alert("Some vendors have incomplete payment setup. Cannot proceed.");
+          return;
+        }
+
+        config.split = {
+          type: "flat",
+          bearer_type: "all-proportional",
+          subaccounts: paymentData.splits.map((split) => ({
+            subaccount: split.subaccount,
+            share: Math.round(Number(split.share)),
+          })),
+        };
+
+        console.log("Multiple vendors - split:", config.split);
+      }
+
+      config.metadata = {
+        customer_id: user.id,
         order_items: cartItems.length,
-        vendor_count: vendors.length,
-        platform_fee: paymentData.summary.platformFee,
-        custom_fields: [
-          {
-            display_name: "Order Type",
-            variable_name: "order_type",
-            value: "multi_vendor_cart",
-          },
-        ],
-      },
-    };
+        vendor_count: vendorInfo.length,
+      };
+      console.log("Metadata:", config.metadata);
 
-    initializePayment(
-      config,
-      (transaction) => handlePaymentSuccess(transaction, paymentData),
-      () => handlePaymentClose()
-    );
+      console.log("Final config before payment:", config);
+
+      // Initialize payment
+      initializePayment(
+        config,
+        (transaction) => handlePaymentSuccess(transaction, paymentData),
+        () => handlePaymentClose()
+      );
+
+      // Initialize payment
+      // try {
+      //   initializePayment(
+      //     config,
+      //     (transaction) => handlePaymentSuccess(transaction, paymentData),
+      //     () => handlePaymentClose()
+      //   );
+      // } catch (paystackError) {
+      //   console.error("Paystack Error:", paystackError);
+      //   console.error("Error name:", paystackError.name);
+      //   console.error("Error message:", paystackError.message);
+
+      //   // Log the validation issues
+      //   if (paystackError.issues) {
+      //     console.error("Validation Issues:", paystackError.issues);
+
+      //     paystackError.issues.forEach((issue, index) => {
+      //       console.error(`Issue ${index + 1}:`, {
+      //         path: issue.path,
+      //         message: issue.message,
+      //         code: issue.code,
+      //         expected: issue.expected,
+      //         received: issue.received,
+      //       });
+      //     });
+      //   }
+
+      //   throw paystackError;
+      // }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+      alert(`Checkout failed: ${error.message}`);
+      alert("Checkout failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePaymentSuccess = async (transaction, paymentData) => {
     try {
       console.log("Payment callback received");
       console.log("Transaction:", transaction);
-      console.log("Reference:", transaction.reference);
+      console.log("Reference:", transaction.ref);
 
-      const verificationResult = await verifyPayment(transaction.reference);
+      const verificationResult = await verifyPayment(transaction.ref);
 
       if (!verificationResult.success) {
         alert(
-          `Payment verification failed: ${verificationResult.error}\nReference: ${transaction.reference}`
+          `Payment verification failed: ${verificationResult.error}\nReference: ${transaction.ref}`
         );
         return;
       }
 
       await createOrderRecords({
-        reference: transaction.reference,
+        ref: transaction.ref,
         cartItems,
-        vendors,
+        vendorInfo,
         paymentData,
         user,
       });
@@ -217,7 +283,7 @@ export default function CheckoutProvider() {
           className="grid grid-cols-1 md:grid-cols-[60%_38%] gap-12 px-4 md:px-12 my-4 md:my-8"
         >
           <Checkout />
-          <CheckoutSummary loading={loading} />
+          <CheckoutSummary loading={loading} vendorInfo={vendorInfo} />
         </form>
       </FormProvider>
     </>

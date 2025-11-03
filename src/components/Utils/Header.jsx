@@ -1,39 +1,43 @@
 import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
-import { Link, redirect, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthProvider";
 
-export default function Header({ vendorSubmitting }) {
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [session, setSession] = useState(null);
   const navigate = useNavigate();
   const { isVendor } = useAuth();
+  const location = useLocation();
+
+  const navLinks = [
+    {
+      icon: <UserCircle size={20} />,
+      label: "Login/Sign up",
+      onClick: () => handleSignupClick(),
+    },
+    { icon: <Heart size={20} />, label: "Wishlists", redirectTo: "/wishlist" },
+    { icon: <ShoppingCart size={20} />, label: "Cart", redirectTo: "/carts" },
+    {
+      icon: "",
+      label: !isVendor ? "Sell on LocalMart" : "View my store",
+      onClick: () => handleVendorRedirection(),
+      isButton: true,
+    },
+  ];
+
+  const [active, setActive] = useState(() => {
+    const idx = navLinks.findIndex((l) => l.redirectTo === location.pathname);
+    return idx === -1 ? null : idx;
+  });
+
+  useEffect(() => {
+    const idx = navLinks.findIndex((l) => l.redirectTo === location.pathname);
+    setActive(idx === -1 ? null : idx);
+  }, [location.pathname]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
-  // useEffect(() => {
-  //   // Fetch initial session
-  //   async function fetchSession() {
-  //     const {
-  //       data: { session },
-  //     } = await supabase.auth.getSession();
-  //     setSession(session);
-  //   }
-  //   fetchSession();
-
-  //   const {
-  //     data: { subscription },
-  //   } = supabase.auth.onAuthStateChange((_event, session) => {
-  //     setSession(session);
-  //   });
-
-  //   // Cleanup subscription on unmount
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   };
-  // }, []);
 
   const handleVendorRedirection = () => {
     if (isVendor) {
@@ -41,12 +45,12 @@ export default function Header({ vendorSubmitting }) {
       return;
     }
 
-    if (!session) {
+    if (!isVendor) {
       navigate("/signup", { state: { redirectTo: "/vendor-registration" } });
       return;
     }
 
-    navigate("/vendor-registration");
+    return navigate("/vendor-registration");
   };
 
   const handleSignupClick = () => {
@@ -54,7 +58,7 @@ export default function Header({ vendorSubmitting }) {
   };
   return (
     <header className="w-full bg-[#fff] fixed h-20 inset-0 shadow-lg shadow-gray-400/50 py-0 px-4 md:px-12 z-20">
-      <div className="flex items-center justify-between py-6 relative">
+      <nav className="flex items-center justify-between py-6 relative">
         <Link
           to="/"
           className="text-[1.5rem] md:text-3xl text-[#009688] font-semibold"
@@ -63,18 +67,62 @@ export default function Header({ vendorSubmitting }) {
         </Link>
 
         <div className="flex items-center gap-6">
+          {navLinks.map((link, index) => {
+            const isActive = index === active;
+            const base = `hidden md:flex items-center gap-1 text-[1rem] ${
+              isActive ? "text-[#009688] font-medium" : "text-[#636363]"
+            } hover:text-[#009688] cursor-pointer`;
+            if (link.redirectTo) {
+              return (
+                <Link
+                  key={index}
+                  onClick={() => setActive(index)}
+                  className={`hidden md:flex items-center justify-center gap-1 text-[1rem] ${
+                    base +
+                    (link.isButton
+                      ? "text-[#009688] font-medium"
+                      : "text-[#636363]")
+                  } hover:text-[#009688] cursor-pointer`}
+                  to={link.redirectTo}
+                >
+                  {" "}
+                  {link.icon} {link.label}
+                </Link>
+              );
+            }
+
+            return (
+              <button
+                key={index}
+                onClick={() => {
+                  setActive(index); // set active first
+                  if (link.label.includes("View")) handleVendorRedirection();
+                  else if (link.label.includes("Login"))
+                    navigate("/signup", { state: { redirectTo: "/" } });
+                }}
+                className={`${
+                  base +
+                  (link.isButton
+                    ? "md:block py-2 px-3 rounded-lg border-[1px] border-gray-500 hover:border-[#009688] "
+                    : "")
+                }`}
+              >
+                {link.icon} {link.label}
+              </button>
+            );
+          })}
           {/* Desktop Menu Items */}
-          <button
+          {/* <button
             onClick={handleSignupClick}
-            className="hidden md:flex gap-1 items-center text-[1rem] text-[#636363]"
+            className="hidden md:flex gap-1 items-center text-[1rem] text-[#636363] hover:text-[#009688]"
           >
-            <UserCircle size={24} color="#636363" />
+            <UserCircle size={24} />
             Login / Sign up
           </button>
 
           <Link
             to="/wishlist"
-            className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer"
+            className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] hover:text-[#009688] cursor-pointer"
           >
             <Heart size={20} />
             Wishlists
@@ -82,17 +130,17 @@ export default function Header({ vendorSubmitting }) {
 
           <Link
             to="/carts"
-            className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer relative"
-          >
-            {/* <span className="absolute top-0 -left-2 py-0 px-[0.35rem] text-[0.625rem] text-[#fff] rounded-full bg-[#009688]">
+            className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] hover:text-[#009688] cursor-pointer relative"
+          > */}
+          {/* <span className="absolute top-0 -left-2 py-0 px-[0.35rem] text-[0.625rem] text-[#fff] rounded-full bg-[#009688]">
               3
             </span> */}
-            <ShoppingCart size={20} color="#636363" />
+          {/* <ShoppingCart size={20} />
             Cart
-          </Link>
+          </Link> */}
 
           {/* Mobile Menu Toggle */}
-          <List
+          {/* <List
             onClick={toggleMenu}
             className="block md:hidden cursor-pointer"
             size={24}
@@ -100,20 +148,28 @@ export default function Header({ vendorSubmitting }) {
 
           <button
             onClick={handleVendorRedirection}
-            className="hidden md:block py-2 px-3 rounded-lg border-[1px] border-gray-500 text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-transparent hover:bg-[#009688] hover:text-[#fff]"
+            className="hidden md:block py-2 px-3 rounded-lg border-[1px] border-gray-500 text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-[#009688] hover:text-[#009688]"
           >
             {!isVendor ? "Sell on LocalMart" : "View my store"}
-          </button>
+          </button> */}
+          <List
+            onClick={toggleMenu}
+            className="block md:hidden cursor-pointer"
+            size={24}
+          />
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="absolute top-[96%] left-0 w-full bg-[#fff] p-4 rounded-b-[10px] shadow-lg md:hidden">
             <div className="flex flex-col items-start py-4">
-              <div className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer">
+              <Link
+                to="/wishlist"
+                className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer"
+              >
                 <Heart size={20} />
                 Wishlists
-              </div>
+              </Link>
               <button
                 className="flex gap-1 items-center text-[0.875rem] text-[#636363] py-2"
                 onClick={() => {
@@ -121,7 +177,7 @@ export default function Header({ vendorSubmitting }) {
                   handleSignupClick();
                 }}
               >
-                <UserCircle size={24} color="#636363" />
+                <UserCircle size={24} />
                 Login / Sign up
               </button>
               <button
@@ -131,12 +187,12 @@ export default function Header({ vendorSubmitting }) {
                   handleVendorRedirection();
                 }}
               >
-                {!isVendor ? "Sell on LocalMart" : "View my store"}
+                {!isVendor ? "Sell on LocalMart" : "My store"}
               </button>
             </div>
           </div>
         )}
-      </div>
+      </nav>
     </header>
   );
 }

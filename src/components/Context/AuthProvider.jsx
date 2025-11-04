@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth event:", event);
+      // console.log("Auth event:", event);
 
       if (session?.user) {
         // await setUserWithVendorData(session.user);
@@ -71,7 +71,6 @@ export function AuthProvider({ children }) {
       if (user) {
         // await setUserWithVendorData(user);
         setUser(user);
-        console.log(user);
       }
     } catch (error) {
       console.error("Error in getInitialSession:", error);
@@ -90,7 +89,6 @@ export function AuthProvider({ children }) {
           .from("vendors")
           .select("*")
           .single();
-        console.log(vendorData);
 
         if (error && error.code !== "PGRST116") {
           // PGRST116 means no rows returned, which is fine
@@ -100,7 +98,6 @@ export function AuthProvider({ children }) {
 
         if (vendorData) {
           setVendorData(vendorData);
-          console.log(vendorData);
           // Add vendor_id to user object
           setUser((prev) => ({ ...prev, vendor_id: vendorData.vendor_id }));
         }

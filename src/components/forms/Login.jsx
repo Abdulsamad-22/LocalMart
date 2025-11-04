@@ -66,6 +66,12 @@ export default function () {
         Sign in with Google
       </button>
 
+      <div className="w-full flex items-center gap-1 mb-8">
+        <hr className="w-[50%] border-[1px] border-[#CACACA] rounded-full" />
+        <span className="text-[1.125rem]">or</span>
+        <hr className="w-[50%] border-[1px] border-[#CACACA] rounded-full" />
+      </div>
+
       <form onSubmit={handleSubmit(handleLogin)} className="">
         <div className="text-center">
           {/* Email */}

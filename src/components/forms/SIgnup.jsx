@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { signInWithGoogle } from "../../firebase/firebase";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "../../supabase-client";
-import { redirect, useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import { useAuth } from "../Context/AuthProvider";
 
 const errorMap = {
   PGRST302: "Invalid credentials. Please check your email or password.",
@@ -18,12 +18,12 @@ const errorMap = {
 };
 
 export default function Signup() {
-  const location = useLocation();
-  const redirectTo = location.state?.redirectTo || "/";
+  // const location = useLocation();
+  // const redirectTo = location.state?.redirectTo || "/";
 
   const [loading, setLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState("");
-  const { login } = AuthProvider();
+  const { login } = useAuth();
 
   const schema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),

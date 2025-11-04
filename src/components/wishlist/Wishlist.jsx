@@ -11,12 +11,14 @@ import { useWishlist } from "../Context/WishlistProvider";
 import { useCart } from "../Context/CartProvider";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
 
 export default function Wishlist() {
   const { wishlistItems, removeFromWishlist, clearAllWishlist } = useWishlist();
   const { addToCart } = useCart();
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
+  const { vendors } = useVendorLocation();
 
   const sortedItems = [...wishlistItems].sort((a, b) => {
     switch (sortBy) {
@@ -106,109 +108,116 @@ export default function Wishlist() {
         ) : (
           /* Wishlist Items */
           <div className="bg-white">
-            {sortedItems.map((item) => (
-              <div key={item.id} className="border-b-[0.5px] border-gray-100">
-                <div className="p-4 sm:p-6">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Product Image */}
-                    <div className="flex-shrink-0">
-                      <img
-                        src={item.image_url}
-                        alt={item.item_name}
-                        className="w-full sm:w-32 h-48 sm:h-32 object-cover rounded-lg"
-                      />
-                    </div>
+            {sortedItems.map((item) => {
+              const vendor = vendors.find((v) => v.id === item.vendor_id);
+              return (
+                <div key={item.id} className="border-b-[0.5px] border-gray-100">
+                  <div className="p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      {/* Product Image */}
+                      <div className="flex-shrink-0">
+                        <img
+                          src={item.image_url}
+                          alt={item.item_name}
+                          className="w-full sm:w-36 h-48 sm:h-32 object-cover rounded-lg"
+                        />
+                      </div>
 
-                    {/* Product Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
-                        <div className="flex-1">
-                          {/* Product Name & Brand */}
-                          <h3 className="text-lg font-medium text-gray-900 mb-2 line-clamp-2">
-                            {item.item_name}
-                          </h3>
-                          <p className="text-sm text-gray-600 mb-2">
-                            {item.item_description}
-                          </p>
-                          {/* <div className="flex items-center gap-4 mb-3">
-                            <span className="text-sm text-gray-500">by {item.vendor}</span>
-                          </div> */}
+                      {/* Product Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+                          <div className="flex-1">
+                            {/* Product Name & Brand */}
+                            <h3 className="text-lg font-medium text-gray-900 mb-2 line-clamp-2">
+                              {item.item_name}
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-2">
+                              {item.item_description}
+                            </p>
+                            {/* <div className="flex items-center gap-4 mb-3">
+                              <span className="text-sm text-gray-500">
+                                by {vendor.name}
+                              </span>
+                            </div> */}
 
-                          {/* Rating & Reviews */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <div className="flex items-center gap-[0.5px]">
-                              <Star
-                                weight="fill"
-                                className="text-yellow-400"
-                                size={20}
-                              />
+                            {/* Rating & Reviews */}
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className="flex items-center gap-[0.5px]">
+                                <Star
+                                  weight="fill"
+                                  className="text-yellow-400"
+                                  size={20}
+                                />
+                              </div>
+                              <span className="text-sm font-medium text-gray-700">
+                                4.5
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                (120 reviews)
+                              </span>
                             </div>
-                            <span className="text-sm font-medium text-gray-700">
-                              4.5
-                            </span>
-                            <span className="text-sm text-gray-500">
-                              (120 reviews)
-                            </span>
-                          </div>
 
-                          {/* Availability */}
-                          <div className="flex items-center gap-2 mb-4">
-                            <span
-                              className={`inline-block w-2 h-2 rounded-full ${
-                                item.item_units > 0
-                                  ? "bg-green-500"
-                                  : "bg-red-500"
-                              }`}
-                            ></span>
-                            <span
-                              className={`text-sm font-medium ${
-                                item.item_units > 0
-                                  ? "text-green-600"
-                                  : "text-red-600"
-                              }`}
-                            >
-                              {item.item_units > 0
-                                ? "In Stock"
-                                : "Out of Stock"}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Price & Actions */}
-                        <div className="flex flex-col sm:items-end gap-4 sm:min-w-[200px]">
-                          {/* Price */}
-                          <div className="text-right">
-                            <div className="flex items-center text-[1.25rem] font-medium text-gray-900">
-                              <CurrencyNgn size={18} />
-                              {Number(item.item_price).toLocaleString("en-NG")}
+                            {/* Availability */}
+                            <div className="flex items-center gap-2 mb-4">
+                              <span
+                                className={`inline-block w-2 h-2 rounded-full ${
+                                  item.item_units > 0
+                                    ? "bg-green-500"
+                                    : "bg-red-500"
+                                }`}
+                              ></span>
+                              <span
+                                className={`text-sm font-medium ${
+                                  item.item_units > 0
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }`}
+                              >
+                                {item.item_units > 0
+                                  ? "In Stock"
+                                  : "Out of Stock"}
+                              </span>
                             </div>
                           </div>
 
-                          {/* Action Buttons */}
-                          <div className="flex flex-col gap-4 w-full sm:w-[9em]">
-                            <button
-                              onClick={() => addToCart(item)}
-                              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
+                          {/* Price & Actions */}
+                          <div className="flex flex-col sm:items-end gap-4 sm:min-w-[200px]">
+                            {/* Price */}
+                            <div className="text-right">
+                              <div className="flex items-center text-[1.25rem] font-medium text-gray-900">
+                                <CurrencyNgn size={18} />
+                                {Number(item.item_price).toLocaleString(
+                                  "en-NG"
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-col gap-4 w-full sm:w-[9em]">
+                              <button
+                                onClick={() => addToCart(item)}
+                                className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
     hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-4 py-[0.75rem] rounded-lg transition-colors"
-                            >
-                              <ShoppingCart size={18} />
-                              Add to Cart
-                            </button>
-                            <button
-                              onClick={() => removeFromWishlist(item.id)}
-                              className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-[0.625rem] rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                              <X size={18} />
-                              Remove
-                            </button>
+                              >
+                                <ShoppingCart size={18} />
+                                Add to Cart
+                              </button>
+                              <button
+                                onClick={() => removeFromWishlist(item.id)}
+                                className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-[0.625rem] rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <X size={18} />
+                                Remove
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

@@ -1,11 +1,8 @@
 import {
   Plus,
   Minus,
-  X,
-  ArrowRight,
   Shield,
   CurrencyNgn,
-  ShoppingCart,
   Truck,
   Heart,
   Trash,
@@ -13,23 +10,12 @@ import {
 import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
 import { Link } from "react-router-dom";
+import CartSummary from "./CartSummary";
 
 export default function CartItemSection() {
   const { cartItems, removeFromCart, increaseCart, decreaseCart } = useCart();
   const { addToWishlist } = useWishlist();
 
-  // Calculate totals
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.price) * item.quantity,
-    0
-  );
-  const savings = cartItems.reduce(
-    (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
-    0
-  );
-  const deliveryCost = 15.99; // Free delivery over Ngn 50000
-  const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + (subtotal < 50000 ? deliveryCost : 0) + tax;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -74,7 +60,7 @@ export default function CartItemSection() {
               className="bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
     hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] px-6 py-[0.75rem] rounded-lg font-medium transition-colors"
             >
-              Continue Shopping
+              Add to your cart
             </Link>
           </div>
         ) : (
@@ -100,7 +86,7 @@ export default function CartItemSection() {
                             <img
                               src={item.image_url}
                               alt={item.item_name}
-                              className="w-full sm:w-24 h-32 sm:h-24 object-cover rounded-lg"
+                              className="w-full sm:w-28 h-32 sm:h-24 object-cover rounded-lg"
                             />
                           </div>
 
@@ -235,104 +221,7 @@ export default function CartItemSection() {
             </div>
 
             {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm sticky top-6">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Order Summary
-                  </h2>
-                </div>
-
-                <div className="px-6 py-4 space-y-4">
-                  {/* Subtotal */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">
-                      Subtotal (
-                      {cartItems.reduce((sum, item) => sum + item.quantity, 0)}{" "}
-                      items)
-                    </span>
-                    <span className="flex items-center font-medium">
-                      <CurrencyNgn size={18} />
-                      {subtotal.toLocaleString("en-NG")}
-                    </span>
-                  </div>
-
-                  {/* Savings */}
-                  {savings > 0 && (
-                    <div className="flex justify-between items-center text-green-600">
-                      <span>Total Savings</span>
-                      <span className="flex items-center font-medium">
-                        <CurrencyNgn size={18} />
-                        {savings.toLocaleString("en-NG")}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Delivery */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Delivery</span>
-                    <span className="font-medium">
-                      {subtotal >= 50000 ? (
-                        <span className="text-[#009688]">FREE</span>
-                      ) : (
-                        <span className="flex items-center">
-                          <CurrencyNgn size={18} />{" "}
-                          {deliveryCost.toLocaleString("en-NG")}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-
-                  {subtotal < 100 && (
-                    <div className="flex items-center text-sm text-blue-600">
-                      Add <CurrencyNgn size={18} />
-                      {(100 - subtotal).toLocaleString("en-NG")} more for FREE
-                      delivery
-                    </div>
-                  )}
-
-                  {/* Tax */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Tax</span>
-                    <span className="flex items-center font-medium">
-                      <CurrencyNgn size={18} /> {tax.toLocaleString("en-NG")}
-                    </span>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-4">
-                    <div className="flex justify-between items-center text-[1.125rem] font-medium">
-                      <span>Total</span>
-                      <span className="flex items-center">
-                        <CurrencyNgn size={20} />{" "}
-                        {total.toLocaleString("en-NG")}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-6 py-4">
-                  <div className="bg-[#f4edeb] flex items-center justify-center rounded-[12px] p-[0.75rem] gap-2 text-sm text-gray-500">
-                    <Shield size={14} />
-                    <span>
-                      This is{" "}
-                      <span className="text-[#009668] text-[1rem]">
-                        {" "}
-                        carbon-neutral
-                      </span>{" "}
-                      delivery
-                    </span>
-                  </div>
-
-                  <button
-                    className="w-full bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
-    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] py-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-4"
-                  >
-                    Proceed to Checkout
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <CartSummary />
           </div>
         )}
       </div>

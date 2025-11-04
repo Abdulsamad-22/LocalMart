@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../../supabase-client";
-import getBuyerLocation from "./GetBuyerLocation";
+import getBuyerLocation from "./getBuyerLocation";
 import { geocodeAddress } from "./GeocodeVendorAddress";
 import { getTravelTimes } from "./getTravelTimes";
 
 const LocationContext = createContext();
 export const useVendorLocation = () => useContext(LocationContext);
+getBuyerLocation;
 
 function getStateFromCoords(lat, lng) {
   if (!lat || !lng) return "Unknown State";
@@ -190,64 +191,17 @@ export default function VendorLocationProvider({ children }) {
   if (vendors.length === 0) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
-        <h2>No Vendors Found</h2>
-        <p>Unable to fetch products</p>
+        <h2 className="text-[#009688] text-[1.5rem] font-semibold">
+          LocalMart
+        </h2>
+        <small>Please wait...</small>
       </div>
     );
   }
 
   return (
-    <LocationContext.Provider
-      value={{ vendors, setVendors, loading, setLoading }}
-    >
+    <LocationContext.Provider value={{ vendors, setVendors }}>
       {children}
     </LocationContext.Provider>
   );
-
-  // return (
-  //   <div>
-  //     <h2>Available Vendors</h2>
-  //     <p>Found {vendors.length} vendor(s)</p>
-
-  //     <ul style={{ listStyle: "none", padding: 0 }}>
-  //       {vendors.map((vendor, i) => (
-  //         <li
-  //           key={vendor.name || i}
-  //           style={{
-  //             padding: "10px",
-  //             border: "1px solid #ddd",
-  //             margin: "5px 0",
-  //             borderRadius: "5px",
-  //           }}
-  //         >
-  //           <div>
-  //             <strong>{vendor.name}</strong>
-  //             <br />
-  //             <small>{vendor.address}</small>
-  //           </div>
-
-  //           <div style={{ marginTop: "5px" }}>
-  //             {vendor.hasRoute ? (
-  //               <span style={{ color: "green" }}>
-  //                 🚗 Delivery time: {vendor.travelTime} minutes
-  //               </span>
-  //             ) : vendor.state ? (
-  //               <span style={{ color: "orange" }}>
-  //                 📍 Located in: {vendor.state}
-  //               </span>
-  //             ) : (
-  //               <span style={{ color: "red" }}>❌ Location unavailable</span>
-  //             )}
-  //           </div>
-
-  //           {vendor.error && (
-  //             <div style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
-  //               Error: {vendor.error}
-  //             </div>
-  //           )}
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </div>
-  // );
 }

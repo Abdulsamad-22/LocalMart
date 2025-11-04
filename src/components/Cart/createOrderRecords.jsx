@@ -1,6 +1,4 @@
 import { supabase } from "../../supabase-client";
-import { useCart } from "../Context/CartProvider";
-import VendorLocationProvider from "../Context/deliveryTime/VendorLocationProvider";
 
 export const createOrderRecords = async ({
   reference,

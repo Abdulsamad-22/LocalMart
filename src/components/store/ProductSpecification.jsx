@@ -32,21 +32,6 @@ export default function ProductSpecification({
     reader.readAsDataURL(file); // Convert to data URL
   }
 
-  // const handleCancelEdit = () => {
-  //   console.log("❌ Canceling edit");
-  //   setEditingProduct(null);
-  //   reset({
-  //     productName: "",
-  //     category: "",
-  //     description: "",
-  //     units: "",
-  //     price: "",
-  //   });
-  //   setPreview(null);
-  //   setSelectedSizes([]);
-  //   setSelectedColors([]);
-  // };
-
   return (
     <div className="w-full md:w-[50%] bg-white p-4 md:p-6 flex flex-col ">
       <div className="space-y-2 mx-auto text-gray-800 mb-12">

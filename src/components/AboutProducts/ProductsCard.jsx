@@ -192,10 +192,10 @@ export default function ProductsCard({ product, vendorInfo }) {
               </div>
 
               {/* Variants */}
-              <div className="space-y-4">
+              <div>
                 <div>
                   {product.item_sizes && product.item_sizes.length > 0 && (
-                    <h3 className="text-sm font-semibold text-gray-900">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">
                       Sizes:
                     </h3>
                   )}
@@ -227,13 +227,13 @@ export default function ProductsCard({ product, vendorInfo }) {
                 <div>
                   {product.item_colors.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-2">
                         Choose a color
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {product.item_colors.map((color) => (
                           <button
-                            key={color}
+                            key={color.code}
                             onClick={() => setSelectedColor(color)}
                             className={`px-4 py-2 rounded-lg border-2 ${
                               color.name === "White" ||
@@ -286,7 +286,26 @@ export default function ProductsCard({ product, vendorInfo }) {
                 {/* Quantity */}
                 <div className="flex items-center gap-4">
                   <span className="font-medium text-gray-900">Quantity:</span>
-                  <div className="flex items-center border border-gray-300 rounded-lg">
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => updateQuantity(quantity - 1)}
+                      disabled={quantity <= 1}
+                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="px-4 py-2 min-w-[60px] text-center font-medium">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(quantity + 1)}
+                      disabled={quantity >= product.item_units}
+                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  {/* <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
                       onClick={() => updateQuantity(quantity - 1)}
                       disabled={quantity <= 1}
@@ -304,7 +323,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                     >
                       <Plus size={16} />
                     </button>
-                  </div>
+                  </div> */}
                   <span className="text-sm text-gray-600">
                     Max: {product.item_units}
                   </span>
@@ -318,16 +337,17 @@ export default function ProductsCard({ product, vendorInfo }) {
                         ...product,
                         id: product.id,
                         quantity: quantity,
+                        color: selectedColor,
                       })
                     }
                     disabled={product.item_units < 1}
                     className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
-                    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] py-4 px-6 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] py-3 px-6 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                   >
                     <ShoppingCart size={20} />
                     Add to Cart
                   </button>
-                  <button className="flex-1 border border-gray-400 py-4 px-6 rounded-lg hover:border-[#009688] hover:text-[#009688] transition-colors">
+                  <button className="flex-1 border border-gray-400 py-3 px-6 rounded-lg hover:border-[#009688] hover:text-[#009688] transition-colors">
                     Buy Now
                   </button>
                 </div>
@@ -338,8 +358,8 @@ export default function ProductsCard({ product, vendorInfo }) {
                     onClick={() => setIsWishlisted(!isWishlisted)}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${
                       isWishlisted
-                        ? "text-red-600"
-                        : "text-gray-600 hover:text-red-600"
+                        ? "text-blue-600"
+                        : "text-gray-600 hover:text-blue-600"
                     }`}
                   >
                     <Heart
@@ -363,9 +383,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                     <div className="font-medium text-gray-900">
                       Free Delivery
                     </div>
-                    <div className="text-sm text-gray-600">
-                      3-5 business days
-                    </div>
+                    <div className="text-sm text-gray-600">3-5 days</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -380,7 +398,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <Shield className="text-purple-600" size={20} />
                   <div>
                     <div className="font-medium text-gray-900">
@@ -390,7 +408,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                       1 year manufacturer warranty
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Seller Info */}
@@ -408,7 +426,6 @@ export default function ProductsCard({ product, vendorInfo }) {
                   <div>
                     <div className="font-medium text-[#009688] hover:underline cursor-pointer">
                       {vendorInfo.name}
-                      {/* Slowflow fashion world */}
                     </div>
                     <div className="text-sm text-gray-600">5k + sold</div>
                   </div>

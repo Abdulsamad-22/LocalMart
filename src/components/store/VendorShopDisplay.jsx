@@ -7,15 +7,17 @@ import {
   ShoppingCart,
   Trash,
 } from "@phosphor-icons/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useProduct } from "../Context/ProductProvider";
 import { useCart } from "../Context/CartProvider";
 
 export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { products, setProducts } = useProduct();
+  const { products, setProducts, setEditingProduct, editingProduct } =
+    useProduct();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -49,9 +51,10 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
     }
   }, [vendorId]);
 
-  const handleEditProduct = (productId) => {
+  const handleEditProduct = (product) => {
     // Navigate to edit product page
-    console.log("Edit product:", productId);
+    setEditingProduct(product);
+    navigate("/add-product");
   };
 
   const handleDeleteProduct = async (productId) => {
@@ -88,14 +91,14 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
         <h2 className="text-2xl font-semibold">
           {isOwner ? "Your Products" : "Products"} ({products.length})
         </h2>
-        {isOwner && (
+        {/* {isOwner && (
           <Link
             to="/add-product"
             className="bg-[#009688] text-white px-4 py-2 rounded"
           >
             Add Product
           </Link>
-        )}
+        )} */}
       </div>
 
       {products.length === 0 ? (
@@ -115,7 +118,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-[47%_47%] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
             <div
               key={product.id}
@@ -128,23 +131,23 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                   className="w-full md:w-full h-auto md:h-[218px] object-cover"
                 />
               )}
-              <div className="p-4">
-                <h3 className="font-semibold text-[1rem] mb-2 line-clamp-1">
+              <div className="p-2 md:p-4">
+                <h3 className="font-semibold text-[0.875rem] md:text-[1rem] mb-1 md:mb-2 line-clamp-1">
                   {product.item_name}
                 </h3>
                 {product.item_description && (
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+                  <p className="text-gray-600 text-[0.75rem] md:text-[0.875rem] mb-3 line-clamp-3">
                     {product.item_description}
                   </p>
                 )}
                 <div className="flex justify-between items-center mb-3">
-                  <span className="flex items-center font-semibold ">
-                    <CurrencyNgn size={18} />
+                  <span className="flex items-center font-semibold text-[0.875rem] md:text-[1rem]">
+                    <CurrencyNgn className="text-[1rem] md:text-[1.125rem]" />
                     {Number(product.item_price || 0).toLocaleString("en-NG")}
                   </span>
                   {product.item_units !== undefined && (
                     <span
-                      className={`text-sm ${
+                      className={`text-[0.75rem] md:text-[0.875rem] ${
                         product.item_units > 0
                           ? "text-green-600"
                           : "text-red-500"
@@ -176,18 +179,18 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                   // Owner view - Edit/Delete buttons
                   <div className="flex gap-2">
                     <button
-                      onClick={() => handleEditProduct(product.id)}
-                      className="flex items-center justify-center gap-2 flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded text-sm hover:bg-blue-50"
-                    >
-                      <PencilSimple size={18} />
-                      Edit
-                    </button>
-                    <button
                       onClick={() => handleDeleteProduct(product.id)}
                       className="flex items-center justify-center gap-2 flex-1 bg-red-100 text-red-700 py-2 px-3 rounded text-sm hover:bg-red-200"
                     >
                       <Trash size={18} />
                       Delete
+                    </button>
+                    <button
+                      onClick={() => handleEditProduct(product)}
+                      className="flex items-center justify-center gap-2 flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded text-sm hover:bg-blue-50"
+                    >
+                      <PencilSimple size={18} />
+                      Edit
                     </button>
                   </div>
                 )}

@@ -1,4 +1,4 @@
-import { FormProvider, useFormContext } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
 import { useEffect, useState } from "react";
 import ProductSpecification from "../store/ProductSpecification";
 import StockupStore from "../store/StockupStore";
@@ -103,7 +103,7 @@ export default function VendorStore() {
     navigate(-1);
   };
 
-  const onSubmit = (formData) => {
+  const onSubmit = async (formData) => {
     try {
       const productData = {
         vendor_id: user.id,
@@ -119,7 +119,7 @@ export default function VendorStore() {
       };
 
       if (editingProduct) {
-        const { data, error } = supabase
+        const { data, error } = await supabase
           .from("products")
           .update(productData)
           .eq("id", editingProduct.id)

@@ -16,6 +16,7 @@ import CheckoutPage from "./components/page/CheckoutPage";
 
 function App() {
   const [loading, setLoading] = useState(false);
+  const [openOverlay, setOpenOverlay] = useState(false);
   return (
     <BrowserRouter>
       <Routes>
@@ -26,9 +27,24 @@ function App() {
           <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
 
-        <Route element={<MinimalLayout />}>
+        <Route
+          element={
+            <MinimalLayout
+              openOverlay={openOverlay}
+              setOpenOverlay={setOpenOverlay}
+            />
+          }
+        >
           <Route path="/add-product" element={<VendorStore />} />
-          <Route path="/my-shop" element={<MyVendorShop />} />
+          <Route
+            path="/my-shop"
+            element={
+              <MyVendorShop
+                setOpenOverlay={setOpenOverlay}
+                openOverlay={openOverlay}
+              />
+            }
+          />
           <Route path="/vendor/:id" element={<PublicVendorShop />} />
           <Route path="/checkout" element={<CheckoutPage />} />
         </Route>

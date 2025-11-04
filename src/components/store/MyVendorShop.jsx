@@ -1,22 +1,13 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
 import VendorShopDisplay from "./VendorShopDisplay";
-import {
-  CopySimple,
-  PencilSimple,
-  ShareNetwork,
-  DotsThreeVertical,
-} from "@phosphor-icons/react";
-import { useState } from "react";
+import { useEffect } from "react";
+import { PencilSimple, ShareNetwork } from "@phosphor-icons/react";
+import ShareStore from "./ShareStore";
 
-export default function MyVendorShop() {
+export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
   const { user, vendorData, loading: authLoading, isVendor } = useAuth();
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   if (authLoading) {
     console.log("auth loading");
@@ -52,9 +43,33 @@ export default function MyVendorShop() {
     navigate("/vendor-registration", { state: { vendorData } });
   };
 
+  useEffect(() => {
+    if (openOverlay) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup in case component unmounts while overlay is open
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [openOverlay]);
+
   return (
     <div className="container mx-auto px-3 py-8">
-      <div className="">
+      {openOverlay && (
+        <div
+          className="fixed top-[10%] left-1/2 transform -translate-x-1/2 z-[8] 
+        w-[90%] sm:w-[60%] md:w-[40%] lg:w-[30%] 
+        bg-white rounded-xl shadow-lg p-6 
+        transition-all duration-300 ease-out 
+        animate-slideUp"
+        >
+          <ShareStore vendorData={vendorData} setOpenOverlay={setOpenOverlay} />
+        </div>
+      )}
+      <div className="my-12">
         {/* Dashboard Header */}
         <div className="bg-[#009688]/8 rounded-lg py-6 mb-2 md:mb-8">
           <div className="flex items-center justify-between">
@@ -72,30 +87,25 @@ export default function MyVendorShop() {
             </div>
             {/* Share Shop Section */}
             <div>
-              <div className="hidden md:flex gap-4 bg-gray-50 rounded-lg mb-8">
+              <div className="flex gap-4 bg-gray-50 rounded-lg mb-8">
                 <div>
                   <button
                     onClick={() => handleEditStore(vendorData)}
                     className="flex items-center bg-[#009688]/10 text-sm text-[#009688] p-2 rounded-md gap-1"
                   >
-                    <PencilSimple size={18} /> Edit store
+                    <PencilSimple size={18} />{" "}
+                    <span className="hidden md:inline">Edit store</span>
                   </button>
                 </div>
-                <button className="flex items-center bg-[#009688] text-[#fff] p-2 rounded-md gap-1">
+                <button
+                  onClick={() => setOpenOverlay(!openOverlay)}
+                  className="flex items-center bg-[#009688] text-[#fff] p-2 rounded-md gap-1"
+                >
                   <ShareNetwork size={18} />
-                  Share
+                  <span className="hidden md:inline">Share</span>
                 </button>
               </div>
-              <DotsThreeVertical
-                onClick={toggleMenu}
-                className="block md:hidden cursor-pointer"
-                size={32}
-              />
             </div>
-            {/* Mobile Menu */}
-            {isMenuOpen && (
-              <div className="absolute top-[96%] left-0 w-full bg-[#fff] p-4 rounded-b-[10px] shadow-lg md:hidden"></div>
-            )}
           </div>
 
           <Link
@@ -129,32 +139,6 @@ export default function MyVendorShop() {
             </Link>
           </div>
         </div>
-
-        {/* Share Shop Section */}
-        {/* <div className="flex gap-4 bg-gray-50 rounded-lg mb-8"> */}
-        {/* <div>
-            <button
-              onClick={() => handleEditStore(vendorData)}
-              className="flex items-center bg-[#009688]/10 text-sm text-[#009688] p-2 rounded-md gap-1"
-            >
-              <PencilSimple size={18} /> Edit store
-            </button>
-          </div>
-          <button className="flex items-center bg-[#009688] text-[#fff] p-2 rounded-md gap-1">
-            <ShareNetwork size={18} />
-            Share
-          </button> */}
-        {/* <button
-            onClick={() => {
-              navigator.clipboard.writeText(shareUrl);
-              alert("Shop URL copied to clipboard!");
-            }}
-            className="flex items-center gap-1 bg-[#009688]/10 text-sm text-[#009688] px-3 py-3 rounded hover:bg-[#009688]"
-          >
-            <CopySimple size={20} />
-            Copy shop link
-          </button> */}
-        {/* </div> */}
       </div>
 
       {/* Shop Display */}

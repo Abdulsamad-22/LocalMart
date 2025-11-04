@@ -1,0 +1,38 @@
+.custom-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.custom-radio:hover {
+  border-color: #999;
+}
+
+.custom-radio:checked {
+  border-color: #009688;
+  background-color: #009688;
+}
+
+.custom-radio:checked::after {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  background-color: #009688;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-radio:focus {
+  box-shadow: 0 0 0 3px rgba(0, 128, 0, 0.1);
+}

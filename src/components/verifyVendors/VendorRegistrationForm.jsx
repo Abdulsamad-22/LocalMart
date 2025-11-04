@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getBankCode } from "./paystack-account/getBankCode";
 import { verifyAccountNumber } from "./paystack-account/verifyAccountNumber";
-import { createSubaccount } from "./paystack-account/createSubAccount";
+import { createSubaccount } from "./paystack-account/createSubaccount";
 import { updateSubaccount } from "./paystack-account/updateSubaccount";
 import {
   User,
@@ -15,6 +15,7 @@ import {
   ShieldCheck,
 } from "@phosphor-icons/react";
 import { useAuth } from "../Context/AuthProvider";
+import "../../styles/RadioButton.css";
 // import { geocodeAddress } from "../deliveryTime/GeocodeVendorAddress";
 
 const schema = yup.object({
@@ -280,7 +281,7 @@ export default function VendorRegistrationForm() {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+        // onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
         noValidate
         className="w-full md:w-[50%] mx-auto"
       >
@@ -437,7 +438,7 @@ export default function VendorRegistrationForm() {
                       type="radio"
                       value={opt.value}
                       {...register("storeType")}
-                      className="text-[#009688] focus:ring-[#009688]"
+                      className="custom-radio"
                     />
                     {opt.label}
                   </label>

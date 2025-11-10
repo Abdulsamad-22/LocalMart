@@ -3,10 +3,13 @@ import { supabase } from "../../../supabase-client";
 import getBuyerLocation from "./getBuyerLocation";
 import { geocodeAddress } from "./GeocodeVendorAddress";
 import { getTravelTimes } from "./getTravelTimes";
+import {
+  getCachedBuyerLocation,
+  cacheBuyerLocation,
+} from "../../Utils/cacheBuyerLocation";
 
 const LocationContext = createContext();
 export const useVendorLocation = () => useContext(LocationContext);
-getBuyerLocation;
 
 function getStateFromCoords(lat, lng) {
   if (!lat || !lng) return "Unknown State";
@@ -31,7 +34,6 @@ export default function VendorLocationProvider({ children }) {
         const { data: vendorData, error: dbError } = await supabase
           .from("vendors")
           .select("*");
-        // .select("vendor_coords, business_address, business_name");
 
         if (dbError) {
           console.error("Database error:", dbError);
@@ -43,6 +45,7 @@ export default function VendorLocationProvider({ children }) {
         if (!vendorData || vendorData.length === 0) {
           console.warn("No vendors found in database");
           setVendors([]);
+          setLoading(false);
           return;
         }
 
@@ -64,7 +67,6 @@ export default function VendorLocationProvider({ children }) {
 
           try {
             const coords = await geocodeAddress(v.business_address);
-            // const coordsAdress = await geocodeAddress(v.coords_address);
             console.log(`Geocoding result for ${v.business_name}:`, coords);
 
             if (coords && coords.lat && coords.lng) {
@@ -72,7 +74,6 @@ export default function VendorLocationProvider({ children }) {
                 name: v.business_name,
                 address: v.business_address,
                 id: v.vendor_id,
-                // address: v.coords_address,
                 location: coords,
               });
               console.log(
@@ -96,38 +97,62 @@ export default function VendorLocationProvider({ children }) {
         if (vendorsWithCoords.length === 0) {
           console.error("No vendors could be geocoded");
           setError("No vendor locations could be found");
+          setLoading(false);
           return;
         }
 
-        // Get buyer location
+        // Get buyer location with timeout and fallback
         console.log("Getting buyer location...");
         let buyer;
+
         try {
-          buyer = await getBuyerLocation();
-          console.log("Buyer location:", buyer);
+          // Try to get location with timeout
+          buyer = await getBuyerLocation(10000); // 10 second timeout
+          console.log("Buyer location obtained:", buyer);
         } catch (locationError) {
           console.error("Failed to get buyer location:", locationError);
-          setError(
-            "Could not get your location. Please enable location services."
-          );
-          return;
+
+          // Check if we have cached location
+          const cachedLocation = getCachedBuyerLocation();
+
+          if (cachedLocation) {
+            console.log("Using cached location:", cachedLocation);
+            buyer = cachedLocation;
+          } else {
+            // Use default fallback location (e.g., Abuja city center)
+            console.warn("Using fallback location (Abuja)");
+            buyer = {
+              lat: 9.0765,
+              lng: 7.3986,
+              isFallback: true,
+            };
+
+            // Show warning to user
+            setError(
+              "Could not get your exact location. Showing results based on Abuja. " +
+                "Please enable location services for accurate results."
+            );
+          }
         }
 
         if (!buyer || !buyer.lat || !buyer.lng) {
           console.error("Invalid buyer location:", buyer);
           setError("Invalid location data received");
+          setLoading(false);
           return;
         }
 
-        // Step 4: Calculate travel times
+        // Calculate travel times
         console.log("Calculating travel times...");
         let travelTimeResults;
+
         try {
           travelTimeResults = await getTravelTimes(buyer, vendorsWithCoords);
           console.log("Travel time results:", travelTimeResults);
         } catch (travelError) {
           console.error("Travel time calculation failed:", travelError);
-          // Continue with fallback state data
+
+          // Continue with fallback - show vendors without travel times
           travelTimeResults = vendorsWithCoords.map((v) => ({
             vendor: v,
             travelTime: null,
@@ -138,15 +163,13 @@ export default function VendorLocationProvider({ children }) {
 
         // Process final results
         const finalVendors = travelTimeResults.map((result, i) => {
-          console.log(`Processing result ${i}:`, result);
-
           const vendor = result.vendor;
           const travelTime = result.travelTime;
           const state = result.state;
 
           return {
             ...vendor,
-            travelTime: travelTime ? Math.round(travelTime * 100) / 100 : null, // Round to 2 decimals
+            travelTime: travelTime ? Math.round(travelTime * 100) / 100 : null,
             state: state,
             hasRoute: travelTime !== null,
             error: result.error || null,
@@ -155,7 +178,11 @@ export default function VendorLocationProvider({ children }) {
 
         console.log("Final vendors array:", finalVendors);
         setVendors(finalVendors);
-        console.log(vendors);
+
+        // Cache buyer location for future use
+        if (!buyer.isFallback) {
+          cacheBuyerLocation(buyer);
+        }
       } catch (error) {
         console.error("Error in loadData:", error);
         setError(`Failed to load vendor data: ${error.message}`);
@@ -178,15 +205,15 @@ export default function VendorLocationProvider({ children }) {
   //   );
   // }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <h2>Error Loading Vendors</h2>
-        <p style={{ color: "red" }}>{error}</p>
-        <button onClick={() => window.location.reload()}>Try Again</button>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen">
+  //       <h2>Error Loading Vendors</h2>
+  //       <p style={{ color: "red" }}>{error}</p>
+  //       <button onClick={() => window.location.reload()}>Try Again</button>
+  //     </div>
+  //   );
+  // }
 
   if (vendors.length === 0) {
     return (

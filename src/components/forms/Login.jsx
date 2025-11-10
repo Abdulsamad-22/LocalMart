@@ -117,11 +117,6 @@ export default function () {
 
           {/* Login button */}
           <button
-            // onClick={()=> {
-            //   isVendor
-            //     ? navigate("/my-shop", { state: { redirectTo: "/" } })
-            //     : navigate("/")}
-            // }
             type="submit"
             disabled={loading}
             className="w-full px-5 py-3 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200

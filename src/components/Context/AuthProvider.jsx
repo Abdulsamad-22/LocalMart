@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../supabase-client";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
@@ -18,8 +19,10 @@ const errorMap = {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
   const [vendorData, setVendorData] = useState(null);
   const [supabaseError, setSupabaseError] = useState(null);
+  const navigate = useNavigate();
 
   // Yup schema
   const schema = yup.object({
@@ -27,57 +30,49 @@ export function AuthProvider({ children }) {
     password: yup.string().min(8).max(12).required("Password is required"),
   });
 
-  // Get initial user and set up auth state listener
+  // Updated user state change and get initial session
   useEffect(() => {
-    // Get initial session
-    getInitialSession();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // console.log("Auth event:", event);
-
-      if (session?.user) {
-        // await setUserWithVendorData(session.user);
-        console.log(session.user);
-      } else {
-        setUser(null);
-        setVendorData(null);
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session?.user?.email);
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
+        console.log("user session expired");
+        navigate("/login");
       }
       setLoading(false);
     });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Get initial session on mount
-  async function getInitialSession() {
+  const checkSession = async () => {
     try {
       const {
-        data: { user },
+        data: { session },
         error,
-      } = await supabase.auth.getUser();
+      } = await supabase.auth.getSession();
 
-      if (error) {
-        console.error("Error getting user:", error);
+      if (error) throw error;
 
-        setLoading(false);
-        return;
-      }
-
-      if (user) {
-        // await setUserWithVendorData(user);
-        setUser(user);
-      }
+      return {
+        isValid: !!session,
+        session,
+        user: session?.user,
+      };
     } catch (error) {
-      console.error("Error in getInitialSession:", error);
-    } finally {
-      setLoading(false);
+      console.error("Session check error:", error);
+      return { isValid: false, error: error.message };
     }
-  }
+  };
 
   useEffect(() => {
     // Set user and fetch vendor data if exists
@@ -145,28 +140,41 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Signup function
-  // const signup = async (email, password, userData = {}) => {
-  //   try {
-  //     setLoading(true);
-  //     const { data, error } = await supabase.auth.signUp({
-  //       email,
-  //       password,
-  //       options: {
-  //         data: userData, // Additional user metadata
-  //       },
-  //     });
+  const signup = async (formData) => {
+    try {
+      setLoading(false);
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
 
-  //     if (error) throw error;
+      if (error) {
+        console.error("Error signing up:", error.message);
+        const friendlyMessage =
+          errorMap[error.code] || "Something went wrong. Please try again.";
 
-  //     return { data, error: null };
-  //   } catch (error) {
-  //     console.error("Signup error:", error);
-  //     return { data: null, error };
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+        setSupabaseError(friendlyMessage);
+        setLoading(true);
+        return;
+      }
+
+      console.log("User signed up:", data);
+      setUser(data.user);
+
+      return {
+        success: true,
+        data,
+        error: null,
+        user: data.user,
+      };
+    } catch (err) {
+      // console.error("Registration failed:", err.message);
+      // console.error("Unexpected error during signup:", err);
+      setSupabaseError("Unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Logout function
   const logout = async () => {
@@ -192,7 +200,10 @@ export function AuthProvider({ children }) {
     login,
     schema,
     supabaseError,
-    // signup,
+    session,
+    checkSession,
+    isAuthenticated: !!user,
+    signup,
     logout,
 
     // Helper functions

@@ -2,9 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { signInWithGoogle } from "../../firebase/firebase";
-import { useState } from "react";
-import { supabase } from "../../supabase-client";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
 
 const errorMap = {
@@ -18,12 +16,11 @@ const errorMap = {
 };
 
 export default function Signup() {
-  // const location = useLocation();
-  // const redirectTo = location.state?.redirectTo || "/";
+  const location = useLocation();
+  const redirectTo = location.state?.redirectTo || "/";
 
-  const [loading, setLoading] = useState(false);
-  const [firebaseError, setFirebaseError] = useState("");
-  const { login } = useAuth();
+  const { login, signup, supabaseError, loading } = useAuth();
+  const navigate = useNavigate();
 
   const schema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -33,36 +30,14 @@ export default function Signup() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({ resolver: yupResolver(schema) });
 
-  async function onSubmit(formData) {
-    try {
-      setLoading(false);
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (error) {
-        console.error("Error signing up:", error.message);
-        const friendlyMessage =
-          errorMap[error.code] || "Something went wrong. Please try again.";
-
-        setFirebaseError(friendlyMessage);
-        setLoading(true);
-        return;
-      }
-
-      console.log("User signed up:", data);
-      reset();
-    } catch (err) {
-      console.error("Registration failed:", err.message);
-      console.error("Unexpected error during signup:", err);
-    } finally {
-      setLoading(false);
+  const handleSignup = async (formData) => {
+    const result = await signup(formData);
+    if (result.success) {
+      navigate(redirectTo, { replace: true });
     }
-  }
+  };
 
   return (
     <div className="w-full mx-auto my-12 md:w-[40%] p-6 bg-white shadow rounded-lg text-center">
@@ -108,7 +83,7 @@ export default function Signup() {
         <hr className="w-[50%] border-[1px] border-[#CACACA] rounded-full" />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="">
+      <form onSubmit={handleSubmit(handleSignup)} className="">
         <div className="text-center">
           <div className="space-y-2 text-left text-gray-800 mb-6">
             <label>Email</label>
@@ -137,8 +112,8 @@ export default function Signup() {
                 {errors.password.message}
               </p>
             ) : (
-              firebaseError && (
-                <p className="text-[0.875rem]  text-red-600">{firebaseError}</p>
+              supabaseError && (
+                <p className="text-[0.875rem]  text-red-600">{supabaseError}</p>
               )
             )}
           </div>

@@ -75,7 +75,7 @@ export default function PublicVendorShop() {
   return (
     <div className="py-8 my-4 md:my-12">
       {/* Show banner if viewing own shop */}
-      {isOwnShop === false && (
+      {isOwnShop !== false && (
         <div className=" border border-[#009688] bg-[#009688]/10 py-4 px-12 mb-6">
           <p className="text-gray-900">
             📝 This is how your shop appears to customers.

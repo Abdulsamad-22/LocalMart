@@ -142,7 +142,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                 )}
                 <div className="flex justify-between items-center mb-3">
                   <span className="flex items-center font-semibold text-[0.875rem] md:text-[1rem]">
-                    <CurrencyNgn className="text-[1rem] md:text-[1.125rem]" />
+                    <CurrencyNgn className="text-[1rem] md:text-[1.18rem]" />
                     {Number(product.item_price || 0).toLocaleString("en-NG")}
                   </span>
                   {product.item_units !== undefined && (
@@ -169,7 +169,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                     className={`w-full py-2 rounded transition-colors ${
                       product.item_units === 0
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#009688] to-[#00695C] text-[#fff]"
+                        : "flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200 hover:from[#00897B] hover:to-[#005B4F] text-[#fff]"
                     }`}
                   >
                     {product.item_units !== 0 ? <ShoppingCart size={20} /> : ""}

@@ -57,7 +57,7 @@ export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
   }, [openOverlay]);
 
   return (
-    <div className="container mx-auto px-3 py-8">
+    <div className="px-12 py-8">
       {openOverlay && (
         <div
           className="fixed top-[10%] left-1/2 transform -translate-x-1/2 z-[8] 

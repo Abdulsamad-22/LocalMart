@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartProvider";
 import { CurrencyNgn, ArrowRight, Shield } from "@phosphor-icons/react";
+import { useAuth } from "../Context/AuthProvider";
 
 export default function CartSummary() {
   const { cartItems } = useCart();
+  const { user, checkSession } = useAuth();
   const navigate = useNavigate();
 
   // Calculate totals
@@ -20,9 +22,28 @@ export default function CartSummary() {
   const tax = subtotal * 0.08; // 8% tax
   const total = subtotal + (subtotal < 50000 ? deliveryCost : 0) + tax;
 
-  const proceedToCheckout = () => {
-    navigate("/checkout");
+  const proceedToCheckout = async () => {
+    try {
+      const { isValid } = await checkSession();
+
+      if (!user) {
+        navigate("/signup", { state: { from: "/checkout" } });
+        return;
+      }
+
+      if (user && !isValid) {
+        alert("Your session expired. Please log in to complete checkout!");
+        navigate("/login", { state: { from: "/checkout" } });
+        return;
+      }
+
+      navigate("/checkout");
+    } catch (error) {
+      console.error("Error checking session:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
+
   return (
     <div className="lg:col-span-1">
       <div className="bg-white rounded-lg shadow-sm sticky top-6">

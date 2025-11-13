@@ -1,4 +1,4 @@
-import { FormProvider } from "react-hook-form";
+import { FormProvider, Watch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import ProductSpecification from "../store/ProductSpecification";
 import StockupStore from "../store/StockupStore";
@@ -10,9 +10,11 @@ import { useProduct } from "../Context/ProductProvider";
 import { PencilSimple } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabase-client";
+import { useAuth } from "../Context/AuthProvider";
 
 export default function VendorStore() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { editingProduct, setEditingProduct, setProducts } = useProduct();
   const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -34,10 +36,27 @@ export default function VendorStore() {
     description: yup.string().max(1000).required("Please describe product"),
     price: yup.string().required("Price is required"),
     units: yup.string().required("Available Product unit is required"),
+
+    selectedImage: yup
+      .object({
+        name: yup.string().required(),
+        data: yup.string().required(),
+        type: yup.string().required(),
+      })
+      .nullable()
+      .required("Product image is required"),
   });
 
   const methods = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      productName: "",
+      category: "",
+      description: "",
+      price: "",
+      units: "",
+      selectedImage: null,
+    },
   });
 
   useEffect(() => {
@@ -52,7 +71,8 @@ export default function VendorStore() {
         price: editingProduct.item_price || "",
       });
 
-      setPreview(editingProduct.image_url || null);
+      setPreview(editingProduct.image_preview || null);
+      setImageFile(editingProduct.image_url || null);
 
       // Parse and set sizes
       if (editingProduct.sizes) {
@@ -88,6 +108,28 @@ export default function VendorStore() {
     }
   }, [editingProduct, methods.reset]);
 
+  const uploadImage = async (file) => {
+    if (!file) throw new Error("No file provided");
+
+    const filePath = `${file.name}-${Date.now()}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("product-images")
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: publicData, error: publicError } = supabase.storage
+      .from("product-images")
+      .getPublicUrl(filePath);
+
+    if (publicError) {
+      console.error("Error getting public URL:", publicError.message);
+      return null;
+    }
+    return publicData.publicUrl;
+  };
+
   const handleCancelEdit = () => {
     setEditingProduct(null);
     reset({
@@ -105,20 +147,42 @@ export default function VendorStore() {
 
   const onSubmit = async (formData) => {
     try {
-      const productData = {
-        vendor_id: user.id,
-        image_url: imageUrl,
-        item_name: formData.item_name,
-        item_category: formData.item_category,
-        item_description: formData.item_description,
-        item_sizes: formData.item_sizes,
-        item_colors: formData.item_colors,
-        item_units: formData.item_units,
-        item_price: parseFloat(formData.item_price),
-        updated_at: new Date().toISOString(),
-      };
-
       if (editingProduct) {
+        let imageUrl = formData.image_url; // default to existing image
+
+        if (
+          formData.image_preview &&
+          formData.image_preview.startsWith("data:image")
+        ) {
+          try {
+            const response = await fetch(formData.image_preview);
+            const blob = await response.blob();
+            const file = new File([blob], `product-${editingProduct.id}.jpg`, {
+              type: "image/jpeg",
+            });
+            imageUrl = await uploadImage(file);
+          } catch (uploadError) {
+            console.error("Image upload failed:", uploadError);
+            imageUrl = null;
+          }
+        } else if (typeof draft.image_url === "string") {
+          // Image already uploaded (existing URL)
+          imageUrl = draft.image_url;
+        }
+
+        const productData = {
+          vendor_id: user.id,
+          image_url: imageUrl,
+          item_name: formData.item_name,
+          item_category: formData.item_category,
+          item_description: formData.item_description,
+          item_sizes: formData.item_sizes,
+          item_colors: formData.item_colors,
+          item_units: formData.item_units,
+          item_price: formData.item_price,
+          updated_at: new Date().toISOString(),
+        };
+
         const { data, error } = await supabase
           .from("products")
           .update(productData)
@@ -185,7 +249,9 @@ export default function VendorStore() {
           }
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("error uploading products to draft", error);
+    }
 
     // Reset form
     methods.reset();

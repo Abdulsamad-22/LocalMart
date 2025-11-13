@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { supabase } from "../../supabase-client";
 import { Trash, PencilSimple, CurrencyNgn } from "@phosphor-icons/react";
+import { useNavigate } from "react-router-dom";
 
 export default function DraftProductList({
   draftProducts,
@@ -12,12 +13,14 @@ export default function DraftProductList({
   setEditingDraftId,
   editingDraftId,
 }) {
-  const { reset } = useFormContext();
+  const navigate = useNavigate();
+  const { reset, uploadImage } = useFormContext();
   const handleEdit = (draft_id) => {
     const draft = draftProducts.find((p) => p.draft_id === draft_id);
     const formData = {
       productName: draft.item_name,
       price: draft.item_price,
+      units: draft.item_units,
       description: draft.item_description,
       category: draft.item_category,
     };
@@ -50,28 +53,6 @@ export default function DraftProductList({
     setDraftProducts((drafts) => drafts.filter((p) => p.draft_id !== draft_id));
   };
 
-  async function uploadImage(file) {
-    if (!file) throw new Error("No file provided");
-
-    const filePath = `${file.name}-${Date.now()}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("product-images")
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data: publicData, error: publicError } = supabase.storage
-      .from("product-images")
-      .getPublicUrl(filePath);
-
-    if (publicError) {
-      console.error("Error getting public URL:", publicError.message);
-      return null;
-    }
-    return publicData.publicUrl;
-  }
-
   async function submitAllDrafts() {
     if (!draftProducts || draftProducts.length === 0) {
       alert("No products to submit");
@@ -85,11 +66,13 @@ export default function DraftProductList({
       } = await supabase.auth.getUser();
 
       if (authError) {
+        navigate("/login");
         console.error("Auth error:", authError);
         throw new Error(`Authentication error: ${authError.message}`);
       }
 
       if (!user) {
+        navigate("/login");
         console.error("No user found");
         throw new Error("Not authenticated - please log in");
       }
@@ -185,39 +168,35 @@ export default function DraftProductList({
     console.log("submit all clicked");
   }
   return (
-    <div className="px-4 md:px-12">
-      {draftProducts.length === 0 ? (
-        ""
-      ) : (
-        <div className="space-y-4">
-          {/* Header */}
-          <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Draft Products ({draftProducts.length})
-            </h3>
-            <button
-              onClick={submitAllDrafts}
-              className="text-[1rem] text-gray-500"
-            >
-              Submit all
-            </button>
-          </div>
+    <div className="px-4 md:px-12 mb-12 space-y-4">
+      <div className="">
+        {/* Header */}
+        <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-800">
+            Draft Products ({draftProducts.length})
+          </h3>
+          <button
+            onClick={submitAllDrafts}
+            className="text-[1rem] text-gray-500"
+          >
+            Submit all
+          </button>
         </div>
-      )}
+      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {draftProducts.map((product) => (
           <div
             key={product.draft_id}
             className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden"
           >
             {/* Product Image */}
-            <div className="bg-gray-50 relative w-full md:w-full h-auto md:h-[320px]">
+            <div className="bg-gray-50 relative">
               {product.image_preview ? (
                 <img
                   src={product.image_preview}
                   alt={product.item_name}
-                  className=" w-full h-full object-cover"
+                  className="w-full md:w-full h-auto md:h-[218px] object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -251,22 +230,20 @@ export default function DraftProductList({
             </div>
 
             {/* Actions */}
-            <div className="border-t border-gray-100 px-4 py-2 md:py-3 flex justify-center md:justify-end space-x-2">
-              <button
-                onClick={() => handleEdit(product.draft_id)}
-                className="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50"
-                aria-label="Edit"
-              >
-                <PencilSimple size={20} />
-                Edit
-              </button>
+            <div className="flex gap-2 p-4">
               <button
                 onClick={() => handleDelete(product.draft_id)}
-                className="flex items-center gap-1 text-gray-600 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50"
-                aria-label="Delete"
+                className="flex items-center justify-center gap-2 flex-1 bg-red-100 text-red-700 py-3 px-3 rounded text-sm hover:bg-red-200"
               >
-                <Trash size={20} />
-                delete
+                <Trash size={18} />
+                Delete
+              </button>
+              <button
+                onClick={() => handleEdit(product.draft_id)}
+                className="flex items-center justify-center gap-2 flex-1 bg-gray-100 text-gray-700 py-3 px-3 rounded text-sm hover:bg-blue-50"
+              >
+                <PencilSimple size={18} />
+                Edit
               </button>
             </div>
           </div>

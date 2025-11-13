@@ -18,19 +18,65 @@ export default function ProductSpecification({
   const {
     formState: { isSubmitting, errors },
     handleCancelEdit,
+    setValue,
+    setError,
+    clearErrors,
+    watch,
   } = useFormContext();
+  const [uploading, setUploading] = useState(false);
+  const selectedImage = watch("selectedImage");
 
-  function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  const handleImageUpload = async (file) => {
+    if (!file) {
+      setError("selectedImage", {
+        type: "manual",
+        message: "Please select an image file",
+      });
+      return;
+    }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result); // This becomes the base64 string
-      setImageFile(file);
-    };
-    reader.readAsDataURL(file); // Convert to data URL
-  }
+    if (!file.type.startsWith("image/")) {
+      setError("selectedImage", {
+        type: "manual",
+        message: "Please upload a valid image file",
+      });
+      return;
+    }
+
+    clearErrors("selectedImage");
+    setUploading(true);
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result.split(",")[1];
+        setValue(
+          "selectedImage",
+          { name: file.name, data: base64, type: file.type },
+          {
+            shouldValidate: true,
+          }
+        );
+        setPreview(reader.result);
+        setImageFile(file);
+        setUploading(false);
+      };
+      reader.onerror = () => {
+        setError("selectedImage", {
+          type: "manual",
+          message: "Failed to read image file",
+        });
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setError("selectedImage", {
+        type: "manual",
+        message: "Failed to upload image",
+      });
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="w-full md:w-[50%] bg-white p-4 md:p-6 flex flex-col ">
@@ -42,8 +88,14 @@ export default function ProductSpecification({
           {/* Hidden file input */}
           <input
             type="file"
-            onChange={handleImageUpload}
+            accept="image/*"
             id="product-image-upload"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                handleImageUpload(file);
+              }
+            }}
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
 
@@ -56,7 +108,7 @@ export default function ProductSpecification({
             >
               {preview ? (
                 <img
-                  src={preview}
+                  src={`data:${selectedImage.type};base64,${selectedImage.data}`}
                   alt="Preview"
                   className="w-[301.75px] h-[218px] object-cover rounded-lg"
                 />
@@ -71,7 +123,11 @@ export default function ProductSpecification({
                 </>
               )}
             </div>
-            <p className="text-red-500 text-sm">{errors.imageUrl?.message}</p>
+            {errors.selectedImage?.message && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.selectedImage.message}
+              </p>
+            )}
           </div>
         </div>
       </div>

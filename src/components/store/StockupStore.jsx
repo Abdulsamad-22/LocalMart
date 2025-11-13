@@ -7,7 +7,6 @@ export default function StockupStore() {
   const {
     register,
     formState: { errors },
-    reset,
   } = useFormContext();
 
   return (
@@ -95,7 +94,7 @@ export default function StockupStore() {
 
             {/* Input Field */}
             <input
-              {...register("price").toLocaleString("en-NG")}
+              {...register("price")}
               type="text"
               placeholder="0.00"
               className="

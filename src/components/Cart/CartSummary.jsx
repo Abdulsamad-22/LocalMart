@@ -47,11 +47,11 @@ export default function CartSummary() {
   return (
     <div className="lg:col-span-1">
       <div className="bg-white rounded-lg shadow-sm sticky top-6">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-4 md:px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
         </div>
 
-        <div className="px-6 py-4 space-y-4">
+        <div className="px-4 md:px-6 py-4 space-y-4">
           {/* Subtotal */}
           <div className="flex justify-between items-center">
             <span className="text-gray-600">
@@ -115,7 +115,7 @@ export default function CartSummary() {
           </div>
         </div>
 
-        <div className="px-6 py-4">
+        <div className="px-4 md:px-6 py-4">
           <div className="bg-[#f4edeb] flex items-center justify-center rounded-[12px] p-[0.75rem] gap-2 text-sm text-gray-500">
             <Shield size={14} />
             <span>

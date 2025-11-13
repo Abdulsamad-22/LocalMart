@@ -43,13 +43,13 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#005349] py-12 px-12">
+    <footer className="bg-[#005349] py-10 md:py-12 px-4 md:px-12">
       <div className="flex flex-col md:flex-row gap-8 md:gap-[7rem]  mb-8 text-[#fff]">
         <div className="flex flex-col items-start gap-2 mb-2">
-          <div className=" rounded-full relative mb-4">
+          <div className="w-full relative mb-4">
             <h4 className="text-[1.5rem] mb-2 font-semibold">LocalMart</h4>
 
-            <p className="w-80 text-[0.875rem] text-gray-300 font-regular">
+            <p className="w-full md:w-80 text-[0.875rem] text-gray-300 font-regular">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam
               quasi dolorem facilis? Aspernatur, natus rerum possimus provident
             </p>

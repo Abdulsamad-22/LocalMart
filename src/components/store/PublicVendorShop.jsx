@@ -73,11 +73,11 @@ export default function PublicVendorShop() {
     );
   }
   return (
-    <div className="py-8 my-4 md:my-12">
+    <div className="py-8 my-10 md:my-12">
       {/* Show banner if viewing own shop */}
       {isOwnShop !== false && (
-        <div className=" border border-[#009688] bg-[#009688]/10 py-4 px-12 mb-6">
-          <p className="text-gray-900">
+        <div className=" border border-[#009688] bg-[#009688]/10 py-4 px-4 md:px-12 mb-6">
+          <p className="text-gray-900 text-[0.875rem] md:text-[1rem]">
             📝 This is how your shop appears to customers.
             <Link to="/my-shop" className="ml-2 text-gray-900 underline">
               Go to Dashboard
@@ -87,12 +87,12 @@ export default function PublicVendorShop() {
       )}
 
       {/* Public Shop Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+      <div className="text-center mb-8 px-4">
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-[0rem] md:mb-2">
           {vendor.business_name || vendor.name}
         </h1>
         {vendor.product_category && (
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-[0.875rem] md:text-[1rem] text-gray-600 max-w-2xl mx-auto">
             {vendor.product_category}
           </p>
         )}
@@ -101,22 +101,22 @@ export default function PublicVendorShop() {
         )}
 
         {/* Contact info if available */}
-        <div className="flex justify-center gap-4 mt-4 text-sm text-gray-600">
+        <div className="flex justify-center gap-[0.5rem] md:gap-4 mt-4 text-sm text-gray-600">
           {vendor.phone_number && (
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 text-[0.75rem] md:text-[1rem]">
               📞 {vendor.phone_number}
             </span>
           )}
           {vendor.email && <span>📧 {vendor.email}</span>}
-          {vendor.socials && (
+          {/* {vendor.socials && (
             <a href={vendor.socials} target="_blank" rel="noopener noreferrer">
               📧 Social media handle
             </a>
-          )}
+          )} */}
         </div>
       </div>
 
-      <div className=" px-12">
+      <div className="px-4 md:px-12">
         {/* Shop Display */}
         <VendorShopDisplay
           vendorId={vendor.vendor_id}

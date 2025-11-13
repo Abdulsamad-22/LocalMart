@@ -57,7 +57,7 @@ export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
   }, [openOverlay]);
 
   return (
-    <div className="px-12 py-8">
+    <div className="px-4 md:px-12 py-8">
       {openOverlay && (
         <div
           className="fixed top-[10%] left-1/2 transform -translate-x-1/2 z-[8] 
@@ -73,11 +73,11 @@ export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
         {/* Dashboard Header */}
         <div className="bg-[#009688]/8 rounded-lg py-6 mb-2 md:mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-[1.5rem] md:text-3xl font-bold text-gray-800 mb-2">
+            <div className="mb-4">
+              <h1 className="text-[1.5rem] md:text-3xl font-bold text-gray-800 mb-[2px] md:mb-2">
                 My Shop Dashboard
               </h1>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 text-[0.875rem] md:text-[1rem]">
                 Welcome back,{" "}
                 {vendorData?.business_name ||
                   vendorData?.full_name ||
@@ -121,19 +121,19 @@ export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
           <div className="flex gap-2 md:gap-4 mt-3">
             <Link
               to="/add-product"
-              className="flex-1 md:flex-none bg-[#009688] text-[#fff] text-[0.875rem] md:text-[1rem] px-4 py-2 rounded"
+              className="flex-1 md:flex-none text-center bg-[#009688] text-[#fff] text-[0.875rem] md:text-[1rem] px-1 md:px-4 py-2 rounded"
             >
               Add New Product
             </Link>
             <Link
               to="/manage-products"
-              className="flex-1 md:flex-none bg-blue-500 text-[#fff] text-[0.875rem] md:text-[1rem] px-4 py-2 rounded"
+              className="flex-1 md:flex-none text-center bg-blue-500 text-[#fff] text-[0.875rem] md:text-[1rem] px-1 md:px-4 py-2 rounded"
             >
               Manage Products
             </Link>
             <Link
               to="/orders"
-              className="flex-1 md:flex-none bg-purple-600 text-[#fff] text-[0.875rem] md:text-[1rem] px-4 py-2 rounded hover:bg-purple-700"
+              className="flex-1 md:flex-none text-center bg-purple-600 text-[#fff] text-[0.875rem] md:text-[1rem] px-1 md:px-4 py-2 rounded hover:bg-purple-700"
             >
               View Orders
             </Link>

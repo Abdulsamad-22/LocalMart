@@ -1,6 +1,6 @@
 export default function Newsletter() {
   return (
-    <section className="bg-[#020C0B] p-12 rounded-3xl mt-12">
+    <section className="bg-[#020C0B] p-6 md:p-12 rounded-3xl mt-12">
       <div className="w-full md:w-[50%] lg:w-[40%] text-center md:text-left">
         <h4 className="text-[#fff] text-[1.25rem] md:text-[1.5rem] mb-8">
           Ready to get update on rising products and best sellers around you?

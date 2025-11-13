@@ -2,12 +2,14 @@ import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthProvider";
+import { useCart } from "../Context/CartProvider";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { isVendor } = useAuth();
+  const { isVendor, checkSession, session, user } = useAuth();
   const location = useLocation();
+  const { cartItems } = useCart();
 
   const navLinks = [
     {
@@ -19,7 +21,7 @@ export default function Header() {
     { icon: <ShoppingCart size={20} />, label: "Cart", redirectTo: "/carts" },
     {
       icon: "",
-      label: !isVendor ? "Sell on LocalMart" : "View my store",
+      label: isVendor ? "View my store" : "Sell on LocalMart",
       onClick: () => handleVendorRedirection(),
       isButton: true,
     },
@@ -39,26 +41,53 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleVendorRedirection = () => {
-    if (isVendor) {
+  const handleVendorRedirection = async () => {
+    const { isValid } = await checkSession();
+
+    if (isVendor && isValid) {
       navigate("/my-shop");
       return;
     }
 
-    if (!isVendor) {
+    if (!isVendor && !isValid) {
       navigate("/signup", { state: { redirectTo: "/vendor-registration" } });
+      return;
+    }
+
+    if (!isVendor && isValid) {
+      navigate("/login", { state: { redirectTo: "/my-shop" } });
+      return;
+    }
+
+    if (isVendor && !isValid) {
+      navigate("/login", { state: { from: "/my-shop" } });
       return;
     }
 
     return navigate("/vendor-registration");
   };
 
+  useEffect(() => {
+    const verifySession = async () => {
+      if (user) {
+        const { isValid } = await checkSession();
+
+        if (!isValid) {
+          console.log("Session expired, logging out");
+          await logout();
+          navigate("/login", { replace: true });
+        }
+      }
+    };
+    verifySession();
+  }, []);
+
   const handleSignupClick = () => {
     navigate("/signup", { state: { redirectTo: "/" } });
   };
   return (
-    <header className="w-full bg-[#fff] fixed h-20 inset-0 shadow-lg shadow-gray-400/50 py-0 px-4 md:px-12 z-[2]">
-      <nav className="flex items-center justify-between py-6 relative">
+    <header className="w-full bg-[#fff] fixed h-[70px] md:h-20 inset-0 shadow-lg shadow-gray-400/50 py-0 px-4 md:px-12 z-[4]">
+      <nav className="flex items-center justify-between py-4 md:py-6 relative">
         <Link
           to="/"
           className="text-[1.5rem] md:text-3xl text-[#009688] font-semibold"
@@ -66,7 +95,7 @@ export default function Header() {
           LocalMart
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 md:gap-6">
           {navLinks.map((link, index) => {
             const isActive = index === active;
             const base = `hidden md:flex items-center gap-1 text-[1rem] ${
@@ -152,6 +181,20 @@ export default function Header() {
           >
             {!isVendor ? "Sell on LocalMart" : "View my store"}
           </button> */}
+          <Link
+            onClick={() => setIsMenuOpen(false)}
+            className="flex md:hidden items-center justify-center gap-1 relative text-[1rem]
+                    
+                      text-[#009688] font-medium
+                       text-[#636363]
+                   hover:text-[#009688] cursor-pointer"
+            to="/carts"
+          >
+            <span className="absolute -top-1 -right-1 py-0 px-[0.35rem] text-[8px] text-[#fff] rounded-full bg-[#009688]">
+              {cartItems.length}
+            </span>
+            <ShoppingCart size={24} />
+          </Link>
           <List
             onClick={toggleMenu}
             className="block md:hidden cursor-pointer"
@@ -164,6 +207,7 @@ export default function Header() {
           <div className="absolute top-[96%] left-0 w-full bg-[#fff] p-4 rounded-b-[10px] shadow-lg md:hidden">
             <div className="flex flex-col items-start py-4">
               <Link
+                onClick={() => setIsMenuOpen(false)}
                 to="/wishlist"
                 className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer"
               >

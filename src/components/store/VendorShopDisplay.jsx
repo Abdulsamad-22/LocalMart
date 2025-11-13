@@ -88,7 +88,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">
+        <h2 className="text-[1rem] md:text-[1.5rem] font-semibold">
           {isOwner ? "Your Products" : "Products"} ({products.length})
         </h2>
         {/* {isOwner && (
@@ -118,21 +118,24 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-[47%_47%] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-[49%_49%] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 ">
           {products.map((product) => (
             <div
               key={product.id}
               className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
-              {product.image_url && (
-                <img
-                  src={product.image_url}
-                  alt={product.item_name}
-                  className="w-full md:w-full h-auto md:h-[218px] object-cover"
-                />
-              )}
+              <div className="w-full md:w-full h-[8.5rem] md:h-[218px] relative cursor-pointer">
+                {product.image_url && (
+                  <img
+                    src={product.image_url}
+                    alt={product.item_name}
+                    className="w-full h-full rounded-t-[4px] md:rounded-t-[10px]"
+                  />
+                )}
+              </div>
+
               <div className="p-2 md:p-4">
-                <h3 className="font-semibold text-[0.875rem] md:text-[1rem] mb-1 md:mb-2 line-clamp-1">
+                <h3 className="md:font-semibold text-[0.875rem] md:text-[1rem] mb-1 md:mb-2 line-clamp-1">
                   {product.item_name}
                 </h3>
                 {product.item_description && (
@@ -166,7 +169,7 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
                   <button
                     onClick={() => addToCart(product)}
                     disabled={product.item_units === 0}
-                    className={`w-full py-2 rounded transition-colors ${
+                    className={`hidden md:flex w-full py-2 rounded transition-colors ${
                       product.item_units === 0
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200 hover:from[#00897B] hover:to-[#005B4F] text-[#fff]"

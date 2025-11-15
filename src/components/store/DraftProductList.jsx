@@ -184,7 +184,7 @@ export default function DraftProductList({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-[48%_48%] md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {draftProducts.map((product) => (
           <div
             key={product.draft_id}
@@ -196,7 +196,7 @@ export default function DraftProductList({
                 <img
                   src={product.image_preview}
                   alt={product.item_name}
-                  className="w-full md:w-full h-auto md:h-[218px] object-cover"
+                  className="w-full md:w-full h-[8.5rem] md:h-[218px]"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -206,7 +206,7 @@ export default function DraftProductList({
             </div>
 
             {/* Product Info */}
-            <div className="p-4">
+            <div className="p-2 md:p-4">
               <h4 className="font-medium text-gray-900 truncate">
                 {product.item_name}
               </h4>
@@ -230,17 +230,17 @@ export default function DraftProductList({
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2 p-4">
+            <div className="flex gap-2 p-2 md:p-4">
               <button
                 onClick={() => handleDelete(product.draft_id)}
-                className="flex items-center justify-center gap-2 flex-1 bg-red-100 text-red-700 py-3 px-3 rounded text-sm hover:bg-red-200"
+                className="flex items-center justify-center gap-[4px] md:gap-2 flex-1 bg-red-100 text-red-700 py-[0.5rem] md:py-3 px-1 md:px-3 rounded text-[0.75rem] md:text-[0.875rem] hover:bg-red-200"
               >
                 <Trash size={18} />
                 Delete
               </button>
               <button
                 onClick={() => handleEdit(product.draft_id)}
-                className="flex items-center justify-center gap-2 flex-1 bg-gray-100 text-gray-700 py-3 px-3 rounded text-sm hover:bg-blue-50"
+                className="flex items-center justify-center gap-[4px] md:gap-2 flex-1 bg-gray-100 text-gray-700 py-[0.5rem] md:py-3 px-1 md:px-3 rounded text-[0.75rem] md:text-[0.875rem] hover:bg-blue-50"
               >
                 <PencilSimple size={18} />
                 Edit

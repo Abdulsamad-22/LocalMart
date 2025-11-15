@@ -159,7 +159,7 @@ export default function Signup() {
             )}
           </button>
           <p className="text-[0.875rem]">
-            By continuing you agree to LocalMart's
+            By continuing you agree to LocalMart's{" "}
             <a className="text-[#009688] underline">Terms and Conditions</a>
           </p>
         </div>

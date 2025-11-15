@@ -132,7 +132,9 @@ export default function ProductColors({ selectedColors, setSelectedColors }) {
                   className="w-4 h-4 rounded-full border border-gray-300"
                   style={{ backgroundColor: color.code }}
                 />
-                <span>{color.name}</span>
+                <span className="text-[0.875rem] md:text-[1rem]">
+                  {color.name}
+                </span>
                 <button
                   type="button"
                   onClick={() => removeColor(color.code)}

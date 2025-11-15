@@ -86,7 +86,7 @@ export default function Header() {
     navigate("/signup", { state: { redirectTo: "/" } });
   };
   return (
-    <header className="w-full bg-[#fff] fixed h-[70px] md:h-20 inset-0 shadow-lg shadow-gray-400/50 py-0 px-4 md:px-12 z-[4]">
+    <header className="w-full bg-[#fff] fixed h-[75px] md:h-20 inset-0 shadow-lg shadow-gray-400/50 py-2 px-4 md:px-12 z-[4]">
       <nav className="flex items-center justify-between py-4 md:py-6 relative">
         <Link
           to="/"

@@ -290,7 +290,7 @@ export default function VendorStore() {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="w-full flex flex-col md:flex-row items-start gap-8 my-12 px-12"
+          className="w-full flex flex-col md:flex-row items-start gap-8 my-12 px-4 md:px-12"
         >
           {/* <input type="file" onChange={handleFile} /> */}
           <StockupStore />

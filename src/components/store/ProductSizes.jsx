@@ -61,7 +61,7 @@ export default function ProductSizes({ selectedSizes, setSelectedSizes }) {
               }`}
             >
               <div
-                className={`font-medium ${
+                className={`font-medium text-[0.875rem] md:text-[1rem] ${
                   sizeType === key ? "text-[#009688]" : "text-gray-900"
                 }`}
               >
@@ -108,7 +108,7 @@ export default function ProductSizes({ selectedSizes, setSelectedSizes }) {
             onClick={() =>
               selectedSizes.includes(size) ? removeSize(size) : addSize(size)
             }
-            className={`px-3 py-1 rounded border ${
+            className={`px-3 py-1 text-[0.875rem] md:text-[1rem] rounded border ${
               selectedSizes.includes(size)
                 ? "bg-[#009688] text-white border-[#009688]"
                 : "bg-white border-gray-300 hover:bg-gray-100"
@@ -126,7 +126,7 @@ export default function ProductSizes({ selectedSizes, setSelectedSizes }) {
             {selectedSizes.map((size) => (
               <span
                 key={size}
-                className="px-3 py-1 bg-gray-100 rounded-full flex items-center"
+                className="text-[0.875rem] md:text-[1rem] px-3 py-1 bg-gray-100 rounded-full flex items-center"
               >
                 {size}
                 <button

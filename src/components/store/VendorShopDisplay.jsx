@@ -126,11 +126,13 @@ export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
             >
               <div className="w-full md:w-full h-[8.5rem] md:h-[218px] relative cursor-pointer">
                 {product.image_url && (
-                  <img
-                    src={product.image_url}
-                    alt={product.item_name}
-                    className="w-full h-full rounded-t-[4px] md:rounded-t-[10px]"
-                  />
+                  <Link to={`/products/${product.id.toString()}`}>
+                    <img
+                      src={product.image_url}
+                      alt={product.item_name}
+                      className="w-full h-full rounded-t-[4px] md:rounded-t-[10px]"
+                    />
+                  </Link>
                 )}
               </div>
 

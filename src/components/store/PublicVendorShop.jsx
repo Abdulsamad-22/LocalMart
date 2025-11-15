@@ -78,7 +78,7 @@ export default function PublicVendorShop() {
       {isOwnShop !== false && (
         <div className=" border border-[#009688] bg-[#009688]/10 py-4 px-4 md:px-12 mb-6">
           <p className="text-gray-900 text-[0.875rem] md:text-[1rem]">
-            📝 This is how your shop appears to customers.
+            This is how your shop appears to customers.
             <Link to="/my-shop" className="ml-2 text-gray-900 underline">
               Go to Dashboard
             </Link>

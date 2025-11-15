@@ -27,15 +27,17 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
                 }`}
               >
                 <div className="flex items-center gap-4  ">
-                  <div className="w-[20%]">
+                  <div className="w-[7rem] sm:w-28 h-[5rem] sm:h-24">
                     <img
-                      className="w-full rounded-[8px]"
+                      className="w-full h-full rounded-[8px]"
                       src={item.image_url}
                       alt=""
                     />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-medium">{item.name}</h3>
+                    <h3 className="text-[0.875rem] md:text-[1rem] font-medium">
+                      {item.name}
+                    </h3>
 
                     <div className="flex items-center gap-3">
                       <p className="text-sm font-medium text-[#009688]">
@@ -45,18 +47,18 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
                       <span className="flex items-center gap-[1px] text-[1.125rem] text-gray-600">
                         @
                         <CurrencyNgn size={14} />
-                        <p className="text-sm text-gray-600">
+                        <p className="text-[0.75rem] md:text-[0.875rem] text-gray-600">
                           {item.price.toLocaleString("en-NG")}
                         </p>
                       </span>
 
-                      <p className="flex items-center font-medium text-sm text-gray-800">
+                      <p className="flex items-center font-medium text-[0.75rem] md:text-[0.875rem] text-gray-800">
                         <CurrencyNgn size={14} />
                         {(item.price * item.quantity).toLocaleString("en-NG")}
                       </p>
                     </div>
 
-                    <p className="text-sm text-gray-600">
+                    <p className="text-[0.75rem] md:text-[0.875rem] text-gray-600">
                       Sold by: {vendor?.business_name}
                     </p>
                   </div>

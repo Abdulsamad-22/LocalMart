@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Truck, Heart, CurrencyNgn } from "@phosphor-icons/react";
+import {
+  ShoppingCart,
+  Truck,
+  Heart,
+  MapPin,
+  CurrencyNgn,
+} from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
@@ -62,7 +68,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
     );
 
   return (
-    <section className="grid grid-cols-[49%_49%] md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 px-0 md:px-0">
+    <section className="grid grid-cols-[48.5%_48.5%] md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 px-0 md:px-0">
       {products.length > 0
         ? products.slice(0, limit).map((product) => {
             const isWishlisted = isInWishList(product.id.toString());
@@ -118,11 +124,20 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
                         <CurrencyNgn className="mr-[0.5px] font-semibold text-[1rem] md:text-[1.25rem]" />
                         {Number(product.item_price).toLocaleString("en-NG")}
                       </span>
-                      <div className="flex items-center gap-[0.25rem] md:gap-2 text-[0.75rem] md:text-[0.875rem] text-gray-600">
-                        <Truck className="text-[1rem] md:text-[1.125rem]" />
+                      <div className="flex items-center gap-[2px] md:gap-[2px] text-[0.75rem] md:text-[0.875rem] text-gray-600">
+                        {vendor?.travelTime ? (
+                          <Truck className="text-[1rem] md:text-[1.125rem]" />
+                        ) : (
+                          <MapPin className="text-[1rem] md:text-[1.125rem]" />
+                        )}
                         <span>
-                          {vendor?.travelTime || "N/A"}
-                          mins away
+                          {vendor?.travelTime
+                            ? vendor.travelTime >= 60
+                              ? `${(vendor.travelTime / 60).toFixed(
+                                  1
+                                )} hrs away`
+                              : `${vendor.travelTime} mins away`
+                            : vendor?.address || "Location not available"}
                         </span>
                       </div>
                     </div>

@@ -29,7 +29,7 @@ export const usePaystackPayment = () => {
         return;
       }
 
-      if (!config.ref) {
+      if (!config.reference) {
         alert("Payment Error: Reference is missing");
         return;
       }
@@ -39,7 +39,7 @@ export const usePaystackPayment = () => {
         key: config.publicKey,
         email: config.email,
         amount: config.amount,
-        ref: config.ref,
+        reference: config.reference,
 
         onSuccess: (transaction) => {
           console.log("Payment successful:", transaction);

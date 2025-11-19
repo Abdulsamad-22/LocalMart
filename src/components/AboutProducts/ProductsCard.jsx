@@ -113,7 +113,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                 />
 
                 {/* Image Navigation */}
-                <button
+                {/* <button
                   onClick={prevImage}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-lg transition-all"
                 >
@@ -124,7 +124,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-lg transition-all"
                 >
                   <CaretRight size={20} />
-                </button>
+                </button> */}
               </div>
 
               {/* Thumbnail Images */}

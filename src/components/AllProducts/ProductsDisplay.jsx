@@ -68,7 +68,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
     );
 
   return (
-    <section className="grid grid-cols-[48.5%_48.5%] md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 px-0 md:px-0">
+    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 px-0 md:px-0">
       {products.length > 0
         ? products.slice(0, limit).map((product) => {
             const isWishlisted = isInWishList(product.id.toString());

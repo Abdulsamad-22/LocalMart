@@ -80,7 +80,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className=" flex flex-col md:flex-row items-start gap-12 w-[80%]">
+        <div className="flex flex-col md:flex-row items-start gap-12 w-[80%]">
           {footerLinks.map((section, index) => (
             <div key={index} className="mb-0 md:mb-8 space-y-4">
               <h5 className="text-[1.125rem] font-semibold mb-2">

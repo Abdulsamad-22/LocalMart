@@ -9,7 +9,7 @@ import { useCart } from "../Context/CartProvider";
 import { supabase } from "../../supabase-client";
 import CalculatePaymentSplit from "../Utils/CalculatePaymentSplit";
 import { usePaystackPayment } from "../../hooks/usePaymentHook";
-import { verifyPayment } from "../cart/verifyPayment";
+// import { verifyPayment } from "../Cart/verifyPayment";
 import { createOrderRecords } from "../Cart/createOrderRecords";
 import { useAuth } from "../Context/AuthProvider";
 import { useNavigate } from "react-router-dom";

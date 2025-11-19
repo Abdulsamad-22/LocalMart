@@ -1,14 +1,29 @@
 import { supabase } from "../../../supabase-client";
 export const getVendorOrders = async (vendorId, filters = {}) => {
   try {
+    if (!vendorId) {
+      console.error("No vendor ID provided");
+      return {
+        success: false,
+        error: "Vendor ID is required",
+        orders: [],
+      };
+    }
+
     let query = supabase
       .from("vendor_orders")
       .select(
         `
         *,
-        order_items:order_items(
-          *,
-          product:products(name, image_url)
+        orders!inner(
+          id,
+          order_items(
+            *,
+            products(
+              name,
+              image_url
+            )
+          )
         )
       `
       )

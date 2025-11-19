@@ -3,7 +3,7 @@ import { supabase } from "../../supabase-client";
 export const createOrderRecords = async ({
   reference,
   cartItems,
-  vendors,
+  vendorInfo,
   paymentData,
   user,
   checkoutData,
@@ -22,7 +22,9 @@ export const createOrderRecords = async ({
     // Create separate orders for each vendor
     const orderPromises = Object.entries(vendorGroups).map(
       async ([vendorId, items]) => {
-        const vendor = vendors.find((v) => v.vendor_id.toString() === vendorId);
+        const vendor = vendorInfo.find(
+          (v) => v.vendor_id.toString() === vendorId
+        );
         const orderTotal = items.reduce(
           (sum, item) => sum + item.price * item.quantity,
           0
@@ -40,7 +42,24 @@ export const createOrderRecords = async ({
             total_amount: orderTotal,
             platform_fee: platformFee,
             vendor_amount: vendorAmount,
-            status: "paid", // Payment already completed
+            status: "paid",
+
+            // Contact/Billing Info
+            contact_firstname: checkoutData.contact.firstname,
+            contact_surname: checkoutData.contact.surname,
+            contact_email: checkoutData.contact.email,
+            contact_phone: checkoutData.contact.phone,
+            contact_address: checkoutData.contact.address,
+
+            // Delivery Info
+            delivery_firstname: checkoutData.delivery.firstname,
+            delivery_surname: checkoutData.delivery.surname,
+            delivery_email: checkoutData.delivery.email,
+            delivery_phone: checkoutData.delivery.phone,
+            delivery_address: checkoutData.delivery.address,
+
+            // Flag
+            is_different_delivery: checkoutData.isDifferentDelivery,
             created_at: new Date().toISOString(),
           })
           .select()
@@ -93,6 +112,7 @@ export const createOrderRecords = async ({
           // mapping items from above  not item
           order_id: order.id,
           product_id: item.id,
+          vendor_id: vendorId,
           quantity: item.quantity,
           price: item.price,
           total: item.price * item.quantity,

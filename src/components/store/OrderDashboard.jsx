@@ -3,13 +3,54 @@ import { getVendorNotifications } from "./orderUtils/GetVendorNotification";
 import { getVendorOrders } from "./orderUtils/GetVendorOrders";
 import { getVendorSalesAnalytics } from "./orderUtils/GetVendorAnalytics";
 import { CurrencyNgn, Bell } from "@phosphor-icons/react";
+import { supabase } from "../../supabase-client";
 
-export default function OrderDashboard({ vendorId }) {
+export default function OrderDashboard() {
   const [orders, setOrders] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [period, setPeriod] = useState("month");
   const [loading, setLoading] = useState(true);
+  const [vendorId, setVendorId] = useState(null);
+
+  useEffect(() => {
+    async function getVendorId() {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          console.error("No authenticated user");
+          setLoading(false);
+          return;
+        }
+
+        console.log("👤 Authenticated user:", user.id);
+
+        // Fetch vendor record to get vendor_id
+        const { data: vendorData, error: vendorError } = await supabase
+          .from("vendors")
+          .select("vendor_id")
+          .eq("vendor_id", user.id)
+          .single();
+
+        if (vendorError || !vendorData) {
+          console.error("Vendor not found:", vendorError);
+          setLoading(false);
+          return;
+        }
+
+        console.log("Vendor ID:", vendorData.vendor_id);
+        setVendorId(vendorData.vendor_id);
+      } catch (error) {
+        console.error("Error getting vendor ID:", error);
+        setLoading(false);
+      }
+    }
+
+    getVendorId();
+  }, []);
 
   useEffect(() => {
     loadDashboardData();

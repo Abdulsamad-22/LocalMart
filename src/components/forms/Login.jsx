@@ -34,7 +34,7 @@ export default function () {
       <p className="mb-16">
         Type your e-mail or phone number to log in your account.
       </p>
-      <button
+      {/* <button
         onClick={signInWithGoogle}
         className="flex items-center  justify-center hover:bg-[#F4F4F4] hover:border-transparent gap-4 w-full py-3 px-4 border-[1px] border-[#cecece] rounded-[8px] mb-8"
       >
@@ -70,7 +70,7 @@ export default function () {
         <hr className="w-[50%] border-[1px] border-[#CACACA] rounded-full" />
         <span className="text-[1.125rem]">or</span>
         <hr className="w-[50%] border-[1px] border-[#CACACA] rounded-full" />
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit(handleLogin)} className="">
         <div className="text-center">

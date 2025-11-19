@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../../supabase-client";
 import getBuyerLocation from "./getBuyerLocation";
-import { geocodeAddress } from "./GeocodeVendorAddress";
+import { geocodeAddress } from "./geocodeVendorAddress";
 import { getTravelTimes } from "./getTravelTimes";
 import {
   getCachedBuyerLocation,

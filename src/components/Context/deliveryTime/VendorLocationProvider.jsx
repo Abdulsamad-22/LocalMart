@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../../../supabase-client";
 import getBuyerLocation from "./getBuyerLocation";
-import { geocodeAddress } from "./geocodeVendorAddress";
+import { geocodeVendorAddress } from "./geocodeVendorAddress";
 import { getTravelTimes } from "./getTravelTimes";
 import {
   getCachedBuyerLocation,
@@ -101,7 +101,7 @@ export default function VendorLocationProvider({ children }) {
           }
 
           try {
-            const coords = await geocodeAddress(v.business_address);
+            const coords = await geocodeVendorAddress(v.business_address);
             console.log(`Geocoding result for ${v.business_name}:`, coords);
 
             if (coords && coords.lat && coords.lng) {

@@ -1,6 +1,6 @@
 const ORS_API_KEY = import.meta.env.VITE_LEAFLET_ORS_KEY;
 
-export const geocodeAddress = async (address) => {
+export const geocodeVendorAddress = async (address) => {
   const res = await fetch(
     `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(
       address

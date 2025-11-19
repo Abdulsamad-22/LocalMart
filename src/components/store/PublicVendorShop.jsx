@@ -55,7 +55,7 @@ export default function PublicVendorShop() {
     }
 
     fetchPublicVendorData();
-  }, []); //vendorId isVendor vendorData
+  }, [vendorId, isVendor, vendorData]); //vendorId isVendor vendorData
 
   if (loading) {
     return (

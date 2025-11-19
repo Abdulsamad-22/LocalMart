@@ -27,7 +27,7 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
                 }`}
               >
                 <div className="flex items-center gap-4  ">
-                  <div className="w-[7rem] sm:w-28 h-[5rem] sm:h-24">
+                  <div className="w-[7rem] md:w-[6rem] h-[5rem]">
                     <img
                       className="w-full h-full rounded-[8px]"
                       src={item.image_url}

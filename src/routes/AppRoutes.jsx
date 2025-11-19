@@ -12,6 +12,7 @@ import PublicVendorShop from "../components/store/PublicVendorShop";
 import VendorRegistrationForm from "../components/verifyVendors/VendorRegistrationForm";
 import { useState } from "react";
 import CheckoutProvider from "../components/page/CheckoutPage";
+import OrdersPage from "../components/page/OrdersPage";
 
 const AppRoutes = () => {
   const [loading, setLoading] = useState(false);
@@ -43,6 +44,7 @@ const AppRoutes = () => {
             />
           }
         />
+        <Route path="/orders" element={<OrdersPage />} />
         <Route path="/vendor/:id" element={<PublicVendorShop />} />
         <Route path="/checkout" element={<CheckoutProvider />} />
       </Route>

@@ -56,6 +56,34 @@ const schema = yup.object({
   }),
 });
 
+const structureCheckoutData = (formData) => {
+  return {
+    contact: {
+      firstname: formData.firstName,
+      surname: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+    },
+    delivery: formData.deliveryOption
+      ? {
+          firstname: formData.receiversFirstName,
+          surname: formData.receiversLastName,
+          email: formData.receiversEmail,
+          phone: formData.receiversPhone,
+          address: formData.receiversAddress,
+        }
+      : {
+          firstname: formData.firstName,
+          surname: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+        },
+    isDifferentDelivery: formData.deliveryOption || false,
+  };
+};
+
 export default function CheckoutProvider() {
   const [loading, setLoading] = useState(false);
   const { cartItems } = useCart();
@@ -90,7 +118,9 @@ export default function CheckoutProvider() {
 
   const initializePayment = usePaystackPayment();
 
-  const handleCheckout = () => {
+  const handleCheckout = (formData) => {
+    const checkoutData = structureCheckoutData(formData);
+    console.log(checkoutData);
     try {
       setLoading(true);
       if (!user || !user.email) {
@@ -116,7 +146,7 @@ export default function CheckoutProvider() {
         publicKey: paystack_publicKey,
         email: user.email,
         amount: Math.round(Number(paymentData.totalAmount)),
-        ref: `order_${Date.now()}_${user.id}`,
+        reference: `order_${Date.now()}_${user.id}`,
       };
 
       // Add subaccount if single vendor has a valid subaccount
@@ -182,7 +212,8 @@ export default function CheckoutProvider() {
       // Initialize payment
       initializePayment(
         config,
-        (transaction) => handlePaymentSuccess(transaction, paymentData),
+        (transaction) =>
+          handlePaymentSuccess(transaction, paymentData, checkoutData),
         () => handlePaymentClose()
       );
 
@@ -227,27 +258,32 @@ export default function CheckoutProvider() {
     }
   };
 
-  const handlePaymentSuccess = async (transaction, paymentData) => {
+  const handlePaymentSuccess = async (
+    transaction,
+    paymentData,
+    checkoutData
+  ) => {
     try {
       console.log("Payment callback received");
       console.log("Transaction:", transaction);
-      console.log("Reference:", transaction.ref);
+      console.log("Reference:", transaction.reference);
 
-      const verificationResult = await verifyPayment(transaction.ref);
+      const verificationResult = await verifyPayment(transaction.reference);
 
       if (!verificationResult.success) {
         alert(
-          `Payment verification failed: ${verificationResult.error}\nReference: ${transaction.ref}`
+          `Payment verification failed: ${verificationResult.error}\nReference: ${transaction.reference}`
         );
         return;
       }
 
       await createOrderRecords({
-        ref: transaction.ref,
+        reference: transaction.reference,
         cartItems,
         vendorInfo,
         paymentData,
         user,
+        checkoutData: checkoutData,
       });
 
       showNotification(

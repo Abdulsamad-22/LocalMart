@@ -38,7 +38,7 @@ export default function Header() {
   }, [location.pathname]);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
   };
 
   const handleVendorRedirection = async () => {
@@ -55,7 +55,7 @@ export default function Header() {
     }
 
     if (!isVendor && isValid) {
-      navigate("/login", { state: { redirectTo: "/my-shop" } });
+      navigate("/login", { state: { redirectTo: "/vendor-registration" } });
       return;
     }
 
@@ -86,8 +86,8 @@ export default function Header() {
     navigate("/signup", { state: { redirectTo: "/" } });
   };
   return (
-    <header className="w-full bg-[#fff] fixed h-[9%] md:h-[10%] inset-0 shadow-lg shadow-gray-400/50 z-[4]">
-      <nav className="flex items-center justify-between py-4 md:py-6 px-4 md:px-12 relative">
+    <nav className="w-full bg-[#fff] fixed h-[9%] md:h-[10%] inset-0 shadow-lg shadow-gray-400/50 z-[4]">
+      <div className="flex items-center justify-between py-4 md:py-6 px-4 md:px-12 relative">
         <Link
           to="/"
           className="text-[1.5rem] md:text-3xl text-[#009688] font-semibold"
@@ -203,19 +203,29 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="absolute top-[96%] left-0 w-full bg-[#fff] p-4 rounded-b-[10px] shadow-lg md:hidden">
-            <div className="flex flex-col items-start py-4">
+        {
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`absolute top-[96%] left-0 w-full bg-[#fff] p-4 rounded-b-[10px] shadow-lg md:hidden transform transition-transform duration-300 ease-in-out 
+    lg:hidden ${
+      isMenuOpen ? "translate-x-0" : "translate-x-full"
+    } transition-shadow ${
+              isMenuOpen
+                ? "shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+                : "shadow-none"
+            }`}
+          >
+            <div className="flex flex-col gap-2 items-start py-4">
               <Link
                 onClick={() => setIsMenuOpen(false)}
                 to="/wishlist"
-                className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] cursor-pointer"
+                className="w-full flex items-center gap-2 border-b-[1.5px] border-gray-[#009688] text-[1rem] text-[#636363] py-2 cursor-pointer"
               >
-                <Heart size={20} />
+                <Heart size={24} />
                 Wishlists
               </Link>
               <button
-                className="flex gap-1 items-center text-[0.875rem] text-[#636363] py-2"
+                className="w-full flex gap-2 items-center border-b-[1.5px] border-gray-[#009688] text-[1rem] text-[#636363] py-2"
                 onClick={() => {
                   setIsMenuOpen(false);
                   handleSignupClick();
@@ -225,18 +235,18 @@ export default function Header() {
                 Login / Sign up
               </button>
               <button
-                className="py-2 px-3 text-[0.875rem] text-[#636363]"
+                className="w-full py-2 px-3 border-b-[1.5px] border-gray-[#009688] text-left text-[1rem] text-[#636363]"
                 onClick={() => {
                   setIsMenuOpen(false);
                   handleVendorRedirection();
                 }}
               >
-                {!isVendor ? "Sell on LocalMart" : "View my store"}
+                {isVendor ? "View my store" : "Sell on LocalMart"}
               </button>
             </div>
           </div>
-        )}
-      </nav>
-    </header>
+        }
+      </div>
+    </nav>
   );
 }

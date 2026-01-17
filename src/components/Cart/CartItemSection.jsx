@@ -145,9 +145,9 @@ export default function CartItemSection() {
                                   </button>
                                   <button
                                     onClick={() => removeFromCart(item.id)}
-                                    className="flex items-center gap-1 text-gray-600 hover:text-red-600 transition-colors"
+                                    className="flex items-center gap-1 text-gray-600 hover:text-red-600 text-[0.875rem] md:text-[1rem] transition-colors"
                                   >
-                                    <Trash size={14} />
+                                    <Trash className="text-[1rem] md:text-[0.875rem]" />
                                     Remove
                                   </button>
                                 </div>

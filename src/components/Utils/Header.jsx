@@ -86,7 +86,7 @@ export default function Header() {
     navigate("/signup", { state: { redirectTo: "/" } });
   };
   return (
-    <nav className="w-full bg-[#fff] fixed h-[9%] md:h-[10%] inset-0 shadow-lg shadow-gray-400/50 z-[4]">
+    <nav className="w-full bg-[#fff] items-center fixed h-[10%] md:h-[11%] inset-0 shadow-lg shadow-gray-400/50 z-[4]">
       <div className="flex items-center justify-between py-4 md:py-6 px-4 md:px-12 relative">
         <Link
           to="/"
@@ -198,7 +198,7 @@ export default function Header() {
           <List
             onClick={toggleMenu}
             className="block md:hidden cursor-pointer"
-            size={24}
+            size={32}
           />
         </div>
 
@@ -215,17 +215,17 @@ export default function Header() {
                 : "shadow-none"
             }`}
           >
-            <div className="flex flex-col gap-2 items-start py-4">
+            <div className="flex flex-col gap-2 items-start">
               <Link
                 onClick={() => setIsMenuOpen(false)}
                 to="/wishlist"
-                className="w-full flex items-center gap-2 border-b-[1.5px] border-gray-[#009688] text-[1rem] text-[#636363] py-2 cursor-pointer"
+                className="w-full flex items-center gap-2 border-b-[1px] border-[#C0C0C0] text-[1rem] text-[#636363] py-2 cursor-pointer"
               >
                 <Heart size={24} />
                 Wishlists
               </Link>
               <button
-                className="w-full flex gap-2 items-center border-b-[1.5px] border-gray-[#009688] text-[1rem] text-[#636363] py-2"
+                className="w-full flex gap-2 items-center border-b-[1px] border-[#C0C0C0] text-[1rem] text-[#636363] py-2"
                 onClick={() => {
                   setIsMenuOpen(false);
                   handleSignupClick();
@@ -235,7 +235,7 @@ export default function Header() {
                 Login / Sign up
               </button>
               <button
-                className="w-full py-2 px-3 border-b-[1.5px] border-gray-[#009688] text-left text-[1rem] text-[#636363]"
+                className="w-full py-2 px-3 text-left text-[1rem] text-[#636363]"
                 onClick={() => {
                   setIsMenuOpen(false);
                   handleVendorRedirection();

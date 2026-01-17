@@ -43,7 +43,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#005349] py-10 md:py-12 px-4 md:px-12">
+    <footer className="w-full md:w-full bg-[#005349] py-10 md:py-12 px-4 md:px-12">
       <div className="flex flex-col md:flex-row gap-8 md:gap-[7rem]  mb-8 text-[#fff]">
         <div className="flex flex-col items-start gap-2 mb-2">
           <div className="w-full relative mb-4">
@@ -57,9 +57,9 @@ export default function Footer() {
 
           <div>
             <ul className="flex gap-3">
-              <a>
+              {/* <a>
                 <FacebookLogo size={24} />
-              </a>
+              </a> */}
 
               <a href="https://www.linkedin.com/in/abdulsamad-hussaini-481657283/">
                 <LinkedinLogo size={24} />
@@ -69,18 +69,18 @@ export default function Footer() {
                 <XLogo size={24} />
               </a>
 
-              <a href="">
+              <a href="https://www.instagram.com/hoosayn_10?igsh=MWQzNDRlaHVnaTJqOA==">
                 <InstagramLogo size={24} />
               </a>
 
-              <a href="abdulsamadhussaini@outlook.com">
+              <a href="mailto:abdulsamadhussaini@outlook.com">
                 <EnvelopeSimple size={24} />
               </a>
             </ul>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start gap-12 w-[80%]">
+        <div className="flex flex-col md:flex-row items-start gap-12 w-full md:w-full">
           {footerLinks.map((section, index) => (
             <div key={index} className="mb-0 md:mb-8 space-y-4">
               <h5 className="text-[1.125rem] font-semibold mb-2">

@@ -6,7 +6,7 @@ import VendorShopDisplay from "./VendorShopDisplay";
 
 export default function PublicVendorShop() {
   const { id: vendorId } = useParams();
-  const { user, vendorData, isVendor } = useAuth();
+  const { user, vendorData, isVendor, loadingVendor } = useAuth();
   const [vendor, setVendor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,8 +44,10 @@ export default function PublicVendorShop() {
 
         setVendor(vendorData);
 
-        if (isVendor && vendorData.vendor_id === vendorId) {
-          setIsOwnShop(true);
+        if (loadingVendor) {
+          if (isVendor && vendorData.vendor_id === vendorId) {
+            setIsOwnShop(true);
+          }
         }
       } catch (err) {
         setError("Something went wrong");

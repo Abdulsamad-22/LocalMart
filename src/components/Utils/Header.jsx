@@ -7,7 +7,7 @@ import { useCart } from "../Context/CartProvider";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { isVendor, checkSession, session, user } = useAuth();
+  const { isVendor, checkSession, session, user, loadingVendor } = useAuth();
   const location = useLocation();
   const { cartItems } = useCart();
 
@@ -21,7 +21,11 @@ export default function Header() {
     { icon: <ShoppingCart size={20} />, label: "Cart", redirectTo: "/carts" },
     {
       icon: "",
-      label: isVendor ? "View my store" : "Sell on LocalMart",
+      label: loadingVendor
+        ? "Loading..."
+        : isVendor
+        ? "View my store"
+        : "Sell on LocalMart",
       onClick: () => handleVendorRedirection(),
       isButton: true,
     },
@@ -43,6 +47,8 @@ export default function Header() {
 
   const handleVendorRedirection = async () => {
     const { isValid } = await checkSession();
+
+    if (loadingVendor) return;
 
     if (isVendor && isValid) {
       navigate("/my-shop");
@@ -241,7 +247,11 @@ export default function Header() {
                   handleVendorRedirection();
                 }}
               >
-                {isVendor ? "View my store" : "Sell on LocalMart"}
+                {loadingVendor
+                  ? "Loading..."
+                  : isVendor
+                  ? "View my store"
+                  : "Sell on LocalMart"}
               </button>
             </div>
           </div>

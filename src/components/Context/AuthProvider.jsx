@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
   const [vendorData, setVendorData] = useState(null);
+  const [loadingVendor, setLoadingVendor] = useState(true);
   const [supabaseError, setSupabaseError] = useState(null);
   const navigate = useNavigate();
 
@@ -45,7 +46,6 @@ export function AuthProvider({ children }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
-        console.log("user session expired");
         navigate("/login");
       }
       setLoading(false);
@@ -69,16 +69,12 @@ export function AuthProvider({ children }) {
         user: session?.user,
       };
     } catch (error) {
-      console.error("Session check error:", error);
       return { isValid: false, error: error.message };
     }
   };
 
   useEffect(() => {
-    // Set user and fetch vendor data if exists
     async function setUserWithVendorData() {
-      // setUser(authUser);
-
       try {
         const { data: vendorData, error } = await supabase
           .from("vendors")
@@ -86,18 +82,19 @@ export function AuthProvider({ children }) {
           .single();
 
         if (error && error.code !== "PGRST116") {
-          // PGRST116 means no rows returned, which is fine
           console.error("Error fetching vendor data:", error);
-          return;
         }
 
         if (vendorData) {
           setVendorData(vendorData);
-          // Add vendor_id to user object
           setUser((prev) => ({ ...prev, vendor_id: vendorData.vendor_id }));
+        } else {
+          setVendorData(null);
         }
       } catch (error) {
         console.error("Error fetching vendor data:", error);
+      } finally {
+        setLoadingVendor(false);
       }
     }
 
@@ -108,6 +105,7 @@ export function AuthProvider({ children }) {
   const login = async (formData) => {
     try {
       setLoading(true);
+      setLoadingVendor(true);
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
@@ -123,7 +121,24 @@ export function AuthProvider({ children }) {
 
       setUser(data.user);
 
-      // Return success with user info
+      const { data: vendorData, error: vendorError } = await supabase
+        .from("vendors")
+        .select("*")
+        .eq("user_id", data.user.id)
+        .single();
+
+      if (vendorError && vendorError.code !== "PGRST116") {
+        console.error("Error fetching vendor data:", vendorError);
+      }
+
+      if (vendorData) {
+        setVendorData(vendorData);
+        setUser((prev) => ({ ...prev, vendor_id: vendorData.vendor_id }));
+      } else {
+        setVendorData(null);
+      }
+
+      // Return successful response
       return {
         success: true,
         data,
@@ -136,7 +151,8 @@ export function AuthProvider({ children }) {
       setSupabaseError("Unexpected error occurred. Please try again.");
       return { success: false, data: null, error: err, user: null };
     } finally {
-      setLoading(false);
+      setLoading(false); // stop general login loading
+      setLoadingVendor(false); // stop vendor loading after fetch
     }
   };
 
@@ -168,8 +184,6 @@ export function AuthProvider({ children }) {
         user: data.user,
       };
     } catch (err) {
-      // console.error("Registration failed:", err.message);
-      // console.error("Unexpected error during signup:", err);
       setSupabaseError("Unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -190,6 +204,7 @@ export function AuthProvider({ children }) {
       console.error("Logout error:", error);
     } finally {
       setLoading(false);
+      setLoadingVendor(false);
     }
   };
 
@@ -205,6 +220,7 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
     signup,
     logout,
+    loadingVendor,
 
     // Helper functions
     isVendor: !!vendorData,

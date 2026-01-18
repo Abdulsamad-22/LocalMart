@@ -6,8 +6,15 @@ import { PencilSimple, ShareNetwork } from "@phosphor-icons/react";
 import ShareStore from "./ShareStore";
 
 export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
-  const { user, vendorData, loading: authLoading, isVendor } = useAuth();
+  const {
+    user,
+    vendorData,
+    loading: authLoading,
+    isVendor,
+    loadingVendor,
+  } = useAuth();
   const navigate = useNavigate();
+  console.log(isVendor);
 
   if (authLoading) {
     console.log("auth loading");
@@ -24,6 +31,14 @@ export default function MyVendorShop({ setOpenOverlay, openOverlay }) {
   }
 
   // Show error if not a vendor
+  if (loadingVendor) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-gray-500 text-lg">Checking vendor status...</div>
+      </div>
+    );
+  }
+
   if (!isVendor) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">

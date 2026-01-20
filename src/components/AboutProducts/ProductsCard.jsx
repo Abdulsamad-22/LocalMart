@@ -17,9 +17,11 @@ import {
 } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthProvider";
 
 export default function ProductsCard({ product, vendorInfo }) {
+  const navigate = useNavigate();
   const { addToCart } = useCart();
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -30,6 +32,7 @@ export default function ProductsCard({ product, vendorInfo }) {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
+  const { checkSession, user } = useAuth();
 
   const tempRating = 4.5;
   const reviewCount = 3442;
@@ -91,8 +94,30 @@ export default function ProductsCard({ product, vendorInfo }) {
 
   const prevImage = () => {
     setSelectedImage(
-      (prev) => (prev - 1 + product.images.length) % product.images.length
+      (prev) => (prev - 1 + product.images.length) % product.images.length,
     );
+  };
+
+  const proceedToCheckout = async () => {
+    try {
+      const { isValid } = await checkSession();
+
+      if (!user) {
+        navigate("/signup", { state: { from: "/checkout" } });
+        return;
+      }
+
+      if (user && !isValid) {
+        alert("Your session expired. Please log in to complete checkout!");
+        navigate("/login", { state: { from: "/checkout" } });
+        return;
+      }
+
+      navigate("/checkout");
+    } catch (error) {
+      console.error("Error checking session:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
 
   return (
@@ -347,7 +372,10 @@ export default function ProductsCard({ product, vendorInfo }) {
                     <ShoppingCart size={20} />
                     Add to Cart
                   </button>
-                  <button className="flex-1 border border-gray-400 py-3 px-6 rounded-lg hover:border-[#009688] hover:text-[#009688] transition-colors">
+                  <button
+                    onClick={proceedToCheckout}
+                    className="flex-1 border border-gray-400 py-3 px-6 rounded-lg hover:border-[#009688] hover:text-[#009688] transition-colors"
+                  >
                     Buy Now
                   </button>
                 </div>

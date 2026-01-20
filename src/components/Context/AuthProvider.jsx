@@ -31,6 +31,9 @@ export function AuthProvider({ children }) {
     password: yup.string().min(8).max(12).required("Password is required"),
   });
 
+  const isLoggedIn = !!user;
+  const isVendor = !!vendorData;
+
   // Updated user state change and get initial session
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -75,6 +78,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     async function setUserWithVendorData() {
+      setLoadingVendor(true);
+
+      if (!user) {
+        setVendorData(null);
+        setLoadingVendor(false);
+        return;
+      }
       try {
         const { data: vendorData, error } = await supabase
           .from("vendors")
@@ -87,7 +97,7 @@ export function AuthProvider({ children }) {
 
         if (vendorData) {
           setVendorData(vendorData);
-          setUser((prev) => ({ ...prev, vendor_id: vendorData.vendor_id }));
+          // setUser((prev) => ({ ...prev, vendor_id: vendorData.vendor_id }));
         } else {
           setVendorData(null);
         }
@@ -99,7 +109,7 @@ export function AuthProvider({ children }) {
     }
 
     setUserWithVendorData();
-  }, []);
+  }, [user]);
 
   // Login function
   const login = async (formData) => {
@@ -174,7 +184,6 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      console.log("User signed up:", data);
       setUser(data.user);
 
       return {
@@ -190,14 +199,11 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout function
   const logout = async () => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signOut();
-
       if (error) throw error;
-
       setUser(null);
       setVendorData(null);
     } catch (error) {
@@ -223,8 +229,8 @@ export function AuthProvider({ children }) {
     loadingVendor,
 
     // Helper functions
-    isVendor: !!vendorData,
-    isLoggedIn: !!user,
+    isVendor,
+    isLoggedIn,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

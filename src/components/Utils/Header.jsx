@@ -24,8 +24,8 @@ export default function Header() {
       label: loadingVendor
         ? "Loading..."
         : isVendor
-        ? "View my store"
-        : "Sell on LocalMart",
+          ? "View my store"
+          : "Sell on LocalMart",
       onClick: () => handleVendorRedirection(),
       isButton: true,
     },
@@ -216,10 +216,8 @@ export default function Header() {
     lg:hidden ${
       isMenuOpen ? "translate-x-0" : "translate-x-full"
     } transition-shadow ${
-              isMenuOpen
-                ? "shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
-                : "shadow-none"
-            }`}
+      isMenuOpen ? "shadow-[0_12px_32px_rgba(0,0,0,0.12)]" : "shadow-none"
+    }`}
           >
             <div className="flex flex-col gap-2 items-start">
               <Link
@@ -250,8 +248,8 @@ export default function Header() {
                 {loadingVendor
                   ? "Loading..."
                   : isVendor
-                  ? "View my store"
-                  : "Sell on LocalMart"}
+                    ? "View my store"
+                    : "Sell on LocalMart"}
               </button>
             </div>
           </div>

@@ -29,6 +29,7 @@ export default function ProductsCard({ product, vendorInfo }) {
   //   product.variants.storage[1]
   // );
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
@@ -227,11 +228,14 @@ export default function ProductsCard({ product, vendorInfo }) {
                 </div>
                 {product.item_sizes && product.item_sizes.length > 0 && (
                   <select
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
                     className="w-[20%] px-3 py-2 rounded-lg border 
           border-[#009688] text-gray-700 text-sm
           focus:outline-none
           hover:border-[#00796B] transition-all duration-200 mb-4"
                   >
+                    <option value="">Choose a size</option>
                     {product.item_sizes.map((size, index) => (
                       <option
                         key={index}
@@ -247,6 +251,13 @@ export default function ProductsCard({ product, vendorInfo }) {
                     ))}
                   </select>
                 )}
+
+                {/* {selectedSize && (
+                  <p className="mt-2 text-sm text-gray-600">
+                    Selected:{" "}
+                    <span className="font-medium">{selectedSize}</span>
+                  </p>
+                )} */}
 
                 {/* Color */}
                 <div>
@@ -363,6 +374,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                         id: product.id,
                         quantity: quantity,
                         color: selectedColor,
+                        size: selectedSize,
                       })
                     }
                     disabled={product.item_units < 1}

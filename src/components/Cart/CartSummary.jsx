@@ -11,15 +11,15 @@ export default function CartSummary() {
   // Calculate totals
   const subtotal = cartItems.reduce(
     (sum, item) => sum + Number(item.price) * item.quantity,
-    0
+    0,
   );
 
   const savings = cartItems.reduce(
     (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
-    0
+    0,
   );
   const deliveryCost = 15.99; // Free delivery over Ngn 50000
-  const tax = subtotal * 0.08; // 8% tax
+  const tax = subtotal * 0.07; // 7% tax
   const total = subtotal + (subtotal < 50000 ? deliveryCost : 0) + tax;
 
   const proceedToCheckout = async () => {

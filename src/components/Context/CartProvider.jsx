@@ -29,8 +29,15 @@ export default function CartProvider({ children }) {
         }
 
         const existingIndex = newCart.findIndex(
-          (item) => item.id.toString() === cart.id.toString()
+          (item) => item.id.toString() === cart.id.toString(),
         );
+
+        //         const existingIndex = newCart.findIndex(
+        //   (item) =>
+        //     item.id.toString() === cart.id.toString() &&
+        //     item.color === cart.color &&
+        //     item.size === cart.size
+        // );
 
         if (existingIndex !== -1) {
           // Product exists → increase quantity
@@ -94,8 +101,8 @@ export default function CartProvider({ children }) {
               ...item,
               quantity: item.quantity + 1,
             }
-          : item
-      )
+          : item,
+      ),
     );
 
     products.map((prev) => {
@@ -118,9 +125,9 @@ export default function CartProvider({ children }) {
                 ...item,
                 quantity: item.quantity - 1,
               }
-            : item
+            : item,
         )
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0),
     );
   }
 

@@ -76,7 +76,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
             return (
               <div
                 key={product.id}
-                className="bg-[#fff] border shadow-sm hover:shadow-md transition-shadow rounded-[4px] md:rounded-[10px]"
+                className="bg-[#fff] border rounded-[4px] md:rounded-[10px]"
               >
                 <div className="w-full md:w-full h-[8.5rem] md:h-[218px] relative cursor-pointer">
                   <Link to={`/products/${product.id.toString()}`}>
@@ -134,7 +134,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
                           {vendor?.travelTime
                             ? vendor.travelTime >= 60
                               ? `${(vendor.travelTime / 60).toFixed(
-                                  1
+                                  1,
                                 )} hrs away`
                               : `${vendor.travelTime} mins away`
                             : vendor?.address || "Location not available"}

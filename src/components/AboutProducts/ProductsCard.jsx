@@ -10,9 +10,6 @@ import {
   ThumbsUp,
   ChatCircleDots,
   Check,
-  Shield,
-  CaretLeft,
-  CaretRight,
   CurrencyNgn,
 } from "@phosphor-icons/react";
 import { useCart } from "../Context/CartProvider";
@@ -22,7 +19,7 @@ import { useAuth } from "../Context/AuthProvider";
 
 export default function ProductsCard({ product, vendorInfo }) {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, setCheckoutItem } = useCart();
 
   const [selectedImage, setSelectedImage] = useState(0);
   // const [selectedStorage, setSelectedStorage] = useState(
@@ -99,7 +96,7 @@ export default function ProductsCard({ product, vendorInfo }) {
     );
   };
 
-  const proceedToCheckout = async () => {
+  const handleBuyNow = async () => {
     try {
       const { isValid } = await checkSession();
 
@@ -113,7 +110,16 @@ export default function ProductsCard({ product, vendorInfo }) {
         navigate("/login", { state: { from: "/checkout" } });
         return;
       }
+      const checkoutData = {
+        ...product,
+        quantity: 1,
+        color: selectedColor,
+        size: selectedSize,
+      };
 
+      // localStorage.setItem("checkoutItem", JSON.stringify(checkoutData));
+
+      setCheckoutItem(checkoutData);
       navigate("/checkout");
     } catch (error) {
       console.error("Error checking session:", error);
@@ -385,7 +391,7 @@ export default function ProductsCard({ product, vendorInfo }) {
                     Add to Cart
                   </button>
                   <button
-                    onClick={proceedToCheckout}
+                    onClick={handleBuyNow}
                     className="flex-1 border border-gray-400 py-3 px-6 rounded-lg hover:border-[#009688] hover:text-[#009688] transition-colors"
                   >
                     Buy Now

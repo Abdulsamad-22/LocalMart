@@ -86,7 +86,7 @@ const structureCheckoutData = (formData) => {
 
 export default function CheckoutProvider() {
   const [loading, setLoading] = useState(false);
-  const { cartItems } = useCart();
+  const { cartItems, checkoutItem, setCheckoutItem } = useCart();
   const [vendorInfo, setVendorInfo] = useState([]);
   const { user } = useAuth();
   const methods = useForm({
@@ -94,15 +94,19 @@ export default function CheckoutProvider() {
   });
   const navigate = useNavigate();
 
+  const itemToCheckout = checkoutItem ? [checkoutItem] : cartItems;
   const showNotification = (message, type) => {
     console.log(`${type}: ${message}`);
     alert(message); // Temporary fallback
   };
+
   useEffect(() => {
     const fetchVendors = async () => {
-      if (cartItems.length === 0) return;
+      if (itemToCheckout.length === 0) return;
 
-      const vendorIds = [...new Set(cartItems.map((item) => item.vendor_id))];
+      const vendorIds = [
+        ...new Set(itemToCheckout.map((item) => item.vendor_id)),
+      ];
 
       const { data, error } = await supabase
         .from("vendors")
@@ -114,7 +118,7 @@ export default function CheckoutProvider() {
     };
 
     fetchVendors();
-  }, [cartItems]);
+  }, [itemToCheckout]);
 
   const initializePayment = usePaystackPayment();
 
@@ -131,7 +135,7 @@ export default function CheckoutProvider() {
       console.log("User:", user);
 
       // 2. Validate cart
-      if (cartItems.length === 0) {
+      if (itemToCheckout.length === 0) {
         alert("Your cart is empty");
         return;
       }
@@ -140,7 +144,7 @@ export default function CheckoutProvider() {
         return;
       }
 
-      const paymentData = CalculatePaymentSplit(cartItems, vendorInfo, 5);
+      const paymentData = CalculatePaymentSplit(itemToCheckout, vendorInfo, 5);
 
       const config = {
         publicKey: paystack_publicKey,
@@ -163,7 +167,7 @@ export default function CheckoutProvider() {
         } else {
           console.error(
             "Invalid subaccount for single vendor:",
-            split.subaccount
+            split.subaccount,
           );
           alert("Vendor payment setup incomplete. Cannot proceed.");
           return;
@@ -179,7 +183,7 @@ export default function CheckoutProvider() {
             typeof split.subaccount !== "string" ||
             !split.share ||
             typeof split.share !== "number" ||
-            split.share <= 0
+            split.share <= 0,
         );
 
         if (invalidSplits.length > 0) {
@@ -202,7 +206,7 @@ export default function CheckoutProvider() {
 
       config.metadata = {
         customer_id: user.id,
-        order_items: cartItems.length,
+        order_items: itemToCheckout.length,
         vendor_count: vendorInfo.length,
       };
       console.log("Metadata:", config.metadata);
@@ -214,7 +218,7 @@ export default function CheckoutProvider() {
         config,
         (transaction) =>
           handlePaymentSuccess(transaction, paymentData, checkoutData),
-        () => handlePaymentClose()
+        () => handlePaymentClose(),
       );
 
       // Initialize payment
@@ -246,6 +250,8 @@ export default function CheckoutProvider() {
 
       //   throw paystackError;
       // }
+      localStorage.removeItem("checkoutItem");
+      setCheckoutItem(null);
     } catch (error) {
       console.error("Checkout error:", error);
       console.error("Error name:", error.name);
@@ -261,7 +267,7 @@ export default function CheckoutProvider() {
   const handlePaymentSuccess = async (
     transaction,
     paymentData,
-    checkoutData
+    checkoutData,
   ) => {
     try {
       console.log("Payment callback received");
@@ -272,14 +278,14 @@ export default function CheckoutProvider() {
 
       if (!verificationResult.success) {
         alert(
-          `Payment verification failed: ${verificationResult.error}\nReference: ${transaction.reference}`
+          `Payment verification failed: ${verificationResult.error}\nReference: ${transaction.reference}`,
         );
         return;
       }
 
       await createOrderRecords({
         reference: transaction.reference,
-        cartItems,
+        itemToCheckout,
         vendorInfo,
         paymentData,
         user,
@@ -288,7 +294,7 @@ export default function CheckoutProvider() {
 
       showNotification(
         "Payment successful! Your orders have been created.",
-        "success"
+        "success",
       );
       alert("🎉 Order successful!");
 
@@ -297,7 +303,7 @@ export default function CheckoutProvider() {
       console.error("Error handling payment success:", error);
       showNotification(
         "Payment was successful, but there was an issue creating your order. Please contact support.",
-        "error"
+        "error",
       );
     }
   };

@@ -10,7 +10,7 @@ export default function CartProvider({ children }) {
     const saved = localStorage.getItem("cartItems");
     return saved ? JSON.parse(saved) : [];
   });
-
+  const [checkoutItem, setCheckoutItem] = useState(null);
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
@@ -68,7 +68,7 @@ export default function CartProvider({ children }) {
           newCart.push({
             id: cart.id,
             name: cart.name || cart.item_name || "Unnamed Product",
-            price: numericPrice,
+            item_price: numericPrice,
             image: cart.image_url || cart.image || "",
             // seller: cart.seller || 'Unknown Seller',
             inStock: cart.item_units !== 0 ? cart.in_stock : true,
@@ -145,6 +145,8 @@ export default function CartProvider({ children }) {
         decreaseCart,
         removeFromCart,
         addToCart,
+        setCheckoutItem,
+        checkoutItem,
       }}
     >
       {children}

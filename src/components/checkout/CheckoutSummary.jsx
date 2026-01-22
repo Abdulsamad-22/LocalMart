@@ -1,12 +1,15 @@
 import { useCart } from "../Context/CartProvider";
 import { CurrencyNgn, Trash } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
+import { useEffect } from "react";
 
 export default function CheckoutSummary({ loading, vendorInfo }) {
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, checkoutItem, setCheckoutItem } =
+    useCart();
   const {
     formState: { isSubmitting },
   } = useFormContext();
+  const itemToCheckout = checkoutItem ? [checkoutItem] : cartItems;
 
   return (
     <div className="">
@@ -15,10 +18,11 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
         <div className="p-6">
           <h2 className="text-xl font-semibold mb-4">Review Your Order</h2>
 
-          {cartItems.map((item, index) => {
+          {itemToCheckout.map((item, index) => {
             const vendor = vendorInfo.find(
-              (v) => v.vendor_id === item.vendor_id
+              (v) => v.vendor_id === item.vendor_id,
             );
+            const productPrice = item.price || item.item_price;
             return (
               <div
                 key={item.id}
@@ -48,13 +52,13 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
                         @
                         <CurrencyNgn size={14} />
                         <p className="text-[0.75rem] md:text-[0.875rem] text-gray-600">
-                          {item.price.toLocaleString("en-NG")}
+                          {productPrice.toLocaleString("en-NG")}
                         </p>
                       </span>
 
                       <p className="flex items-center font-medium text-[0.75rem] md:text-[0.875rem] text-gray-800">
                         <CurrencyNgn size={14} />
-                        {(item.price * item.quantity).toLocaleString("en-NG")}
+                        {(productPrice * item.quantity).toLocaleString("en-NG")}
                       </p>
                     </div>
 
@@ -88,8 +92,8 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
             <span>Subtotal:</span>
             <span className="flex items-center gap-[0.5px]">
               <CurrencyNgn size={18} />
-              {cartItems
-                .reduce((sum, item) => sum + item.price * item.quantity, 0)
+              {itemToCheckout
+                .reduce((sum, item) => sum + item.item_price * item.quantity, 0)
                 .toLocaleString("en-NG")}
             </span>
           </div>
@@ -98,9 +102,9 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
             <span className="flex items-center gap-[0.5px]">
               <CurrencyNgn size={18} />
               {(
-                cartItems.reduce(
-                  (sum, item) => sum + item.price * item.quantity,
-                  0
+                itemToCheckout.reduce(
+                  (sum, item) => sum + item.item_price * item.quantity,
+                  0,
                 ) * 0.05
               ).toLocaleString("en-NG")}
             </span>
@@ -109,8 +113,8 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
             <span>Total:</span>
             <span className="flex items-center gap-[0.5px]">
               <CurrencyNgn size={18} />
-              {cartItems
-                .reduce((sum, item) => sum + item.price * item.quantity, 0)
+              {itemToCheckout
+                .reduce((sum, item) => sum + item.item_price * item.quantity, 0)
                 .toLocaleString("en-NG")}
             </span>
           </div>

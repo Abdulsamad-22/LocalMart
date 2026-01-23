@@ -160,13 +160,13 @@ export default function CartItemSection() {
                                   <div className="hidden md:flex items-center text-[1.125rem] font-semibold text-gray-900">
                                     <CurrencyNgn size={20} />
                                     {Number(
-                                      item.price * item.quantity
+                                      item.price * item.quantity,
                                     ).toLocaleString("en-NG")}
                                   </div>
                                   <div className="flex items-center text-[0.875rem] md:text-sm text-gray-800 mt-1">
                                     <CurrencyNgn />
                                     {Number(item.price).toLocaleString(
-                                      "en-NG"
+                                      "en-NG",
                                     )}{" "}
                                     each
                                   </div>
@@ -181,9 +181,9 @@ export default function CartItemSection() {
                                     <button
                                       onClick={() => decreaseCart(item.id)}
                                       disabled={item.quantity <= 1}
-                                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                                      className="border border-gray-300 p-[0.5rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
                                     >
-                                      <Minus size={14} />
+                                      <Minus size={16} />
                                     </button>
                                     <span className="px-4 py-2 min-w-[60px] text-center font-medium">
                                       {item.quantity}
@@ -193,9 +193,9 @@ export default function CartItemSection() {
                                       disabled={
                                         item.quantity >= item.item_units
                                       }
-                                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                                      className="border border-gray-300 p-[0.5rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
                                     >
-                                      <Plus size={14} />
+                                      <Plus size={16} />
                                     </button>
                                   </div>
                                 </div>

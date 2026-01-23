@@ -332,9 +332,9 @@ export default function ProductsCard({ product, vendorInfo }) {
                     <button
                       onClick={() => updateQuantity(quantity - 1)}
                       disabled={quantity <= 1}
-                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                      className="border border-gray-300 p-[0.5rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
                     >
-                      <Minus size={14} />
+                      <Minus size={16} />
                     </button>
                     <span className="px-4 py-2 min-w-[60px] text-center font-medium">
                       {quantity}
@@ -342,9 +342,9 @@ export default function ProductsCard({ product, vendorInfo }) {
                     <button
                       onClick={() => updateQuantity(quantity + 1)}
                       disabled={quantity >= product.item_units}
-                      className="border border-gray-300 p-[0.35rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
+                      className="border border-gray-300 p-[0.5rem] md:p-3 transition-transform duration-300 hover:bg-[#009688] hover:text-white font-semibold rounded-full disabled:cursor-not-allowed transition-colors"
                     >
-                      <Plus size={14} />
+                      <Plus size={16} />
                     </button>
                   </div>
                   {/* <div className="flex items-center border border-gray-300 rounded-lg">

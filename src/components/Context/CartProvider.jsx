@@ -68,7 +68,7 @@ export default function CartProvider({ children }) {
           newCart.push({
             id: cart.id,
             name: cart.name || cart.item_name || "Unnamed Product",
-            item_price: numericPrice,
+            price: numericPrice,
             image: cart.image_url || cart.image || "",
             // seller: cart.seller || 'Unknown Seller',
             inStock: cart.item_units !== 0 ? cart.in_stock : true,

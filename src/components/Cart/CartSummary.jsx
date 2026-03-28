@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../Context/CartProvider";
 import { CurrencyNgn, ArrowRight, Shield } from "@phosphor-icons/react";
 import { useAuth } from "../Context/AuthProvider";
+import useCartStore from "../../store/cartStore";
 
 export default function CartSummary() {
-  const { cartItems } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+
   const { user, checkSession } = useAuth();
   const navigate = useNavigate();
 

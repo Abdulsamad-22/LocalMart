@@ -7,13 +7,13 @@ import {
   CurrencyNgn,
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
-import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
 import { useProduct } from "../Context/ProductProvider";
 import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
+import useCartStore from "../../store/cartStore";
 
 export default function ProductsDisplay({ limit, loading: searchLoad }) {
-  const { addToCart } = useCart();
+  const addToCart = useCartStore((state) => state.addToCart);
   const { addToWishlist, isInWishList } = useWishlist();
   const [loading, setLoading] = useState(true);
   const { products, setProducts } = useProduct();
@@ -144,7 +144,15 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
                   </div>
                   <div className="hidden md:block">
                     <button
-                      onClick={() => addToCart({ ...product, id: product.id })}
+                      onClick={() => {
+                        console.log("product being added:", product); // is product defined?
+                        console.log("product.id:", product.id); // is id defined?
+                        addToCart({ ...product, id: product.id });
+                        console.log(
+                          "cart after add:",
+                          useCartStore.getState().cartItems,
+                        ); // did it update?
+                      }}
                       className="flex items-center justify-center gap-2 w-full text-[0.875rem] md:text-[1rem] px-4 md:px-5 py-2 md:py-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
                     hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] rounded-[8px] mt-2 md:mt-4"
                     >

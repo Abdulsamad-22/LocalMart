@@ -7,13 +7,17 @@ import {
   Heart,
   Trash,
 } from "@phosphor-icons/react";
-import { useCart } from "../Context/CartProvider";
 import { useWishlist } from "../Context/WishlistProvider";
 import { Link } from "react-router-dom";
 import CartSummary from "./CartSummary";
+import useCartStore from "../../store/cartStore";
 
 export default function CartItemSection() {
-  const { cartItems, removeFromCart, increaseCart, decreaseCart } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+  console.log("carts that are added", cartItems);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const increaseCart = useCartStore((state) => state.increaseCart);
+  const decreaseCart = useCartStore((state) => state.decreaseCart);
   const { addToWishlist } = useWishlist();
 
   return (

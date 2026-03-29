@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { CurrencyNgn, ArrowRight, Shield } from "@phosphor-icons/react";
 import { useAuth } from "../Context/AuthProvider";
-import useCartStore from "../../store/cartStore";
+import useCartStore from "../../state-store/cartStore";
 
 export default function CartSummary() {
   const cartItems = useCartStore((state) => state.cartItems);

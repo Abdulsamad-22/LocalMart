@@ -7,10 +7,10 @@ import {
   CurrencyNgn,
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
-import { useProduct } from "../Context/ProductProvider";
 import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
 import useCartStore from "../../state-store/cartStore";
 import useWishlistStore from "../../state-store/wishlistStore";
+import useProductStore from "../../state-store/productStore";
 
 export default function ProductsDisplay({ limit, loading: searchLoad }) {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -18,7 +18,9 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
   const isInWishlist = useWishlistStore((state) => state.isInWishList);
 
   const [loading, setLoading] = useState(true);
-  const { products, setProducts } = useProduct();
+  const products = useProductStore((state) => state.products);
+  const setProducts = useProductStore((state) => state.setProducts);
+  const searchQuery = useProductStore((state) => state.searchQuery);
   const { vendors } = useVendorLocation();
 
   useEffect(() => {
@@ -161,9 +163,9 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
         : !searchLoad && (
             <div className="col-span-full text-center py-8">
               <p className="text-gray-500">
-                {/* {searchQuery
-                    ? "No products found matching your search."
-                    : "No products available."} */}
+                {searchQuery
+                  ? "No products found matching your search."
+                  : "No products available."}
               </p>
             </div>
           )}

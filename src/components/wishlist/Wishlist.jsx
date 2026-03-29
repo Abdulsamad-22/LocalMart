@@ -7,15 +7,20 @@ import {
   Funnel,
   CaretDown,
 } from "@phosphor-icons/react";
-import { useWishlist } from "../Context/WishlistProvider";
-import { useCart } from "../Context/CartProvider";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
+import useWishlistStore from "../../state-store/wishlistStore";
+import useCartStore from "../../state-store/cartStore";
 
 export default function Wishlist() {
-  const { wishlistItems, removeFromWishlist, clearAllWishlist } = useWishlist();
-  const { addToCart } = useCart();
+  const wishlistItems = useWishlistStore((state) => state.wishlistItems);
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist,
+  );
+  const clearAllWishlist = useWishlistStore((state) => state.clearAllWishlist);
+  const addToCart = useCartStore((state) => state.addToCart);
+
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const { vendors } = useVendorLocation();
@@ -188,7 +193,7 @@ export default function Wishlist() {
                                 "
                                   />
                                   {Number(item.item_price).toLocaleString(
-                                    "en-NG"
+                                    "en-NG",
                                   )}
                                 </div>
                               </div>
@@ -204,7 +209,7 @@ export default function Wishlist() {
                                 "
                                   />
                                   {Number(item.item_price).toLocaleString(
-                                    "en-NG"
+                                    "en-NG",
                                   )}
                                 </div>
                               </div>

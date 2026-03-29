@@ -7,14 +7,16 @@ import {
   CurrencyNgn,
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
-import { useWishlist } from "../Context/WishlistProvider";
 import { useProduct } from "../Context/ProductProvider";
 import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
-import useCartStore from "../../store/cartStore";
+import useCartStore from "../../state-store/cartStore";
+import useWishlistStore from "../../state-store/wishlistStore";
 
 export default function ProductsDisplay({ limit, loading: searchLoad }) {
   const addToCart = useCartStore((state) => state.addToCart);
-  const { addToWishlist, isInWishList } = useWishlist();
+  const addToWishlist = useWishlistStore((state) => state.addToWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishList);
+
   const [loading, setLoading] = useState(true);
   const { products, setProducts } = useProduct();
   const { vendors } = useVendorLocation();
@@ -71,7 +73,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
     <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 px-0 md:px-0">
       {products.length > 0
         ? products.slice(0, limit).map((product) => {
-            const isWishlisted = isInWishList(product.id.toString());
+            const isWishlisted = () => isInWishlist(product.id.toString());
             const vendor = vendors.find((v) => v.id === product.vendor_id);
             return (
               <div
@@ -88,10 +90,8 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
                   </Link>
 
                   <Heart
-                    onClick={() =>
-                      addToWishlist({ ...product, id: product.id.toString() })
-                    }
-                    weight={isWishlisted ? "fill" : "regular"}
+                    onClick={() => addToWishlist(product)}
+                    weight={isWishlisted() ? "fill" : "regular"}
                     className="absolute right-2 top-2 text-[#009688] text-[1.25rem] md:[1.5rem]"
                   />
                 </div>
@@ -145,13 +145,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
                   <div className="hidden md:block">
                     <button
                       onClick={() => {
-                        console.log("product being added:", product); // is product defined?
-                        console.log("product.id:", product.id); // is id defined?
-                        addToCart({ ...product, id: product.id });
-                        console.log(
-                          "cart after add:",
-                          useCartStore.getState().cartItems,
-                        ); // did it update?
+                        addToCart(product);
                       }}
                       className="flex items-center justify-center gap-2 w-full text-[0.875rem] md:text-[1rem] px-4 md:px-5 py-2 md:py-2 bg-gradient-to-r from-[#009688] to-[#00695C] transition-all duration-200
                     hover:from-[#00897B] hover:to-[#005B4F] text-[#fff] rounded-[8px] mt-2 md:mt-4"

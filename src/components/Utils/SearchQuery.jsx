@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../supabase-client";
-import { useProduct } from "../Context/ProductProvider";
+import useProductStore from "../../state-store/productStore";
 
 export default function SearchQuery({ setLoading }) {
   const { register, watch } = useForm();
   const [allProducts, setAllProducts] = useState([]);
+  const setSearchQuery = (state) => state.setSearchQuery;
   const searchQuery = watch("search", "");
-  const { setProducts } = useProduct();
+  const setProducts = useProductStore((state) => state.setProducts);
+
+  useEffect(() => {
+    setSearchQuery(searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
     async function fetchAllProducts() {
@@ -47,7 +52,7 @@ export default function SearchQuery({ setLoading }) {
             .includes(searchQuery.toLowerCase()) ||
           product.item_category
             ?.toLowerCase()
-            .includes(searchQuery.toLowerCase())
+            .includes(searchQuery.toLowerCase()),
       );
       setProducts(filteredProducts);
     }

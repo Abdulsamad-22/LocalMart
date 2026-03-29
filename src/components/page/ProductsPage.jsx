@@ -1,11 +1,11 @@
 import ProductsCard from "../AboutProducts/ProductsCard";
 import { useParams } from "react-router-dom";
-import { useProduct } from "../Context/ProductProvider";
 import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
+import useProductStore from "../../state-store/productStore";
 
 export default function ProductsPage() {
   const { id } = useParams();
-  const { products } = useProduct();
+  const products = useProductStore((state) => state.products);
   const { vendors } = useVendorLocation();
   const product = products.find((p) => p.id.toString() === id);
   const productWithInfo = vendors?.find((v) => v.id === product?.vendor_id);

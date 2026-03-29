@@ -8,15 +8,18 @@ import {
   Trash,
 } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useProduct } from "../Context/ProductProvider";
+import useProductStore from "../../state-store/productStore";
 import { useCart } from "../Context/CartProvider";
+import useCartStore from "../../state-store/cartStore";
 
 export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { products, setProducts, setEditingProduct, editingProduct } =
-    useProduct();
-  const { addToCart } = useCart();
+  const products = useProductStore((state) => state.products);
+  const setProducts = useProductStore((state) => state.setProducts);
+  const setEditingProduct = useProductStore((state) => state.setEditingProduct);
+
+  const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
 
   useEffect(() => {

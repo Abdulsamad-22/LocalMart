@@ -3,7 +3,7 @@ import { Images, Upload, Plus } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
 import ProductSizes from "./ProductSizes";
 import ProductColors from "./ProductsColors";
-import { useProduct } from "../Context/ProductProvider";
+import useProductStore from "../../state-store/productStore";
 
 export default function ProductSpecification({
   setImageFile,
@@ -14,7 +14,7 @@ export default function ProductSpecification({
   setPreview,
   preview,
 }) {
-  const { editingProduct } = useProduct();
+  const editingProduct = useProductStore((state) => state.editingProduct);
   const {
     formState: { isSubmitting, errors },
     handleCancelEdit,
@@ -55,7 +55,7 @@ export default function ProductSpecification({
           { name: file.name, data: base64, type: file.type },
           {
             shouldValidate: true,
-          }
+          },
         );
         setPreview(reader.result);
         setImageFile(file);

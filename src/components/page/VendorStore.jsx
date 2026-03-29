@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import DraftProductList from "../store/DraftProductList";
-import { useProduct } from "../Context/ProductProvider";
+import useProductStore from "../../state-store/productStore";
 import { PencilSimple } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabase-client";
@@ -15,7 +15,11 @@ import { useAuth } from "../Context/AuthProvider";
 export default function VendorStore() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { editingProduct, setEditingProduct, setProducts } = useProduct();
+  // const { editingProduct, setEditingProduct, setProducts } = useProduct();
+  const setProducts = useProductStore((state) => state.setProducts);
+  const setEditingProduct = useProductStore((state) => state.setEditingProduct);
+  const editingProduct = useProductStore((state) => state.editingProduct);
+
   const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -198,7 +202,7 @@ export default function VendorStore() {
         alert(`Updating product ${data.id} successful`);
 
         setProducts.map((p) =>
-          p.id === editingProduct.id ? { ...p, ...data } : p
+          p.id === editingProduct.id ? { ...p, ...data } : p,
         );
       } else {
         const productDoc = {
@@ -225,7 +229,7 @@ export default function VendorStore() {
           setDraftProducts((prev) => {
             // Remove the old version and add the updated version
             const filtered = prev.filter(
-              (draft) => draft.draft_id !== editingDraftId
+              (draft) => draft.draft_id !== editingDraftId,
             );
             return [...filtered, productDoc];
           });
@@ -238,7 +242,7 @@ export default function VendorStore() {
           const isDuplicate = draftProducts.some(
             (draft) =>
               draft.item_name.toLowerCase().trim() ===
-              formData.productName.toLowerCase().trim()
+              formData.productName.toLowerCase().trim(),
           );
 
           if (!isDuplicate) {

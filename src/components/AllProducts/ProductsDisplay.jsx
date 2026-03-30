@@ -15,7 +15,7 @@ import useProductStore from "../../state-store/productStore";
 export default function ProductsDisplay({ limit, loading: searchLoad }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const addToWishlist = useWishlistStore((state) => state.addToWishlist);
-  const isInWishlist = useWishlistStore((state) => state.isInWishList);
+  const wishlistItems = useWishlistStore((state) => state.wishlistItems);
 
   const [loading, setLoading] = useState(true);
   const products = useProductStore((state) => state.products);
@@ -75,7 +75,9 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
     <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-12 px-0 md:px-0">
       {products.length > 0
         ? products.slice(0, limit).map((product) => {
-            const isWishlisted = () => isInWishlist(product.id.toString());
+            const isWishlisted = wishlistItems.some(
+              (item) => item.id.toString() === product.id.toString(),
+            );
             const vendor = vendors.find((v) => v.id === product.vendor_id);
             return (
               <div
@@ -93,7 +95,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
 
                   <Heart
                     onClick={() => addToWishlist(product)}
-                    weight={isWishlisted() ? "fill" : "regular"}
+                    weight={isWishlisted ? "fill" : "regular"}
                     className="absolute right-2 top-2 text-[#009688] text-[1.25rem] md:[1.5rem]"
                   />
                 </div>

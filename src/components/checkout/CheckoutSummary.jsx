@@ -1,11 +1,16 @@
-import { useCart } from "../Context/CartProvider";
+// import { useCart } from "../Context/CartProvider";
 import { CurrencyNgn, Trash } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
-import { useEffect } from "react";
+// import { useEffect } from "react";
+import useCartStore from "../../state-store/cartStore";
 
 export default function CheckoutSummary({ loading, vendorInfo }) {
-  const { cartItems, removeFromCart, checkoutItem, setCheckoutItem } =
-    useCart();
+  // const { cartItems, removeFromCart, checkoutItem, setCheckoutItem } =
+  //   useCart();
+
+  const cartItems = useCartStore((state) => state.cartItems);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const checkoutItem = useCartStore((state) => state.checkoutItem);
   const {
     formState: { isSubmitting },
   } = useFormContext();

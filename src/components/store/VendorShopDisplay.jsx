@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../Context/AuthProvider";
 import { supabase } from "../../supabase-client";
 import {
   CurrencyNgn,
@@ -9,7 +8,6 @@ import {
 } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router-dom";
 import useProductStore from "../../state-store/productStore";
-import { useCart } from "../Context/CartProvider";
 import useCartStore from "../../state-store/cartStore";
 
 export default function VendorShopDisplay({ vendorId, isOwner, currentUser }) {

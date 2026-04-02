@@ -5,14 +5,13 @@ import { useState, useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { useCart } from "../Context/CartProvider";
 import { supabase } from "../../supabase-client";
 import CalculatePaymentSplit from "../Utils/CalculatePaymentSplit";
 import { usePaystackPayment } from "../../hooks/usePaymentHook";
-// import { verifyPayment } from "../Cart/verifyPayment";
 import { createOrderRecords } from "../Cart/createOrderRecords";
 import { useAuth } from "../Context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import useCartStore from "../../state-store/cartStore";
 
 const paystack_publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
@@ -86,7 +85,9 @@ const structureCheckoutData = (formData) => {
 
 export default function CheckoutProvider() {
   const [loading, setLoading] = useState(false);
-  const { cartItems, checkoutItem, setCheckoutItem } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+  const checkoutItem = (state) => state.checkoutItem;
+  const setCheckoutItem = (state) => state.setCheckoutItem;
   const [vendorInfo, setVendorInfo] = useState([]);
   const { user } = useAuth();
   const methods = useForm({
@@ -221,35 +222,6 @@ export default function CheckoutProvider() {
         () => handlePaymentClose(),
       );
 
-      // Initialize payment
-      // try {
-      //   initializePayment(
-      //     config,
-      //     (transaction) => handlePaymentSuccess(transaction, paymentData),
-      //     () => handlePaymentClose()
-      //   );
-      // } catch (paystackError) {
-      //   console.error("Paystack Error:", paystackError);
-      //   console.error("Error name:", paystackError.name);
-      //   console.error("Error message:", paystackError.message);
-
-      //   // Log the validation issues
-      //   if (paystackError.issues) {
-      //     console.error("Validation Issues:", paystackError.issues);
-
-      //     paystackError.issues.forEach((issue, index) => {
-      //       console.error(`Issue ${index + 1}:`, {
-      //         path: issue.path,
-      //         message: issue.message,
-      //         code: issue.code,
-      //         expected: issue.expected,
-      //         received: issue.received,
-      //       });
-      //     });
-      //   }
-
-      //   throw paystackError;
-      // }
       localStorage.removeItem("checkoutItem");
       setCheckoutItem(null);
     } catch (error) {
@@ -285,7 +257,7 @@ export default function CheckoutProvider() {
 
       await createOrderRecords({
         reference: transaction.reference,
-        itemToCheckout,
+        cartItems,
         vendorInfo,
         paymentData,
         user,
@@ -296,7 +268,7 @@ export default function CheckoutProvider() {
         "Payment successful! Your orders have been created.",
         "success",
       );
-      alert("🎉 Order successful!");
+      // alert("🎉 Order successful!");
 
       navigate("/carts");
     } catch (error) {

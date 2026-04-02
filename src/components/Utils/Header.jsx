@@ -2,14 +2,14 @@ import { ShoppingCart, UserCircle, List, Heart } from "@phosphor-icons/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthProvider";
-import { useCart } from "../Context/CartProvider";
+import useCartStore from "../../state-store/cartStore";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { isVendor, checkSession, session, user, loadingVendor } = useAuth();
   const location = useLocation();
-  const { cartItems } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
 
   const navLinks = [
     {
@@ -146,47 +146,7 @@ export default function Header() {
               </button>
             );
           })}
-          {/* Desktop Menu Items */}
-          {/* <button
-            onClick={handleSignupClick}
-            className="hidden md:flex gap-1 items-center text-[1rem] text-[#636363] hover:text-[#009688]"
-          >
-            <UserCircle size={24} />
-            Login / Sign up
-          </button>
 
-          <Link
-            to="/wishlist"
-            className="hidden md:flex items-center justify-center gap-1 text-[1rem] text-[#636363] hover:text-[#009688] cursor-pointer"
-          >
-            <Heart size={20} />
-            Wishlists
-          </Link>
-
-          <Link
-            to="/carts"
-            className="flex items-center justify-center gap-1 text-[1rem] text-[#636363] hover:text-[#009688] cursor-pointer relative"
-          > */}
-          {/* <span className="absolute top-0 -left-2 py-0 px-[0.35rem] text-[0.625rem] text-[#fff] rounded-full bg-[#009688]">
-              3
-            </span> */}
-          {/* <ShoppingCart size={20} />
-            Cart
-          </Link> */}
-
-          {/* Mobile Menu Toggle */}
-          {/* <List
-            onClick={toggleMenu}
-            className="block md:hidden cursor-pointer"
-            size={24}
-          />
-
-          <button
-            onClick={handleVendorRedirection}
-            className="hidden md:block py-2 px-3 rounded-lg border-[1px] border-gray-500 text-[0.875rem] text-[#636363] transition-transform duration-300 hover:border-[#009688] hover:text-[#009688]"
-          >
-            {!isVendor ? "Sell on LocalMart" : "View my store"}
-          </button> */}
           <Link
             onClick={() => setIsMenuOpen(false)}
             className="flex md:hidden items-center justify-center gap-1 relative text-[1rem]

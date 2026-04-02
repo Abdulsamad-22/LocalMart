@@ -12,15 +12,15 @@ import {
   Check,
   CurrencyNgn,
 } from "@phosphor-icons/react";
-import { useCart } from "../Context/CartProvider";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
+import useCartStore from "../../state-store/cartStore";
 
 export default function ProductsCard({ product, vendorInfo }) {
   const navigate = useNavigate();
-  const { addToCart, setCheckoutItem } = useCart();
-
+  const addToCart = useCartStore((state) => state.addToCart);
+  const setCheckoutItem = useCartStore((state) => state.setCheckoutItem);
   const [selectedImage, setSelectedImage] = useState(0);
   // const [selectedStorage, setSelectedStorage] = useState(
   //   product.variants.storage[1]

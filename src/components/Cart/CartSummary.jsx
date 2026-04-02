@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { CurrencyNgn, ArrowRight, Shield } from "@phosphor-icons/react";
 import { useAuth } from "../Context/AuthProvider";
 import useCartStore from "../../state-store/cartStore";
+import { calculateCheckout } from "../Utils/calculateCheckout";
 
 export default function CartSummary() {
   const cartItems = useCartStore((state) => state.cartItems);
@@ -9,19 +10,8 @@ export default function CartSummary() {
   const { user, checkSession } = useAuth();
   const navigate = useNavigate();
 
-  // Calculate totals
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.price) * item.quantity,
-    0,
-  );
-
-  const savings = cartItems.reduce(
-    (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
-    0,
-  );
-  const deliveryCost = 15.99; // Free delivery over Ngn 50000
-  const tax = subtotal * 0.07; // 7% tax
-  const total = subtotal + (subtotal < 50000 ? deliveryCost : 0) + tax;
+  // Calculate total cost
+  const { subtotal, tax, total, savings } = calculateCheckout(cartItems);
 
   const proceedToCheckout = async () => {
     try {

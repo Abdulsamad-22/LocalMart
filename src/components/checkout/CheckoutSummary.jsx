@@ -1,13 +1,9 @@
-// import { useCart } from "../Context/CartProvider";
 import { CurrencyNgn, Trash } from "@phosphor-icons/react";
 import { useFormContext } from "react-hook-form";
-// import { useEffect } from "react";
 import useCartStore from "../../state-store/cartStore";
+import { calculateCheckout } from "../Utils/calculateCheckout";
 
 export default function CheckoutSummary({ loading, vendorInfo }) {
-  // const { cartItems, removeFromCart, checkoutItem, setCheckoutItem } =
-  //   useCart();
-
   const cartItems = useCartStore((state) => state.cartItems);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const checkoutItem = useCartStore((state) => state.checkoutItem);
@@ -15,6 +11,8 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
     formState: { isSubmitting },
   } = useFormContext();
   const itemToCheckout = checkoutItem ? [checkoutItem] : cartItems;
+
+  const { subtotal, tax, total } = calculateCheckout(itemToCheckout);
 
   return (
     <div className="">
@@ -97,9 +95,7 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
             <span>Subtotal:</span>
             <span className="flex items-center gap-[0.5px]">
               <CurrencyNgn size={18} />
-              {itemToCheckout
-                .reduce((sum, item) => sum + item.item_price * item.quantity, 0)
-                .toLocaleString("en-NG")}
+              {subtotal.toLocaleString("en-NG")}
             </span>
           </div>
           <div className="flex justify-between text-sm text-gray-600">
@@ -114,13 +110,17 @@ export default function CheckoutSummary({ loading, vendorInfo }) {
               ).toLocaleString("en-NG")}
             </span>
           </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Tax</span>
+            <span className="flex items-center font-medium">
+              <CurrencyNgn size={18} /> {tax.toLocaleString("en-NG")}
+            </span>
+          </div>
           <div className="border-t pt-2 flex justify-between font-semibold">
             <span>Total:</span>
             <span className="flex items-center gap-[0.5px]">
               <CurrencyNgn size={18} />
-              {itemToCheckout
-                .reduce((sum, item) => sum + item.item_price * item.quantity, 0)
-                .toLocaleString("en-NG")}
+              {total.toLocaleString("en-NG")}
             </span>
           </div>
         </div>

@@ -60,10 +60,9 @@ const useCartStore = create(
             quantity: 1,
             ...cart,
           });
-          set({ cartItems: newCart });
         }
       });
-
+      set({ cartItems: newCart });
       alert("Item added to cart");
       return newCart;
     },

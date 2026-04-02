@@ -1,14 +1,17 @@
-import Checkout from "../checkout/Checkout";
-import CheckoutSummary from "../checkout/CheckoutSummary";
+import {
+  CheckoutSummary,
+  CalculatePaymentSplit,
+  Checkout,
+  createOrderRecords,
+} from "../barrel";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { supabase } from "../../supabase-client";
-import CalculatePaymentSplit from "../Utils/CalculatePaymentSplit";
+
 import { usePaystackPayment } from "../../hooks/usePaymentHook";
-import { createOrderRecords } from "../Cart/createOrderRecords";
 import { useAuth } from "../Context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../../state-store/cartStore";

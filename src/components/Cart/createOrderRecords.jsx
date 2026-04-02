@@ -1,13 +1,13 @@
 import { supabase } from "../../supabase-client";
 
-export const createOrderRecords = async ({
+export default async function createOrderRecords({
   reference,
   cartItems,
   vendorInfo,
   paymentData,
   user,
   checkoutData,
-}) => {
+}) {
   try {
     // Group items by vendor
     const vendorGroups = cartItems.reduce((groups, item) => {
@@ -23,11 +23,11 @@ export const createOrderRecords = async ({
     const orderPromises = Object.entries(vendorGroups).map(
       async ([vendorId, items]) => {
         const vendor = vendorInfo.find(
-          (v) => v.vendor_id.toString() === vendorId
+          (v) => v.vendor_id.toString() === vendorId,
         );
         const orderTotal = items.reduce(
           (sum, item) => sum + item.price * item.quantity,
-          0
+          0,
         );
         const platformFee = Math.round(orderTotal * 0.05 * 100) / 100;
         const vendorAmount = orderTotal - platformFee;
@@ -150,7 +150,7 @@ export const createOrderRecords = async ({
           console.error(
             "Notification failed for vendor:",
             vendorId,
-            notificationError
+            notificationError,
           );
         }
 
@@ -175,7 +175,7 @@ export const createOrderRecords = async ({
         // }
 
         return { order, vendorOrder };
-      }
+      },
     );
 
     const orders = await Promise.all(orderPromises);
@@ -186,4 +186,4 @@ export const createOrderRecords = async ({
     console.error(" Error creating order records:", error);
     return { success: false, error: error.message };
   }
-};
+}

@@ -9,7 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
+import useStoreLocation from "../../state-store/vendorLocationStore";
 import useWishlistStore from "../../state-store/wishlistStore";
 import useCartStore from "../../state-store/cartStore";
 
@@ -23,7 +23,7 @@ export default function Wishlist() {
 
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
-  const { vendors } = useVendorLocation();
+  const vendors = useStoreLocation((state) => state.vendors);
 
   const sortedItems = [...wishlistItems].sort((a, b) => {
     switch (sortBy) {

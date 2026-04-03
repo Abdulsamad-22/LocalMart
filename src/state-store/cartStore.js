@@ -105,8 +105,6 @@ const useCartStore = create(
   },
 );
 
-console.log("cartStore module loaded", Math.random());
-
 useCartStore.subscribe((state) => {
   localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
 });

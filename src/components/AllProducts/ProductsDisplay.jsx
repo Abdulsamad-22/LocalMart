@@ -7,7 +7,7 @@ import {
   CurrencyNgn,
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
-import { useVendorLocation } from "../Context/deliveryTime/VendorLocationProvider";
+import useStoreLocation from "../../state-store/vendorLocationStore";
 import useCartStore from "../../state-store/cartStore";
 import useWishlistStore from "../../state-store/wishlistStore";
 import useProductStore from "../../state-store/productStore";
@@ -17,11 +17,14 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
   const addToWishlist = useWishlistStore((state) => state.addToWishlist);
   const wishlistItems = useWishlistStore((state) => state.wishlistItems);
 
-  const [loading, setLoading] = useState(true);
+  const [productLoading, setProductLoading] = useState(true);
   const products = useProductStore((state) => state.products);
   const setProducts = useProductStore((state) => state.setProducts);
   const searchQuery = useProductStore((state) => state.searchQuery);
-  const { vendors } = useVendorLocation();
+
+  const vendorLoading = useStoreLocation((state) => state.loading);
+  const vendors = useStoreLocation((state) => state.vendors);
+  const error = useStoreLocation((state) => state.error);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,7 +33,7 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
         const cachedProducts = localStorage.getItem("cachedProducts");
         if (cachedProducts) {
           setProducts(JSON.parse(cachedProducts));
-          setLoading(false);
+          setProductLoading(false);
           return; // Skip fetch if cached
         }
 
@@ -47,12 +50,14 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
       } catch (err) {
         console.error("Error fetching available products", err.message);
       } finally {
-        setLoading(false);
+        setProductLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
+
+  const loading = productLoading || vendorLoading;
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
@@ -63,6 +68,9 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
       </div>
     );
   }
+
+  if (error) return <p>{error}</p>;
+  if (vendors.length === 0) return <p>No vendors found</p>;
 
   if (searchLoad)
     return (
@@ -78,7 +86,9 @@ export default function ProductsDisplay({ limit, loading: searchLoad }) {
             const isWishlisted = wishlistItems.some(
               (item) => item.id.toString() === product.id.toString(),
             );
-            const vendor = vendors.find((v) => v.id === product.vendor_id);
+            const vendor = vendors.find(
+              (v) => v.id.toString() === product.vendor_id.toString(),
+            );
             return (
               <div
                 key={product.id}
